@@ -27,52 +27,52 @@ export function Header() {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? "glass-effect border-b border-border/20" : "bg-transparent"
+        isScrolled ? "bg-black/95 backdrop-blur-md border-b border-primary/20" : "bg-transparent"
       }`}
     >
-      <div className="container mx-auto px-4 py-4">
+      <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
           <div className="flex items-center space-x-2">
-            <div className="w-8 h-8 luxury-gradient rounded-full flex items-center justify-center">
-              <span className="text-black font-bold text-sm">R</span>
+            <div className="w-7 h-7 sm:w-8 sm:h-8 luxury-gradient rounded-full flex items-center justify-center">
+              <span className="text-black font-bold text-xs sm:text-sm">R</span>
             </div>
-            <span className="font-serif text-2xl font-bold text-foreground">ROSIA</span>
+            <span className="font-serif text-xl sm:text-2xl font-bold text-foreground">ROSIA</span>
           </div>
 
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center space-x-8">
+          <nav className="hidden md:flex items-center space-x-6 lg:space-x-8">
             <button
               onClick={() => scrollToSection("hero")}
-              className="text-foreground hover:text-primary transition-colors"
+              className="text-foreground hover:text-primary transition-colors text-sm lg:text-base"
             >
               Home
             </button>
             <button
               onClick={() => scrollToSection("collections")}
-              className="text-foreground hover:text-primary transition-colors"
+              className="text-foreground hover:text-primary transition-colors text-sm lg:text-base"
             >
               Shop
             </button>
             <button
               onClick={() => scrollToSection("featured")}
-              className="text-foreground hover:text-primary transition-colors"
+              className="text-foreground hover:text-primary transition-colors text-sm lg:text-base"
             >
               Featured
             </button>
             <button
               onClick={() => scrollToSection("contact")}
-              className="text-foreground hover:text-primary transition-colors"
+              className="text-foreground hover:text-primary transition-colors text-sm lg:text-base"
             >
               Contact
             </button>
           </nav>
 
           {/* Desktop Actions */}
-          <div className="hidden md:flex items-center space-x-4">
-            <Button variant="ghost" size="sm">
+          <div className="hidden md:flex items-center space-x-2 lg:space-x-4">
+            <Button variant="ghost" size="sm" className="text-xs lg:text-sm">
               <User className="w-4 h-4" />
-              Login
+              <span className="hidden lg:inline ml-1">Login</span>
             </Button>
             <Button variant="ghost" size="sm" className="relative">
               <Heart className="w-4 h-4" />
@@ -92,7 +92,7 @@ export function Header() {
           <Button
             variant="ghost"
             size="sm"
-            className="md:hidden"
+            className="md:hidden p-2"
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
           >
             {isMobileMenuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
@@ -105,30 +105,30 @@ export function Header() {
             <nav className="flex flex-col space-y-4 mt-4">
               <button
                 onClick={() => scrollToSection("hero")}
-                className="text-left text-foreground hover:text-primary transition-colors"
+                className="text-left text-foreground hover:text-primary transition-colors py-2"
               >
                 Home
               </button>
               <button
                 onClick={() => scrollToSection("collections")}
-                className="text-left text-foreground hover:text-primary transition-colors"
+                className="text-left text-foreground hover:text-primary transition-colors py-2"
               >
                 Shop
               </button>
               <button
                 onClick={() => scrollToSection("featured")}
-                className="text-left text-foreground hover:text-primary transition-colors"
+                className="text-left text-foreground hover:text-primary transition-colors py-2"
               >
                 Featured
               </button>
               <button
                 onClick={() => scrollToSection("contact")}
-                className="text-left text-foreground hover:text-primary transition-colors"
+                className="text-left text-foreground hover:text-primary transition-colors py-2"
               >
                 Contact
               </button>
-              <div className="flex items-center space-x-4 pt-4 border-t border-border/20">
-                <Button variant="ghost" size="sm">
+              <div className="flex items-center justify-start space-x-4 pt-4 border-t border-border/20">
+                <Button variant="ghost" size="sm" className="flex items-center">
                   <User className="w-4 h-4 mr-2" />
                   Login
                 </Button>

@@ -10,19 +10,32 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
-import { Bell, LogOut, Settings, User } from "lucide-react"
+import { Bell, LogOut, Settings, User, Menu } from "lucide-react"
 
-export function AdminHeader() {
+interface AdminHeaderProps {
+  onMenuClick?: () => void
+}
+
+export function AdminHeader({ onMenuClick }: AdminHeaderProps) {
   return (
     <header className="h-16 border-b border-gray-800 bg-gray-900/50 backdrop-blur-sm">
-      <div className="flex h-full items-center justify-between px-8">
+      <div className="flex h-full items-center justify-between px-4 lg:px-8">
         <div className="flex items-center space-x-4">
-          <h2 className="text-lg font-semibold text-white">Admin Panel</h2>
+          <Button
+            variant="ghost"
+            size="icon"
+            onClick={onMenuClick}
+            className="lg:hidden text-gray-400 hover:text-white"
+          >
+            <Menu className="h-5 w-5" />
+          </Button>
+          <h2 className="text-lg font-semibold text-white hidden sm:block">Admin Panel</h2>
+          <h2 className="text-base font-semibold text-white sm:hidden">ROSIA</h2>
         </div>
 
-        <div className="flex items-center space-x-4">
+        <div className="flex items-center space-x-2 lg:space-x-4">
           <Button variant="ghost" size="icon" className="text-gray-400 hover:text-white">
-            <Bell className="h-5 w-5" />
+            <Bell className="h-4 w-4 lg:h-5 lg:w-5" />
           </Button>
 
           <DropdownMenu>

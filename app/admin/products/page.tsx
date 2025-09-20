@@ -113,21 +113,21 @@ export default function ProductsPage() {
   }
 
   return (
-    <div className="space-y-8">
-      <div className="flex items-center justify-between">
+    <div className="space-y-6 lg:space-y-8">
+      <div className="flex flex-col space-y-4 lg:flex-row lg:items-center lg:justify-between lg:space-y-0">
         <div>
-          <h1 className="text-3xl font-playfair font-bold text-amber-400">Product Management</h1>
-          <p className="text-gray-400 mt-1">Manage your perfume inventory</p>
+          <h1 className="text-2xl lg:text-3xl font-playfair font-bold text-amber-400">Product Management</h1>
+          <p className="text-gray-400 mt-1 text-sm lg:text-base">Manage your perfume inventory</p>
         </div>
 
         <Dialog open={isAddDialogOpen} onOpenChange={setIsAddDialogOpen}>
           <DialogTrigger asChild>
-            <Button className="bg-amber-400 hover:bg-amber-500 text-black">
+            <Button className="bg-amber-400 hover:bg-amber-500 text-black w-full lg:w-auto">
               <Plus className="mr-2 h-4 w-4" />
               Add Product
             </Button>
           </DialogTrigger>
-          <DialogContent className="bg-gray-900 border-gray-800 max-w-2xl">
+          <DialogContent className="bg-gray-900 border-gray-800 max-w-2xl mx-4 lg:mx-auto">
             <DialogHeader>
               <DialogTitle className="text-amber-400">
                 {editingProduct ? "Edit Product" : "Add New Product"}
@@ -272,67 +272,69 @@ export default function ProductsPage() {
           <CardDescription className="text-gray-400">Manage your perfume inventory and product details</CardDescription>
         </CardHeader>
         <CardContent>
-          <Table>
-            <TableHeader>
-              <TableRow className="border-gray-800">
-                <TableHead className="text-gray-300">ID</TableHead>
-                <TableHead className="text-gray-300">Image</TableHead>
-                <TableHead className="text-gray-300">Name</TableHead>
-                <TableHead className="text-gray-300">Price</TableHead>
-                <TableHead className="text-gray-300">Category</TableHead>
-                <TableHead className="text-gray-300">Featured</TableHead>
-                <TableHead className="text-gray-300">Discount</TableHead>
-                <TableHead className="text-gray-300">Actions</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {products.map((product) => (
-                <TableRow key={product.id} className="border-gray-800">
-                  <TableCell className="text-white">{product.id}</TableCell>
-                  <TableCell>
-                    <img
-                      src={product.image || "/placeholder.svg"}
-                      alt={product.name}
-                      className="w-12 h-12 object-cover rounded-lg"
-                    />
-                  </TableCell>
-                  <TableCell className="text-white font-medium">{product.name}</TableCell>
-                  <TableCell className="text-white">${product.price.toFixed(2)}</TableCell>
-                  <TableCell className="text-gray-300">{product.category}</TableCell>
-                  <TableCell>
-                    {product.featured ? (
-                      <Badge className="bg-amber-400/20 text-amber-400">Featured</Badge>
-                    ) : (
-                      <Badge variant="secondary" className="bg-gray-700 text-gray-300">
-                        Regular
-                      </Badge>
-                    )}
-                  </TableCell>
-                  <TableCell className="text-white">{product.discount}%</TableCell>
-                  <TableCell>
-                    <div className="flex space-x-2">
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleEdit(product)}
-                        className="border-gray-700 hover:bg-gray-800"
-                      >
-                        <Edit className="h-4 w-4" />
-                      </Button>
-                      <Button
-                        variant="outline"
-                        size="sm"
-                        onClick={() => handleDelete(product.id)}
-                        className="border-red-700 text-red-400 hover:bg-red-900/20"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
-                    </div>
-                  </TableCell>
+          <div className="overflow-x-auto">
+            <Table>
+              <TableHeader>
+                <TableRow className="border-gray-800">
+                  <TableHead className="text-gray-300 min-w-[60px]">ID</TableHead>
+                  <TableHead className="text-gray-300 min-w-[80px]">Image</TableHead>
+                  <TableHead className="text-gray-300 min-w-[150px]">Name</TableHead>
+                  <TableHead className="text-gray-300 min-w-[100px]">Price</TableHead>
+                  <TableHead className="text-gray-300 min-w-[120px]">Category</TableHead>
+                  <TableHead className="text-gray-300 min-w-[100px]">Featured</TableHead>
+                  <TableHead className="text-gray-300 min-w-[100px]">Discount</TableHead>
+                  <TableHead className="text-gray-300 min-w-[120px]">Actions</TableHead>
                 </TableRow>
-              ))}
-            </TableBody>
-          </Table>
+              </TableHeader>
+              <TableBody>
+                {products.map((product) => (
+                  <TableRow key={product.id} className="border-gray-800">
+                    <TableCell className="text-white">{product.id}</TableCell>
+                    <TableCell>
+                      <img
+                        src={product.image || "/placeholder.svg"}
+                        alt={product.name}
+                        className="w-10 h-10 lg:w-12 lg:h-12 object-cover rounded-lg"
+                      />
+                    </TableCell>
+                    <TableCell className="text-white font-medium">{product.name}</TableCell>
+                    <TableCell className="text-white">${product.price.toFixed(2)}</TableCell>
+                    <TableCell className="text-gray-300">{product.category}</TableCell>
+                    <TableCell>
+                      {product.featured ? (
+                        <Badge className="bg-amber-400/20 text-amber-400 text-xs">Featured</Badge>
+                      ) : (
+                        <Badge variant="secondary" className="bg-gray-700 text-gray-300 text-xs">
+                          Regular
+                        </Badge>
+                      )}
+                    </TableCell>
+                    <TableCell className="text-white">{product.discount}%</TableCell>
+                    <TableCell>
+                      <div className="flex space-x-1 lg:space-x-2">
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleEdit(product)}
+                          className="border-gray-700 hover:bg-gray-800 p-2"
+                        >
+                          <Edit className="h-3 w-3 lg:h-4 lg:w-4" />
+                        </Button>
+                        <Button
+                          variant="outline"
+                          size="sm"
+                          onClick={() => handleDelete(product.id)}
+                          className="border-red-700 text-red-400 hover:bg-red-900/20 p-2"
+                        >
+                          <Trash2 className="h-3 w-3 lg:h-4 lg:w-4" />
+                        </Button>
+                      </div>
+                    </TableCell>
+                  </TableRow>
+                ))}
+              </TableBody>
+            </Table>
+          </div>
         </CardContent>
       </Card>
     </div>
