@@ -1,36 +1,109 @@
+"use client"
+
+import { useState, useEffect } from "react"
 import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
-import { Calendar, ArrowRight } from "lucide-react"
+import { Calendar, ArrowRight, Loader2 } from "lucide-react"
+import Link from "next/link"
 
-const blogPosts = [
-  {
-    id: 1,
-    title: "The Art of Layering Fragrances",
-    excerpt:
-      "Discover the secrets of creating your unique scent signature by masterfully layering different fragrances.",
-    image: "/perfume-bottles-layering-artistic-arrangement.jpg",
-    date: "March 15, 2024",
-    readTime: "5 min read",
-  },
-  {
-    id: 2,
-    title: "Seasonal Scents: Spring Collection",
-    excerpt: "Explore our curated selection of fresh, floral fragrances perfect for the blooming season.",
-    image: "/spring-flowers-perfume-bottles-fresh-bright.jpg",
-    date: "March 10, 2024",
-    readTime: "3 min read",
-  },
-  {
-    id: 3,
-    title: "Behind the Scenes: Crafting Luxury",
-    excerpt: "Take a journey into our atelier where master perfumers create each unique fragrance with passion.",
-    image: "/perfume-laboratory-crafting-luxury-bottles-elegant.jpg",
-    date: "March 5, 2024",
-    readTime: "7 min read",
-  },
-]
+interface BlogPost {
+  _id: string;
+  title: string;
+  slug: string;
+  excerpt: string;
+  featuredImage: string;
+  author: {
+    name: string;
+    email: string;
+    avatar?: string;
+  };
+  publishedAt?: string;
+  createdAt: string;
+  views: number;
+  likes: number;
+}
 
 export function BlogSection() {
+  const [blogPosts, setBlogPosts] = useState<BlogPost[]>([])
+  const [loading, setLoading] = useState(true)
+  const [error, setError] = useState("")
+
+  // Fetch blog posts from API
+  useEffect(() => {
+    const fetchBlogPosts = async () => {
+      try {
+        setLoading(true)
+        const response = await fetch('/api/blogs?status=published&limit=3&sortBy=publishedAt&sortOrder=desc')
+        const data = await response.json()
+        
+        if (data.success) {
+          setBlogPosts(data.data.blogs)
+        } else {
+          setError('Failed to load blog posts')
+        }
+      } catch (err) {
+        setError('Failed to load blog posts')
+        console.error('Error fetching blog posts:', err)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchBlogPosts()
+  }, [])
+
+  const formatDate = (dateString: string) => {
+    return new Date(dateString).toLocaleDateString('en-US', {
+      year: 'numeric',
+      month: 'long',
+      day: 'numeric'
+    })
+  }
+
+  const getReadTime = (excerpt: string) => {
+    const wordsPerMinute = 200
+    const wordCount = excerpt.split(' ').length
+    const readTime = Math.ceil(wordCount / wordsPerMinute)
+    return `${readTime} min read`
+  }
+
+  if (loading) {
+    return (
+      <section className="py-20 px-4 bg-card">
+        <div className="container mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-4">The Art of Fragrance</h2>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+              Insights, stories, and inspiration from the world of luxury perfumery
+            </p>
+          </div>
+          <div className="flex items-center justify-center">
+            <Loader2 className="h-8 w-8 animate-spin" />
+            <span className="ml-2">Loading blog posts...</span>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
+  if (error) {
+    return (
+      <section className="py-20 px-4 bg-card">
+        <div className="container mx-auto">
+          <div className="text-center mb-16">
+            <h2 className="font-serif text-4xl md:text-5xl font-bold text-foreground mb-4">The Art of Fragrance</h2>
+            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
+              Insights, stories, and inspiration from the world of luxury perfumery
+            </p>
+          </div>
+          <div className="text-center">
+            <p className="text-red-500">{error}</p>
+          </div>
+        </div>
+      </section>
+    )
+  }
+
   return (
     <section className="py-20 px-4 bg-card">
       <div className="container mx-auto">
@@ -42,33 +115,41 @@ export function BlogSection() {
         </div>
 
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {blogPosts.map((post) => (
-            <Card key={post.id} className="group hover-lift border-0 bg-background overflow-hidden">
-              <div className="relative aspect-[4/3] overflow-hidden">
-                <img
-                  src={post.image || "/placeholder.svg"}
-                  alt={post.title}
-                  className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                />
-              </div>
-              <CardContent className="p-6">
-                <div className="flex items-center text-sm text-muted-foreground mb-3">
-                  <Calendar className="w-4 h-4 mr-2" />
-                  {post.date}
-                  <span className="mx-2">•</span>
-                  {post.readTime}
+          {blogPosts.length > 0 ? (
+            blogPosts.map((post) => (
+              <Card key={post._id} className="group hover-lift border-0 bg-background overflow-hidden">
+                <div className="relative aspect-[4/3] overflow-hidden">
+                  <img
+                    src={post.featuredImage || "/placeholder.svg"}
+                    alt={post.title}
+                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                  />
                 </div>
-                <h3 className="font-serif text-xl font-semibold text-foreground mb-3 group-hover:text-primary transition-colors">
-                  {post.title}
-                </h3>
-                <p className="text-muted-foreground mb-4 leading-relaxed">{post.excerpt}</p>
-                <Button variant="ghost" className="p-0 h-auto font-semibold text-primary hover:text-primary/80">
-                  Read More
-                  <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
-                </Button>
-              </CardContent>
-            </Card>
-          ))}
+                <CardContent className="p-6">
+                  <div className="flex items-center text-sm text-muted-foreground mb-3">
+                    <Calendar className="w-4 h-4 mr-2" />
+                    {formatDate(post.publishedAt || post.createdAt)}
+                    <span className="mx-2">•</span>
+                    {getReadTime(post.excerpt)}
+                  </div>
+                  <h3 className="font-serif text-xl font-semibold text-foreground mb-3 group-hover:text-primary transition-colors">
+                    {post.title}
+                  </h3>
+                  <p className="text-muted-foreground mb-4 leading-relaxed">{post.excerpt}</p>
+                  <Link href={`/blog/${post.slug}`}>
+                    <Button variant="ghost" className="p-0 h-auto font-semibold text-primary hover:text-primary/80">
+                      Read More
+                      <ArrowRight className="w-4 h-4 ml-2 transition-transform group-hover:translate-x-1" />
+                    </Button>
+                  </Link>
+                </CardContent>
+              </Card>
+            ))
+          ) : (
+            <div className="col-span-full text-center py-12">
+              <p className="text-muted-foreground">No blog posts available at the moment.</p>
+            </div>
+          )}
         </div>
       </div>
     </section>

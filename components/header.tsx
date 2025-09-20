@@ -2,11 +2,15 @@
 
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { Heart, ShoppingCart, User, Menu, X } from "lucide-react"
+import { Heart, ShoppingCart, User, Menu, X, LogOut } from "lucide-react"
+import Link from "next/link"
+import { useCart } from "@/lib/contexts/cart-context"
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [user, setUser] = useState<any>(null)
+  const { cartCount, wishlistCount } = useCart()
 
   useEffect(() => {
     const handleScroll = () => {
@@ -16,12 +20,27 @@ export function Header() {
     return () => window.removeEventListener("scroll", handleScroll)
   }, [])
 
+  useEffect(() => {
+    // Check if user is logged in
+    const userData = localStorage.getItem("user")
+    if (userData) {
+      setUser(JSON.parse(userData))
+    }
+  }, [])
+
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId)
     if (element) {
       element.scrollIntoView({ behavior: "smooth" })
     }
     setIsMobileMenuOpen(false)
+  }
+
+  const handleLogout = () => {
+    localStorage.removeItem("token")
+    localStorage.removeItem("user")
+    setUser(null)
+    window.location.href = "/logout"
   }
 
   return (
@@ -60,6 +79,11 @@ export function Header() {
             >
               Featured
             </button>
+            <Link href="/blog">
+              <span className="text-foreground hover:text-primary transition-colors text-sm lg:text-base cursor-pointer">
+                Blog
+              </span>
+            </Link>
             <button
               onClick={() => scrollToSection("contact")}
               className="text-foreground hover:text-primary transition-colors text-sm lg:text-base"
@@ -70,22 +94,63 @@ export function Header() {
 
           {/* Desktop Actions */}
           <div className="hidden md:flex items-center space-x-2 lg:space-x-4">
-            <Button variant="ghost" size="sm" className="text-xs lg:text-sm">
-              <User className="w-4 h-4" />
-              <span className="hidden lg:inline ml-1">Login</span>
-            </Button>
-            <Button variant="ghost" size="sm" className="relative">
-              <Heart className="w-4 h-4" />
-              <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                2
-              </span>
-            </Button>
-            <Button variant="ghost" size="sm" className="relative">
-              <ShoppingCart className="w-4 h-4" />
-              <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                1
-              </span>
-            </Button>
+            {user ? (
+              <>
+                <div className="flex items-center space-x-2">
+                  <Link href="/profile">
+                    <Button variant="ghost" size="sm" className="text-xs">
+                      <User className="w-4 h-4 mr-1" />
+                      {user.username}
+                    </Button>
+                  </Link>
+                  {user.isAdmin && (
+                    <Link href="/admin">
+                      <Button variant="outline" size="sm" className="text-xs">
+                        Admin
+                      </Button>
+                    </Link>
+                  )}
+                </div>
+                <Button variant="ghost" size="sm" onClick={handleLogout} className="text-xs lg:text-sm">
+                  <LogOut className="w-4 h-4" />
+                  <span className="hidden lg:inline ml-1">Logout</span>
+                </Button>
+              </>
+            ) : (
+              <>
+                <Link href="/login">
+                  <Button variant="ghost" size="sm" className="text-xs lg:text-sm">
+                    <User className="w-4 h-4" />
+                    <span className="hidden lg:inline ml-1">Login</span>
+                  </Button>
+                </Link>
+                <Link href="/register">
+                  <Button variant="outline" size="sm" className="text-xs">
+                    Sign Up
+                  </Button>
+                </Link>
+              </>
+            )}
+            <Link href="/wishlist">
+              <Button variant="ghost" size="sm" className="relative">
+                <Heart className="w-4 h-4" />
+                {wishlistCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                    {wishlistCount}
+                  </span>
+                )}
+              </Button>
+            </Link>
+            <Link href="/cart">
+              <Button variant="ghost" size="sm" className="relative">
+                <ShoppingCart className="w-4 h-4" />
+                {cartCount > 0 && (
+                  <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                    {cartCount}
+                  </span>
+                )}
+              </Button>
+            </Link>
           </div>
 
           {/* Mobile Menu Button */}
@@ -121,6 +186,11 @@ export function Header() {
               >
                 Featured
               </button>
+              <Link href="/blog">
+                <span className="text-left text-foreground hover:text-primary transition-colors py-2 block cursor-pointer">
+                  Blog
+                </span>
+              </Link>
               <button
                 onClick={() => scrollToSection("contact")}
                 className="text-left text-foreground hover:text-primary transition-colors py-2"
@@ -128,22 +198,58 @@ export function Header() {
                 Contact
               </button>
               <div className="flex items-center justify-start space-x-4 pt-4 border-t border-border/20">
-                <Button variant="ghost" size="sm" className="flex items-center">
-                  <User className="w-4 h-4 mr-2" />
-                  Login
-                </Button>
-                <Button variant="ghost" size="sm" className="relative">
-                  <Heart className="w-4 h-4" />
-                  <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                    2
-                  </span>
-                </Button>
-                <Button variant="ghost" size="sm" className="relative">
-                  <ShoppingCart className="w-4 h-4" />
-                  <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                    1
-                  </span>
-                </Button>
+                {user ? (
+                  <>
+                    <div className="flex flex-col space-y-2">
+                      <span className="text-sm text-foreground">Welcome, {user.username}</span>
+                      {user.isAdmin && (
+                        <Link href="/admin">
+                          <Button variant="outline" size="sm" className="text-xs">
+                            Admin Panel
+                          </Button>
+                        </Link>
+                      )}
+                      <Button variant="ghost" size="sm" onClick={handleLogout} className="flex items-center">
+                        <LogOut className="w-4 h-4 mr-2" />
+                        Logout
+                      </Button>
+                    </div>
+                  </>
+                ) : (
+                  <>
+                    <Link href="/login">
+                      <Button variant="ghost" size="sm" className="flex items-center">
+                        <User className="w-4 h-4 mr-2" />
+                        Login
+                      </Button>
+                    </Link>
+                    <Link href="/register">
+                      <Button variant="outline" size="sm" className="text-xs">
+                        Sign Up
+                      </Button>
+                    </Link>
+                  </>
+                )}
+                <Link href="/wishlist">
+                  <Button variant="ghost" size="sm" className="relative">
+                    <Heart className="w-4 h-4" />
+                    {wishlistCount > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                        {wishlistCount}
+                      </span>
+                    )}
+                  </Button>
+                </Link>
+                <Link href="/cart">
+                  <Button variant="ghost" size="sm" className="relative">
+                    <ShoppingCart className="w-4 h-4" />
+                    {cartCount > 0 && (
+                      <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full w-4 h-4 flex items-center justify-center">
+                        {cartCount}
+                      </span>
+                    )}
+                  </Button>
+                </Link>
               </div>
             </nav>
           </div>

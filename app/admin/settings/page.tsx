@@ -4,16 +4,16 @@ import { useState } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
+import { PasswordInput } from "@/components/ui/password-input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Switch } from "@/components/ui/switch"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { Badge } from "@/components/ui/badge"
 import { Separator } from "@/components/ui/separator"
-import { Globe, Shield, Database, Bell, Users, CreditCard, Save, Eye, EyeOff } from "lucide-react"
+import { Globe, Shield, Database, Bell, Users, CreditCard, Save } from "lucide-react"
 
 export default function AdminSettings() {
-  const [showApiKey, setShowApiKey] = useState(false)
   const [settings, setSettings] = useState({
     siteName: "ROSIA",
     siteDescription: "Luxury Perfume Collection",
@@ -369,24 +369,12 @@ export default function AdminSettings() {
                 <Label htmlFor="apiKey" className="text-gray-300">
                   API Key
                 </Label>
-                <div className="flex space-x-2">
-                  <Input
+                <PasswordInput
                     id="apiKey"
-                    type={showApiKey ? "text" : "password"}
                     value={settings.apiKey}
                     onChange={(e) => handleInputChange("apiKey", e.target.value)}
-                    className="bg-gray-800 border-gray-700 text-white flex-1"
-                  />
-                  <Button
-                    type="button"
-                    variant="outline"
-                    size="icon"
-                    onClick={() => setShowApiKey(!showApiKey)}
-                    className="border-gray-700 hover:bg-gray-800"
-                  >
-                    {showApiKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
-                  </Button>
-                </div>
+                  className="bg-gray-800 border-gray-700 text-white"
+                />
               </div>
               <div className="space-y-2">
                 <Label htmlFor="webhookUrl" className="text-gray-300">
