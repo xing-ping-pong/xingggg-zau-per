@@ -11,9 +11,11 @@ import {
   Settings,
   Tag,
   Menu,
-  X
+  X,
+  Star
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
+import { ToastProvider } from "@/components/ui/toast"
 
 const navigation = [
   { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
@@ -21,6 +23,7 @@ const navigation = [
   { name: "Blogs", href: "/admin/blogs", icon: FileText },
   { name: "Coupons", href: "/admin/coupons", icon: Tag },
   { name: "Orders", href: "/admin/orders", icon: ShoppingCart },
+  { name: "Reviews & Comments", href: "/admin/reviews", icon: Star },
   { name: "Settings", href: "/admin/settings", icon: Settings },
 ]
 
@@ -33,7 +36,8 @@ export default function AdminLayout({
   const pathname = usePathname()
 
   return (
-    <div className="min-h-screen bg-gray-900">
+    <ToastProvider>
+      <div className="min-h-screen bg-gray-900">
       {/* Mobile sidebar */}
       <div className={`fixed inset-0 z-50 lg:hidden ${sidebarOpen ? 'block' : 'hidden'}`}>
         <div className="fixed inset-0 bg-gray-900/80" onClick={() => setSidebarOpen(false)} />
@@ -137,5 +141,6 @@ export default function AdminLayout({
         </main>
       </div>
     </div>
+    </ToastProvider>
   )
 }

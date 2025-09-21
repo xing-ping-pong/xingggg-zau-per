@@ -11,6 +11,7 @@ import { useCart } from "@/lib/contexts/cart-context"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { OrderSuccessModal } from "@/components/ui/order-success-modal"
+import { useToast, ToastProvider } from "@/components/ui/toast"
 import Link from "next/link"
 
 interface Product {
@@ -27,8 +28,9 @@ interface Product {
   };
 }
 
-export default function CartPage() {
-  const { cartItems, removeFromCart, clearCart, isInCart } = useCart()
+function CartPageContent() {
+  const { addToast } = useToast()
+  const { cartItems, removeFromCart, updateCartQuantity, clearCart, isInCart, getCartQuantity } = useCart()
   
   const [products, setProducts] = useState<Product[]>([])
   const [loading, setLoading] = useState(true)
@@ -60,16 +62,17 @@ export default function CartPage() {
   useEffect(() => {
     const fetchCartProducts = async () => {
       if (cartItems.length === 0) {
+        setProducts([]) // Clear products when cart is empty
         setLoading(false)
         return
       }
 
       try {
         setLoading(true)
-        const productPromises = cartItems.map(async (productId) => {
-          const response = await fetch(`/api/products/${productId}`)
+        const productPromises = cartItems.map(async (cartItem) => {
+          const response = await fetch(`/api/products/${cartItem.productId}`)
           const data = await response.json()
-          return data.success ? data.data : null
+          return data.success ? { ...data.data, cartQuantity: cartItem.quantity } : null
         })
 
         const products = await Promise.all(productPromises)
@@ -90,7 +93,7 @@ export default function CartPage() {
     const discountedPrice = product.discount > 0 
       ? product.price - (product.price * product.discount / 100)
       : product.price
-    return sum + discountedPrice
+    return sum + (discountedPrice * product.cartQuantity)
   }, 0)
 
   const shipping = subtotal > 100 ? 0 : 15
@@ -117,12 +120,29 @@ export default function CartPage() {
       if (data.success) {
         setCouponDiscount(data.discount)
         setCouponApplied(true)
+        addToast({
+          type: 'success',
+          title: 'Coupon Applied!',
+          description: `You saved ${data.discount}% on your order`,
+          duration: 4000,
+          simple: false
+        })
       } else {
-        alert(data.message || 'Invalid coupon code')
+        addToast({
+          type: 'error',
+          title: data.message || 'This coupon code is invalid or expired',
+          duration: 4000,
+          simple: true
+        })
       }
     } catch (error) {
       console.error('Error applying coupon:', error)
-      alert('Error applying coupon. Please try again.')
+      addToast({
+        type: 'error',
+        title: 'Failed to apply coupon. Please try again.',
+        duration: 4000,
+        simple: true
+      })
     }
   }
 
@@ -172,7 +192,7 @@ export default function CartPage() {
         guestInfo,
         items: products.map(product => ({
           productId: product._id,
-          quantity: 1 // Since we're adding one item at a time
+          quantity: product.cartQuantity
         })),
         pricing: {
           subtotal,
@@ -306,7 +326,7 @@ export default function CartPage() {
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">Shopping Cart</h1>
-          <p className="text-muted-foreground">{cartItems.length} item(s) in your cart</p>
+          <p className="text-muted-foreground">{cartItems.reduce((sum, item) => sum + item.quantity, 0)} item(s) in your cart</p>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -322,7 +342,7 @@ export default function CartPage() {
             ) : products.length === 0 ? (
               <div className="text-center py-8">
                 <p className="text-muted-foreground">No products found in cart</p>
-                <p className="text-sm text-muted-foreground mt-2">Cart items: {cartItems.length}</p>
+                <p className="text-sm text-muted-foreground mt-2">Cart items: {cartItems.reduce((sum, item) => sum + item.quantity, 0)}</p>
               </div>
             ) : (
               products.map((product) => {
@@ -331,6 +351,16 @@ export default function CartPage() {
                 const discountedPrice = product.discount > 0 
                   ? product.price - (product.price * product.discount / 100)
                   : product.price
+
+                const handleQuantityChange = (newQuantity: number) => {
+                  if (newQuantity <= 0) {
+                    removeFromCart(product._id)
+                  } else if (newQuantity > product.stockQuantity) {
+                    alert(`Only ${product.stockQuantity} items available in stock`)
+                  } else {
+                    updateCartQuantity(product._id, newQuantity)
+                  }
+                }
 
                 return (
                   <Card key={product._id} className="p-4">
@@ -356,15 +386,50 @@ export default function CartPage() {
                             </>
                           )}
                         </div>
+                        <div className="flex items-center space-x-2 mt-2">
+                          <span className="text-sm text-muted-foreground">
+                            Stock: {product.stockQuantity}
+                          </span>
+                        </div>
                       </div>
-                      <Button
-                        variant="ghost"
-                        size="sm"
-                        onClick={() => handleRemoveFromCart(product._id)}
-                        className="text-red-500 hover:text-red-700"
-                      >
-                        <Trash2 className="h-4 w-4" />
-                      </Button>
+                      <div className="flex items-center space-x-2">
+                        {/* Quantity Controls */}
+                        <div className="flex items-center space-x-2">
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleQuantityChange(product.cartQuantity - 1)}
+                            disabled={product.cartQuantity <= 1}
+                            className="h-8 w-8 p-0"
+                          >
+                            -
+                          </Button>
+                          <span className="w-8 text-center font-medium">
+                            {product.cartQuantity}
+                          </span>
+                          <Button
+                            variant="outline"
+                            size="sm"
+                            onClick={() => handleQuantityChange(product.cartQuantity + 1)}
+                            disabled={product.cartQuantity >= product.stockQuantity}
+                            className="h-8 w-8 p-0"
+                          >
+                            +
+                          </Button>
+                        </div>
+                        <Button
+                          variant="ghost"
+                          size="sm"
+                          onClick={async () => {
+                            console.log('Removing product:', product._id, 'quantity:', product.cartQuantity);
+                            await removeFromCart(product._id, product.cartQuantity);
+                            console.log('Remove completed');
+                          }}
+                          className="text-red-500 hover:text-red-700"
+                        >
+                          <Trash2 className="h-4 w-4" />
+                        </Button>
+                      </div>
                     </div>
                   </Card>
                 )
@@ -525,6 +590,12 @@ export default function CartPage() {
                         setCouponApplied(false)
                         setCouponDiscount(0)
                         setCouponCode('')
+                        addToast({
+                          type: 'info',
+                          title: 'Coupon removed from your order',
+                          duration: 3000,
+                          simple: true
+                        })
                       }}
                     >
                       Remove
@@ -584,5 +655,13 @@ export default function CartPage() {
         total={orderDetails.total}
       />
     </div>
+  )
+}
+
+export default function CartPage() {
+  return (
+    <ToastProvider>
+      <CartPageContent />
+    </ToastProvider>
   )
 }

@@ -20,6 +20,7 @@ import {
 } from "@/components/ui/dialog"
 import { Badge } from "@/components/ui/badge"
 import { Plus, Edit, Trash2, Copy, Loader2, ArrowLeft, Tag, Calendar, Users } from "lucide-react"
+import { useToast } from "@/components/ui/toast"
 import Link from "next/link"
 
 interface Coupon {
@@ -39,6 +40,7 @@ interface Coupon {
 }
 
 export default function CouponsPage() {
+  const { addToast } = useToast()
   const [coupons, setCoupons] = useState<Coupon[]>([])
   const [isAddDialogOpen, setIsAddDialogOpen] = useState(false)
   const [editingCoupon, setEditingCoupon] = useState<Coupon | null>(null)
@@ -197,9 +199,23 @@ export default function CouponsPage() {
     setFormData({ ...formData, code: result })
   }
 
-  const copyCode = (code: string) => {
-    navigator.clipboard.writeText(code)
-    // You could add a toast notification here
+  const copyCode = async (code: string) => {
+    try {
+      await navigator.clipboard.writeText(code)
+      addToast({
+        type: 'success',
+        title: 'Code Copied!',
+        description: `Coupon code "${code}" has been copied to clipboard`,
+        duration: 3000
+      })
+    } catch (error) {
+      addToast({
+        type: 'error',
+        title: 'Copy Failed',
+        description: 'Failed to copy code to clipboard',
+        duration: 3000
+      })
+    }
   }
 
   const resetForm = () => {
@@ -235,7 +251,7 @@ export default function CouponsPage() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 bg-background text-foreground min-h-screen p-6">
       <div className="flex items-center justify-between">
         <div className="flex items-center space-x-4">
           <Link href="/admin">
@@ -273,14 +289,14 @@ export default function CouponsPage() {
 
             <form onSubmit={handleSubmit} className="space-y-6">
               {error && (
-                <div className="bg-red-500/10 border border-red-500/20 text-red-300 p-3 rounded">
+                <div className="bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 p-3 rounded">
                   {error}
                 </div>
               )}
 
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
-                  <Label htmlFor="code" className="text-gray-300">
+                  <Label htmlFor="code" className="text-foreground">
                     Coupon Code
                   </Label>
                   <div className="flex gap-2">
@@ -288,7 +304,7 @@ export default function CouponsPage() {
                       id="code"
                       value={formData.code}
                       onChange={(e) => setFormData({ ...formData, code: e.target.value.toUpperCase() })}
-                      className="bg-gray-800 border-gray-700 text-white"
+                      className="bg-background border-border text-foreground"
                       placeholder="SAVE20"
                       required
                     />
@@ -310,7 +326,7 @@ export default function CouponsPage() {
                     step="0.01"
                     value={formData.discountPercentage}
                     onChange={(e) => setFormData({ ...formData, discountPercentage: e.target.value })}
-                    className="bg-gray-800 border-gray-700 text-white"
+                    className="bg-background border-border text-foreground"
                     placeholder="20"
                     required
                   />
@@ -325,7 +341,7 @@ export default function CouponsPage() {
                   id="description"
                   value={formData.description}
                   onChange={(e) => setFormData({ ...formData, description: e.target.value })}
-                  className="bg-gray-800 border-gray-700 text-white"
+                  className="bg-background border-border text-foreground"
                   rows={3}
                   placeholder="20% off on all products"
                   required
@@ -344,7 +360,7 @@ export default function CouponsPage() {
                     step="0.01"
                     value={formData.minOrderAmount}
                     onChange={(e) => setFormData({ ...formData, minOrderAmount: e.target.value })}
-                    className="bg-gray-800 border-gray-700 text-white"
+                    className="bg-background border-border text-foreground"
                     placeholder="50"
                   />
                 </div>
@@ -360,7 +376,7 @@ export default function CouponsPage() {
                     step="0.01"
                     value={formData.maxDiscountAmount}
                     onChange={(e) => setFormData({ ...formData, maxDiscountAmount: e.target.value })}
-                    className="bg-gray-800 border-gray-700 text-white"
+                    className="bg-background border-border text-foreground"
                     placeholder="100"
                   />
                 </div>
@@ -377,7 +393,7 @@ export default function CouponsPage() {
                     min="1"
                     value={formData.usageLimit}
                     onChange={(e) => setFormData({ ...formData, usageLimit: e.target.value })}
-                    className="bg-gray-800 border-gray-700 text-white"
+                    className="bg-background border-border text-foreground"
                     placeholder="100"
                   />
                 </div>
@@ -391,7 +407,7 @@ export default function CouponsPage() {
                     type="datetime-local"
                     value={formData.expiryDate}
                     onChange={(e) => setFormData({ ...formData, expiryDate: e.target.value })}
-                    className="bg-gray-800 border-gray-700 text-white"
+                    className="bg-background border-border text-foreground"
                     min={new Date().toISOString().slice(0, 16)}
                   />
                 </div>
@@ -442,22 +458,22 @@ export default function CouponsPage() {
         <CardContent>
           <Table>
             <TableHeader>
-              <TableRow>
-                <TableHead>Code</TableHead>
-                <TableHead>Description</TableHead>
-                <TableHead>Discount</TableHead>
-                <TableHead>Usage</TableHead>
-                <TableHead>Status</TableHead>
-                <TableHead>Expiry</TableHead>
-                <TableHead>Actions</TableHead>
+              <TableRow className="bg-muted/50">
+                <TableHead className="text-foreground font-semibold">Code</TableHead>
+                <TableHead className="text-foreground font-semibold">Description</TableHead>
+                <TableHead className="text-foreground font-semibold">Discount</TableHead>
+                <TableHead className="text-foreground font-semibold">Usage</TableHead>
+                <TableHead className="text-foreground font-semibold">Status</TableHead>
+                <TableHead className="text-foreground font-semibold">Expiry</TableHead>
+                <TableHead className="text-foreground font-semibold">Actions</TableHead>
               </TableRow>
             </TableHeader>
             <TableBody>
               {coupons.map((coupon) => (
-                <TableRow key={coupon._id}>
-                  <TableCell>
+                <TableRow key={coupon._id} className="hover:bg-muted/30">
+                  <TableCell className="text-foreground">
                     <div className="flex items-center space-x-2">
-                      <code className="bg-gray-100 px-2 py-1 rounded text-sm font-mono">
+                      <code className="bg-muted px-2 py-1 rounded text-sm font-mono text-foreground">
                         {coupon.code}
                       </code>
                       <Button
@@ -469,20 +485,20 @@ export default function CouponsPage() {
                       </Button>
                     </div>
                   </TableCell>
-                  <TableCell className="max-w-xs truncate">
+                  <TableCell className="max-w-xs truncate text-foreground">
                     {coupon.description}
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="text-foreground">
                     <div className="flex flex-col">
                       <span className="font-semibold">{coupon.discountPercentage}%</span>
                       {coupon.minOrderAmount && (
-                        <span className="text-xs text-gray-500">
+                        <span className="text-xs text-muted-foreground">
                           Min: ${coupon.minOrderAmount}
                         </span>
                       )}
                     </div>
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="text-foreground">
                     <div className="flex items-center space-x-1">
                       <Users className="h-4 w-4" />
                       <span>
@@ -491,7 +507,7 @@ export default function CouponsPage() {
                       </span>
                     </div>
                   </TableCell>
-                  <TableCell>
+                  <TableCell className="text-foreground">
                     <Badge 
                       variant={coupon.isActive && !isExpired(coupon.expiryDate) ? "default" : "secondary"}
                     >

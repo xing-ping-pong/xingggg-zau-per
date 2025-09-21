@@ -1,11 +1,11 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import Link from "next/link"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/components/ui/dialog"
-import { Heart, ShoppingCart, Star, Eye } from "lucide-react"
+import { Heart, ShoppingCart, Star, Eye, Loader2 } from "lucide-react"
 import { useCart } from "@/lib/contexts/cart-context"
 
 interface Product {
@@ -24,6 +24,11 @@ interface Product {
   createdAt: string;
 }
 
+interface ReviewStats {
+  averageRating: number;
+  totalReviews: number;
+}
+
 interface ProductPreviewProps {
   product: Product;
   showQuickActions?: boolean;
@@ -32,6 +37,8 @@ interface ProductPreviewProps {
 export function ProductPreview({ product, showQuickActions = true }: ProductPreviewProps) {
   const { addToCart, toggleWishlist, isInCart, isInWishlist } = useCart()
   const [isPreviewOpen, setIsPreviewOpen] = useState(false)
+  const [reviewStats, setReviewStats] = useState<ReviewStats>({ averageRating: 0, totalReviews: 0 })
+  const [reviewsLoading, setReviewsLoading] = useState(false)
 
   // Calculate discounted price
   const getDiscountedPrice = (price: number, discount: number) => {
@@ -47,6 +54,30 @@ export function ProductPreview({ product, showQuickActions = true }: ProductPrev
 
   const discountedPrice = getDiscountedPrice(product.price, product.discount)
   const isNew = isNewProduct(product.createdAt)
+
+  // Fetch review stats for the product
+  useEffect(() => {
+    const fetchReviewStats = async () => {
+      try {
+        setReviewsLoading(true)
+        const response = await fetch(`/api/products/${product._id}/reviews?limit=1`)
+        const data = await response.json()
+        
+        if (data.success) {
+          setReviewStats({
+            averageRating: data.data.ratingStats.averageRating || 0,
+            totalReviews: data.data.ratingStats.totalReviews || 0
+          })
+        }
+      } catch (error) {
+        console.error('Error fetching review stats:', error)
+      } finally {
+        setReviewsLoading(false)
+      }
+    }
+
+    fetchReviewStats()
+  }, [product._id])
 
   const handleAddToCart = async () => {
     await addToCart(product._id)
@@ -148,17 +179,40 @@ export function ProductPreview({ product, showQuickActions = true }: ProductPrev
       </Link>
       <CardContent className="p-4">
         <div className="flex items-center mb-2">
-          <div className="flex items-center">
-            {[...Array(5)].map((_, i) => (
-              <Star
-                key={i}
-                className={`w-3 h-3 ${
-                  i < 4 ? "fill-primary text-primary" : "text-muted-foreground"
-                }`}
-              />
-            ))}
-          </div>
-          <span className="text-xs text-muted-foreground ml-2">(4.5)</span>
+          {reviewsLoading ? (
+            <div className="flex items-center">
+              <Loader2 className="w-3 h-3 animate-spin mr-1" />
+              <span className="text-xs text-muted-foreground">Loading...</span>
+            </div>
+          ) : reviewStats.totalReviews > 0 ? (
+            <>
+              <div className="flex items-center">
+                {[...Array(5)].map((_, i) => (
+                  <Star
+                    key={i}
+                    className={`w-3 h-3 ${
+                      i < Math.floor(reviewStats.averageRating) ? "fill-primary text-primary" : "text-muted-foreground"
+                    }`}
+                  />
+                ))}
+              </div>
+              <span className="text-xs text-muted-foreground ml-2">
+                ({reviewStats.averageRating.toFixed(1)}) {reviewStats.totalReviews} review{reviewStats.totalReviews !== 1 ? 's' : ''}
+              </span>
+            </>
+          ) : (
+            <div className="flex items-center">
+              <div className="flex items-center">
+                {[...Array(5)].map((_, i) => (
+                  <Star
+                    key={i}
+                    className="w-3 h-3 text-muted-foreground"
+                  />
+                ))}
+              </div>
+              <span className="text-xs text-muted-foreground ml-2">No reviews yet</span>
+            </div>
+          )}
         </div>
         <h3 className="font-serif text-lg font-semibold text-foreground mb-2">{product.name}</h3>
         <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{product.description}</p>

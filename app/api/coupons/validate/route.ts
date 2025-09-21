@@ -15,21 +15,32 @@ export async function POST(req: NextRequest) {
       }, { status: 400 })
     }
 
-    // Find the coupon
+    // Find the coupon by code first
     const coupon = await Coupon.findOne({ 
-      code: code.toUpperCase(),
-      isActive: true,
-      $or: [
-        { expiryDate: { $gt: new Date() } },
-        { expiryDate: null }
-      ]
+      code: code.toUpperCase()
     })
 
     if (!coupon) {
       return NextResponse.json({
         success: false,
-        message: 'Invalid or expired coupon code'
+        message: 'Invalid coupon code'
       }, { status: 404 })
+    }
+
+    // Check if coupon is active
+    if (!coupon.isActive) {
+      return NextResponse.json({
+        success: false,
+        message: 'This coupon is no longer active'
+      }, { status: 400 })
+    }
+
+    // Check if coupon is expired
+    if (coupon.expiryDate && new Date(coupon.expiryDate) < new Date()) {
+      return NextResponse.json({
+        success: false,
+        message: 'This coupon has expired'
+      }, { status: 400 })
     }
 
     // Check usage limit

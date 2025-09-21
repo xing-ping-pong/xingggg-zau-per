@@ -10,6 +10,8 @@ import { Search, Calendar, Eye, Heart, MessageCircle, Filter, ArrowLeft } from "
 import Link from "next/link"
 import Image from "next/image"
 import { BLOG_CATEGORIES } from "@/lib/constants/blog-categories"
+import { Header } from "@/components/header"
+import { Footer } from "@/components/footer"
 
 interface Blog {
   _id: string;
@@ -108,38 +110,40 @@ export default function BlogPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-900 via-purple-900 to-violet-900">
-      <div className="container mx-auto px-4 py-8">
+    <div className="min-h-screen bg-background">
+      <Header />
+      
+      <div className="container mx-auto px-4 py-8 pt-24">
         {/* Header */}
         <div className="mb-8">
           <div className="flex items-center space-x-4 mb-6">
             <Link href="/">
-              <Button variant="ghost" size="sm" className="flex items-center space-x-2 text-white hover:text-gray-300">
+              <Button variant="ghost" size="sm" className="flex items-center space-x-2 text-foreground hover:text-primary">
                 <ArrowLeft className="h-4 w-4" />
                 <span>Back to Home</span>
               </Button>
             </Link>
           </div>
           
-          <h1 className="text-4xl font-bold text-white mb-4">Our Blog</h1>
-          <p className="text-gray-300 text-lg">
+          <h1 className="text-4xl font-bold text-foreground mb-4">Our Blog</h1>
+          <p className="text-muted-foreground text-lg">
             Discover the latest insights, trends, and stories from the world of luxury perfumes
           </p>
         </div>
 
         {/* Search and Filters */}
-        <Card className="mb-8 bg-gray-800/50 border-gray-700">
+        <Card className="mb-8 bg-card border-border">
           <CardContent className="p-6">
             <form onSubmit={handleSearch} className="space-y-4">
               <div className="flex flex-col md:flex-row gap-4">
                 <div className="flex-1">
                   <div className="relative">
-                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-gray-400 h-4 w-4" />
+                    <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
                     <Input
                       placeholder="Search blog posts..."
                       value={searchTerm}
                       onChange={(e) => setSearchTerm(e.target.value)}
-                      className="pl-10 bg-gray-700 border-gray-600 text-white placeholder-gray-400"
+                      className="pl-10 bg-background border-border text-foreground placeholder-muted-foreground"
                     />
                   </div>
                 </div>
@@ -150,7 +154,7 @@ export default function BlogPage() {
               
               <div className="flex flex-wrap gap-4">
                 <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                  <SelectTrigger className="w-48 bg-gray-700 border-gray-600 text-white">
+                  <SelectTrigger className="w-48 bg-background border-border text-foreground">
                     <Filter className="h-4 w-4 mr-2" />
                     <SelectValue placeholder="All Categories" />
                   </SelectTrigger>
@@ -165,7 +169,7 @@ export default function BlogPage() {
                 </Select>
 
                 <Select value={selectedTag} onValueChange={setSelectedTag}>
-                  <SelectTrigger className="w-48 bg-gray-700 border-gray-600 text-white">
+                  <SelectTrigger className="w-48 bg-background border-border text-foreground">
                     <SelectValue placeholder="All Tags" />
                   </SelectTrigger>
                   <SelectContent>
@@ -179,7 +183,7 @@ export default function BlogPage() {
                 </Select>
 
                 <Select value={sortBy} onValueChange={setSortBy}>
-                  <SelectTrigger className="w-48 bg-gray-700 border-gray-600 text-white">
+                  <SelectTrigger className="w-48 bg-background border-border text-foreground">
                     <SelectValue placeholder="Sort by" />
                   </SelectTrigger>
                   <SelectContent>
@@ -194,7 +198,7 @@ export default function BlogPage() {
                   type="button"
                   variant="outline"
                   onClick={clearFilters}
-                  className="border-gray-600 text-gray-300 hover:bg-gray-700"
+                  className="border-border text-foreground hover:bg-muted"
                 >
                   Clear Filters
                 </Button>
@@ -206,8 +210,8 @@ export default function BlogPage() {
         {/* Loading State */}
         {loading && (
           <div className="flex items-center justify-center py-12">
-            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-white"></div>
-            <span className="ml-2 text-white">Loading blogs...</span>
+            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-primary"></div>
+            <span className="ml-2 text-foreground">Loading blogs...</span>
           </div>
         )}
 
@@ -298,8 +302,8 @@ export default function BlogPage() {
               </div>
             ) : (
               <div className="text-center py-12">
-                <h3 className="text-xl font-semibold text-white mb-2">No blog posts found</h3>
-                <p className="text-gray-400">Try adjusting your search or filters</p>
+                <h3 className="text-xl font-semibold text-foreground mb-2">No blog posts found</h3>
+                <p className="text-muted-foreground">Try adjusting your search or filters</p>
               </div>
             )}
 
@@ -310,7 +314,7 @@ export default function BlogPage() {
                   variant="outline"
                   onClick={() => setCurrentPage(prev => Math.max(prev - 1, 1))}
                   disabled={currentPage === 1}
-                  className="border-gray-600 text-gray-300 hover:bg-gray-700"
+                  className="border-border text-foreground hover:bg-muted"
                 >
                   Previous
                 </Button>
@@ -322,7 +326,7 @@ export default function BlogPage() {
                     onClick={() => setCurrentPage(page)}
                     className={currentPage === page 
                       ? "luxury-gradient text-black" 
-                      : "border-gray-600 text-gray-300 hover:bg-gray-700"
+                      : "border-border text-foreground hover:bg-muted"
                     }
                   >
                     {page}
@@ -333,7 +337,7 @@ export default function BlogPage() {
                   variant="outline"
                   onClick={() => setCurrentPage(prev => Math.min(prev + 1, totalPages))}
                   disabled={currentPage === totalPages}
-                  className="border-gray-600 text-gray-300 hover:bg-gray-700"
+                  className="border-border text-foreground hover:bg-muted"
                 >
                   Next
                 </Button>
@@ -342,6 +346,8 @@ export default function BlogPage() {
           </>
         )}
       </div>
+      
+      <Footer />
     </div>
   )
 }

@@ -9,6 +9,8 @@ import { Textarea } from "@/components/ui/textarea"
 import { Badge } from "@/components/ui/badge"
 import { Loader2, Calendar, Eye, Heart, MessageCircle, Star, ArrowLeft } from "lucide-react"
 import Link from "next/link"
+import { Header } from "@/components/header"
+import { Footer } from "@/components/footer"
 
 interface Blog {
   _id: string;
@@ -48,14 +50,15 @@ export default function BlogDetailPage() {
   const params = useParams()
   const slug = params.slug as string
   const [blog, setBlog] = useState<Blog | null>(null)
-  const [reviews, setReviews] = useState<Review[]>([])
+  const [comments, setComments] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
-  const [newReview, setNewReview] = useState({ name: "", email: "", rating: 0, comment: "" })
-  const [submittingReview, setSubmittingReview] = useState(false)
-  const [reviewError, setReviewError] = useState("")
+  const [newComment, setNewComment] = useState({ name: "", email: "", content: "" })
+  const [submittingComment, setSubmittingComment] = useState(false)
+  const [commentError, setCommentError] = useState("")
   const [userLiked, setUserLiked] = useState(false)
   const [likesCount, setLikesCount] = useState(0)
+  const [commentsLoading, setCommentsLoading] = useState(false)
 
   useEffect(() => {
     if (slug) {
@@ -73,7 +76,7 @@ export default function BlogDetailPage() {
         const fetchedBlog = data.data.blogs[0]
         setBlog(fetchedBlog)
         setLikesCount(fetchedBlog.likes || 0)
-        fetchReviews(fetchedBlog._id)
+        fetchComments(fetchedBlog._id)
       } else {
         setError('Blog post not found')
       }
@@ -85,48 +88,54 @@ export default function BlogDetailPage() {
     }
   }
 
-  const fetchReviews = async (blogId: string) => {
+  const fetchComments = async (blogId: string) => {
     try {
-      const response = await fetch(`/api/blogs/${blogId}/reviews`)
+      setCommentsLoading(true)
+      const response = await fetch(`/api/blogs/${blogId}/comments`)
       const data = await response.json()
-      if (data.success && data.data && Array.isArray(data.data.reviews)) {
-        setReviews(data.data.reviews)
+      if (data.success && data.data && Array.isArray(data.data.comments)) {
+        setComments(data.data.comments)
       } else {
-        setReviews([]) // Ensure reviews is always an array
+        setComments([]) // Ensure comments is always an array
       }
     } catch (err) {
-      console.error('Error fetching reviews:', err)
-      setReviews([]) // Ensure reviews is always an array
+      console.error('Error fetching comments:', err)
+      setComments([]) // Ensure comments is always an array
+    } finally {
+      setCommentsLoading(false)
     }
   }
 
-  const handleReviewSubmit = async (e: React.FormEvent) => {
+  const handleCommentSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!blog) return
 
-    setSubmittingReview(true)
-    setReviewError("")
+    setSubmittingComment(true)
+    setCommentError("")
 
     try {
-      const response = await fetch(`/api/blogs/${blog._id}/reviews`, {
+      const response = await fetch(`/api/blogs/${blog._id}/comments`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(newReview),
+        body: JSON.stringify({
+          ...newComment,
+          userId: 'guest' // For now, using guest
+        }),
       })
       const data = await response.json()
 
       if (data.success) {
-        setNewReview({ name: "", email: "", rating: 0, comment: "" })
-        fetchReviews(blog._id)
+        setNewComment({ name: "", email: "", content: "" })
+        fetchComments(blog._id)
       } else {
-        setReviewError(data.message || 'Failed to submit review')
+        setCommentError(data.message || 'Failed to submit comment')
       }
     } catch (err) {
-      setReviewError('Network error. Please try again.')
+      setCommentError('Network error. Please try again.')
     } finally {
-      setSubmittingReview(false)
+      setSubmittingComment(false)
     }
   }
 
@@ -187,8 +196,11 @@ export default function BlogDetailPage() {
   }
 
   return (
-    <div className="container mx-auto py-12 px-4">
-      {/* Back Button */}
+    <div className="min-h-screen bg-background">
+      <Header />
+      
+      <div className="container mx-auto py-12 px-4 pt-24">
+        {/* Back Button */}
       <div className="mb-8">
         <Link href="/blog">
           <Button variant="ghost" className="flex items-center space-x-2">
@@ -228,7 +240,7 @@ export default function BlogDetailPage() {
                 </div>
                 <div className="flex items-center space-x-2">
                   <MessageCircle className="h-4 w-4" />
-                  <span>{Array.isArray(reviews) ? reviews.length : 0}</span>
+                  <span>{Array.isArray(comments) ? comments.length : 0}</span>
                 </div>
               </div>
             </header>
@@ -279,112 +291,109 @@ export default function BlogDetailPage() {
             </div>
           </article>
 
-          {/* Reviews Section */}
+          {/* Comments Section */}
           <div className="mt-12 space-y-6">
-            <h2 className="text-2xl font-bold">Reviews ({Array.isArray(reviews) ? reviews.length : 0})</h2>
+            <h2 className="text-2xl font-bold">Comments ({Array.isArray(comments) ? comments.length : 0})</h2>
             
-            {/* Add Review Form */}
+            {/* Add Comment Form */}
             <Card>
               <CardHeader>
-                <CardTitle>Add a Review</CardTitle>
+                <CardTitle>Leave a Comment</CardTitle>
               </CardHeader>
               <CardContent>
-                <form onSubmit={handleReviewSubmit} className="space-y-4">
-                  {reviewError && (
+                <form onSubmit={handleCommentSubmit} className="space-y-4">
+                  {commentError && (
                     <div className="bg-red-500/10 border border-red-500/20 text-red-300 p-3 rounded">
-                      {reviewError}
+                      {commentError}
                     </div>
                   )}
                   
                   <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <Input
                       placeholder="Your Name"
-                      value={newReview.name}
-                      onChange={(e) => setNewReview({ ...newReview, name: e.target.value })}
+                      value={newComment.name}
+                      onChange={(e) => setNewComment({ ...newComment, name: e.target.value })}
                       required
                     />
                     <Input
                       type="email"
                       placeholder="Your Email"
-                      value={newReview.email}
-                      onChange={(e) => setNewReview({ ...newReview, email: e.target.value })}
+                      value={newComment.email}
+                      onChange={(e) => setNewComment({ ...newComment, email: e.target.value })}
                       required
                     />
                   </div>
                   
-                  <div className="flex items-center space-x-2">
-                    <span>Rating:</span>
-                    {[1, 2, 3, 4, 5].map((star) => (
-                      <button
-                        key={star}
-                        type="button"
-                        onClick={() => setNewReview({ ...newReview, rating: star })}
-                        className="text-2xl"
-                      >
-                        <Star
-                          className={`h-6 w-6 ${
-                            star <= newReview.rating
-                              ? 'text-yellow-400 fill-current'
-                              : 'text-gray-400'
-                          }`}
-                        />
-                      </button>
-                    ))}
-                  </div>
-                  
                   <Textarea
-                    placeholder="Write your review..."
-                    value={newReview.comment}
-                    onChange={(e) => setNewReview({ ...newReview, comment: e.target.value })}
+                    placeholder="Write your comment..."
+                    value={newComment.content}
+                    onChange={(e) => setNewComment({ ...newComment, content: e.target.value })}
                     rows={4}
                     required
                   />
                   
-                  <Button type="submit" disabled={submittingReview}>
-                    {submittingReview ? (
+                  <Button type="submit" disabled={submittingComment}>
+                    {submittingComment ? (
                       <>
                         <Loader2 className="mr-2 h-4 w-4 animate-spin" />
                         Submitting...
                       </>
                     ) : (
-                      'Submit Review'
+                      'Submit Comment'
                     )}
                   </Button>
                 </form>
               </CardContent>
             </Card>
 
-            {/* Reviews List */}
+            {/* Comments List */}
             <div className="space-y-4">
-              {Array.isArray(reviews) && reviews.map((review) => (
-                <Card key={review._id}>
-                  <CardContent className="pt-6">
-                    <div className="flex items-center justify-between mb-2">
-                      <div className="flex items-center space-x-2">
-                        <span className="font-medium">{review.user.name}</span>
-                        <div className="flex">
-                          {[1, 2, 3, 4, 5].map((star) => (
-                            <Star
-                              key={star}
-                              className={`h-4 w-4 ${
-                                star <= review.rating
-                                  ? 'text-yellow-400 fill-current'
-                                  : 'text-gray-400'
-                              }`}
-                            />
+              {commentsLoading ? (
+                <div className="flex items-center justify-center py-8">
+                  <Loader2 className="h-6 w-6 animate-spin" />
+                  <span className="ml-2">Loading comments...</span>
+                </div>
+              ) : Array.isArray(comments) && comments.length > 0 ? (
+                comments.map((comment) => (
+                  <Card key={comment._id}>
+                    <CardContent className="pt-6">
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center space-x-2">
+                          <span className="font-medium">{comment.name}</span>
+                        </div>
+                        <span className="text-sm text-muted-foreground">
+                          {formatDate(comment.createdAt)}
+                        </span>
+                      </div>
+                      <p className="text-muted-foreground">{comment.content}</p>
+                      
+                      {/* Replies */}
+                      {comment.replies && comment.replies.length > 0 && (
+                        <div className="mt-4 ml-4 space-y-3 border-l-2 border-muted pl-4">
+                          {comment.replies.map((reply: any) => (
+                            <div key={reply._id} className="bg-muted/30 p-3 rounded-lg">
+                              <div className="flex items-center justify-between mb-1">
+                                <span className="font-medium text-sm">{reply.name}</span>
+                                <span className="text-xs text-muted-foreground">
+                                  {formatDate(reply.createdAt)}
+                                </span>
+                              </div>
+                              <p className="text-sm text-muted-foreground">{reply.content}</p>
+                            </div>
                           ))}
                         </div>
-                      </div>
-                      <span className="text-sm text-muted-foreground">
-                        {formatDate(review.createdAt)}
-                      </span>
-                    </div>
-                    <p className="text-muted-foreground">{review.comment}</p>
-                  </CardContent>
-                </Card>
-              ))}
+                      )}
+                    </CardContent>
+                  </Card>
+                ))
+              ) : (
+                <div className="text-center py-8 text-muted-foreground">
+                  No comments yet. Be the first to comment!
+                </div>
+              )}
             </div>
           </div>
+        </div>
         </div>
 
         {/* Sidebar */}
@@ -418,6 +427,8 @@ export default function BlogDetailPage() {
           </Card>
         </div>
       </div>
+      
+      <Footer />
     </div>
   )
 }
