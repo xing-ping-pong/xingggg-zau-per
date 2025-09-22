@@ -6,7 +6,7 @@ import Product from '@/lib/models/Product';
 // Import email service
 const emailService = require('@/lib/services/email-service');
 // Import WhatsApp service
-const { WhatsAppService } = require('@/lib/services/whatsapp');
+const { WhatsAppService } = require('@/lib/services/whatsapp.js');
 
 // PUT /api/admin/orders/[id]/notify/confirmation - Send order confirmation
 export async function PUT(

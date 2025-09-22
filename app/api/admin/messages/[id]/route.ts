@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import ContactMessage from '@/lib/models/ContactMessage';
 import { emailService } from '@/lib/services/email';
-import { WhatsAppService } from '@/lib/services/whatsapp';
+const { WhatsAppService } = require('@/lib/services/whatsapp.js');
 
 // PUT /api/admin/messages/[id] - Update message status, reply, etc.
 export async function PUT(
@@ -91,16 +91,21 @@ export async function PUT(
 
       // Send WhatsApp notification to admin
       try {
-        const whatsappData = {
-          name: updatedMessage.name,
-          email: updatedMessage.email,
-          subject: updatedMessage.subject,
-          category: updatedMessage.category,
-          message: updatedMessage.message
-        };
-        
-        await WhatsAppService.sendContactFormNotification(whatsappData);
-        console.log('PUT /api/admin/messages/[id] - WhatsApp notification sent successfully');
+        // Check if WhatsApp service is available
+        if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN) {
+          const whatsappData = {
+            name: updatedMessage.name,
+            email: updatedMessage.email,
+            subject: updatedMessage.subject,
+            category: updatedMessage.category,
+            message: updatedMessage.message
+          };
+          
+          await WhatsAppService.sendContactFormNotification(whatsappData);
+          console.log('PUT /api/admin/messages/[id] - WhatsApp notification sent successfully');
+        } else {
+          console.log('PUT /api/admin/messages/[id] - WhatsApp credentials not configured, skipping notification');
+        }
       } catch (whatsappError) {
         console.error('PUT /api/admin/messages/[id] - Error sending WhatsApp notification:', whatsappError);
         // Don't fail the request if WhatsApp fails
