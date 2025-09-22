@@ -43,6 +43,24 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   }, [])
 
+  // Clean up wishlist items on mount to remove any undefined values and ensure only IDs
+  useEffect(() => {
+    setWishlistItems(prev => {
+      const cleaned = prev
+        .filter(Boolean) // Remove null/undefined
+        .map(item => typeof item === 'string' ? item : item?._id || item?.id) // Extract ID if it's an object
+        .filter(Boolean) // Remove any remaining null/undefined values
+      
+      // If we cleaned up the data, save it back to localStorage
+      if (cleaned.length !== prev.length || prev.some(item => typeof item === 'object')) {
+        localStorage.setItem('wishlist-items', JSON.stringify(cleaned))
+        console.log('Cleaned wishlist data:', cleaned);
+      }
+      
+      return cleaned
+    })
+  }, [])
+
   // Load cart and wishlist from localStorage on mount
   useEffect(() => {
     const savedCart = localStorage.getItem('cart-items')
@@ -71,8 +89,18 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       }
     }
     if (savedWishlist) {
+      try {
       const wishlistData = JSON.parse(savedWishlist)
-      setWishlistItems(wishlistData)
+        // Ensure wishlist only contains product IDs (strings), not full objects
+        const validWishlist = wishlistData
+          .filter(Boolean) // Remove null/undefined
+          .map(item => typeof item === 'string' ? item : item?._id || item?.id) // Extract ID if it's an object
+          .filter(Boolean) // Remove any remaining null/undefined values
+        setWishlistItems(validWishlist)
+      } catch (error) {
+        console.error('Error parsing wishlist data:', error)
+        setWishlistItems([])
+      }
     }
   }, [])
 
@@ -98,10 +126,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         const wishlistData = await wishlistResponse.json()
         if (wishlistData.success && wishlistData.data.wishlist) {
           const dbWishlist = wishlistData.data.wishlist.products || []
-          setWishlistItems(dbWishlist)
-          localStorage.setItem('wishlist-items', JSON.stringify(dbWishlist))
-        }
-      } catch (error) {
+          // Extract only product IDs from the database response
+          const wishlistIds = dbWishlist.map((product: any) => 
+            typeof product === 'string' ? product : product._id || product.id
+          ).filter(Boolean)
+          setWishlistItems(wishlistIds)
+          localStorage.setItem('wishlist-items', JSON.stringify(wishlistIds))
+          }
+        } catch (error) {
         console.error('Error syncing data:', error)
       }
     }
@@ -231,21 +263,21 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       })
       
       // Make API call for both registered and guest users
-      const response = await fetch('/api/cart', {
+        const response = await fetch('/api/cart', {
         method: 'PUT',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
           userId: isGuest ? 'guest' : userId,
           productId,
           quantity: newQuantity,
           isGuest
-        }),
-      })
+          }),
+        })
 
-      if (!response.ok) {
-        // Revert local state if API call fails
+        if (!response.ok) {
+          // Revert local state if API call fails
         setCartItems(prev => {
           const existingItem = prev.find(item => item.productId === productId)
           if (existingItem) {
@@ -258,7 +290,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
             return [...prev, { productId, quantity }]
           }
         })
-        throw new Error('Failed to remove from cart')
+          throw new Error('Failed to remove from cart')
       }
     } catch (error) {
       console.error('Error removing from cart:', error)
@@ -312,11 +344,23 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const toggleWishlist = async (productId: string) => {
     try {
+      // Validate productId
+      if (!productId || productId === 'undefined') {
+        console.error('Invalid productId:', productId);
+        return;
+      }
+
       const isInWishlist = wishlistItems.includes(productId)
+      console.log('toggleWishlist called:', { productId, isInWishlist, currentWishlist: wishlistItems });
       
       if (isInWishlist) {
         // Remove from wishlist - update local state first for better UX
-        setWishlistItems(prev => prev.filter(id => id !== productId))
+        console.log('Removing from wishlist:', productId);
+        setWishlistItems(prev => {
+          const newItems = prev.filter(id => id !== productId);
+          console.log('New wishlist after removal:', newItems);
+          return newItems;
+        });
         
         const response = await fetch('/api/wishlist', {
           method: 'DELETE',
@@ -338,7 +382,12 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         }
       } else {
         // Add to wishlist - update local state first for better UX
-        setWishlistItems(prev => [...prev, productId])
+        console.log('Adding to wishlist:', productId);
+        setWishlistItems(prev => {
+          const newItems = [...prev, productId].filter(Boolean); // Remove any undefined values
+          console.log('New wishlist after addition:', newItems);
+          return newItems;
+        });
         
         const response = await fetch('/api/wishlist', {
           method: 'POST',

@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { Playfair_Display, Inter } from "next/font/google"
 import { Suspense } from "react"
 import { CartProvider } from "@/lib/contexts/cart-context"
+import { ToastProvider } from "@/lib/contexts/toast-context"
 import "./globals.css"
 
 const playfair = Playfair_Display({
@@ -32,7 +33,9 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <body className={`font-sans ${playfair.variable} ${inter.variable} antialiased`}>
         <CartProvider>
-          <Suspense fallback={null}>{children}</Suspense>
+          <ToastProvider>
+            <Suspense fallback={null}>{children}</Suspense>
+          </ToastProvider>
         </CartProvider>
       </body>
     </html>

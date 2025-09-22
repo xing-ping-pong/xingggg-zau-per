@@ -12,7 +12,9 @@ import {
   Tag,
   Menu,
   X,
-  Star
+  Star,
+  MessageCircle,
+  MessageSquare
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ToastProvider } from "@/components/ui/toast"
@@ -24,6 +26,8 @@ const navigation = [
   { name: "Coupons", href: "/admin/coupons", icon: Tag },
   { name: "Orders", href: "/admin/orders", icon: ShoppingCart },
   { name: "Reviews & Comments", href: "/admin/reviews", icon: Star },
+  { name: "Questions & Answers", href: "/admin/questions", icon: MessageCircle },
+  { name: "Messages", href: "/admin/messages", icon: MessageSquare },
   { name: "Settings", href: "/admin/settings", icon: Settings },
 ]
 

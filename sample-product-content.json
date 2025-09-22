@@ -1,0 +1,135 @@
+{
+  "name": "Midnight Rose Elixir",
+  "description": "A captivating blend of dark roses, black currant, and mysterious oud that evokes the essence of a moonlit garden. This intoxicating fragrance opens with the fresh burst of bergamot and pink pepper, leading to a heart of velvety rose petals and jasmine. The base notes of sandalwood, patchouli, and amber create a warm, sensual finish that lingers on the skin for hours. Perfect for evening wear and special occasions.",
+  "price": 285.00,
+  "discount": 15,
+  "stockQuantity": 50,
+  "category": "Luxury Perfumes",
+  "tags": ["Evening", "Romantic", "Luxury", "Rose", "Oud", "Unisex"],
+  "imageUrl": "https://images.unsplash.com/photo-1541643600914-78b084683601?w=800&h=800&fit=crop&crop=center",
+  "gallery": [
+    "https://images.unsplash.com/photo-1541643600914-78b084683601?w=800&h=800&fit=crop&crop=center",
+    "https://images.unsplash.com/photo-1594736797933-d0401ba2fe65?w=800&h=800&fit=crop&crop=center",
+    "https://images.unsplash.com/photo-1588405748880-12d1d2a59d75?w=800&h=800&fit=crop&crop=center",
+    "https://images.unsplash.com/photo-1615634260167-c8cdede54de6?w=800&h=800&fit=crop&crop=center"
+  ],
+  "specifications": {
+    "volume": "100ml",
+    "concentration": "Eau de Parfum",
+    "gender": "Unisex",
+    "season": "All Seasons",
+    "longevity": "8-12 hours",
+    "sillage": "Moderate to Strong",
+    "topNotes": ["Bergamot", "Pink Pepper", "Black Currant"],
+    "heartNotes": ["Rose", "Jasmine", "Lily of the Valley"],
+    "baseNotes": ["Sandalwood", "Patchouli", "Amber", "Oud"],
+    "ingredients": "Alcohol, Fragrance, Water, Glycerin, Dipropylene Glycol",
+    "madeIn": "France",
+    "brand": "ROSIA",
+    "collection": "Elixir Series"
+  },
+  "features": [
+    "Long-lasting fragrance up to 12 hours",
+    "Premium French craftsmanship",
+    "Eco-friendly packaging",
+    "Cruelty-free and vegan",
+    "Limited edition release",
+    "Comes with luxury gift box",
+    "Free worldwide shipping",
+    "30-day money-back guarantee"
+  ],
+  "careInstructions": [
+    "Store in a cool, dry place away from direct sunlight",
+    "Keep the cap tightly closed when not in use",
+    "Avoid contact with eyes and sensitive areas",
+    "Discontinue use if irritation occurs",
+    "Keep out of reach of children"
+  ],
+  "shippingInfo": {
+    "weight": "0.5 kg",
+    "dimensions": "15cm x 8cm x 8cm",
+    "shippingClass": "Fragile",
+    "freeShipping": true,
+    "estimatedDelivery": "3-5 business days"
+  },
+  "seo": {
+    "metaTitle": "Midnight Rose Elixir - Luxury Perfume by ROSIA | 100ml Eau de Parfum",
+    "metaDescription": "Discover Midnight Rose Elixir, a captivating luxury perfume with notes of dark roses, oud, and amber. Long-lasting fragrance perfect for special occasions. Free shipping worldwide.",
+    "keywords": ["luxury perfume", "rose fragrance", "oud perfume", "unisex cologne", "French perfume", "long lasting fragrance", "gift perfume", "premium cologne"]
+  },
+  "reviews": [
+    {
+      "rating": 5,
+      "title": "Absolutely stunning fragrance!",
+      "comment": "This perfume is absolutely divine. The rose and oud combination is perfect - not too heavy, not too light. I get compliments every time I wear it. The longevity is incredible, I can still smell it after 10+ hours.",
+      "author": "Sarah M.",
+      "verified": true,
+      "date": "2024-01-15"
+    },
+    {
+      "rating": 5,
+      "title": "Worth every penny",
+      "comment": "I was hesitant about the price, but this perfume is worth every cent. The quality is exceptional and the packaging is beautiful. It's become my signature scent.",
+      "author": "Michael R.",
+      "verified": true,
+      "date": "2024-01-10"
+    },
+    {
+      "rating": 4,
+      "title": "Beautiful but strong",
+      "comment": "The fragrance is gorgeous and very long-lasting. I just need to be careful not to over-apply as it's quite potent. Perfect for special occasions.",
+      "author": "Emma L.",
+      "verified": true,
+      "date": "2024-01-08"
+    },
+    {
+      "rating": 5,
+      "title": "Perfect gift",
+      "comment": "Bought this as a gift for my wife and she absolutely loves it. The presentation is elegant and the fragrance is sophisticated. Highly recommend!",
+      "author": "David K.",
+      "verified": true,
+      "date": "2024-01-05"
+    },
+    {
+      "rating": 4,
+      "title": "Great quality",
+      "comment": "Really impressed with the quality and longevity. The rose notes are beautiful and the oud adds depth. Only minor issue is the price, but you get what you pay for.",
+      "author": "Lisa T.",
+      "verified": true,
+      "date": "2024-01-03"
+    }
+  ],
+  "faq": [
+    {
+      "question": "How long does the fragrance last?",
+      "answer": "Midnight Rose Elixir typically lasts 8-12 hours on the skin, depending on your skin type and application method. The fragrance is designed to be long-lasting and will develop beautifully throughout the day."
+    },
+    {
+      "question": "Is this perfume suitable for sensitive skin?",
+      "answer": "While our perfumes are formulated with high-quality ingredients, we recommend doing a patch test if you have sensitive skin. The fragrance contains natural and synthetic ingredients that are generally well-tolerated."
+    },
+    {
+      "question": "Can this be worn by both men and women?",
+      "answer": "Yes, Midnight Rose Elixir is a unisex fragrance designed to complement both masculine and feminine styles. The rose and oud combination creates a sophisticated scent that works beautifully for everyone."
+    },
+    {
+      "question": "What's the difference between Eau de Parfum and Eau de Toilette?",
+      "answer": "Eau de Parfum has a higher concentration of fragrance oils (15-20%) compared to Eau de Toilette (5-15%), making it more intense and longer-lasting. Our Elixir series uses the highest concentration for maximum impact."
+    },
+    {
+      "question": "How should I apply the perfume?",
+      "answer": "Apply to pulse points like wrists, neck, and behind the ears. Start with 2-3 sprays and adjust based on your preference. The fragrance will develop and become more complex as it warms on your skin."
+    }
+  ],
+  "relatedProducts": [
+    "Amber Mystique",
+    "Vanilla Dreams",
+    "Citrus Burst",
+    "Woody Essence"
+  ],
+  "promotions": {
+    "bundleOffer": "Buy 2 get 1 free on all Elixir series",
+    "giftWrap": "Free luxury gift wrapping available",
+    "sampleSize": "Free 2ml sample with purchase over $200"
+  }
+}

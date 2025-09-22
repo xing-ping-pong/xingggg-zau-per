@@ -9,13 +9,18 @@ export async function GET(req: NextRequest) {
   const startTime = performance.now();
   
   try {
+    console.log('GET /api/cart - Starting request');
     await connectDB();
+    console.log('GET /api/cart - Database connected');
 
     const { searchParams } = new URL(req.url);
     const userId = searchParams.get('userId');
     const isGuest = searchParams.get('isGuest') === 'true';
 
+    console.log('GET /api/cart - Params:', { userId, isGuest });
+
     if (!userId) {
+      console.log('GET /api/cart - Missing userId');
       return NextResponse.json({
         success: false,
         message: 'User ID is required'
@@ -25,17 +30,23 @@ export async function GET(req: NextRequest) {
     let cart;
     if (isGuest) {
       // Handle guest user by IP
+      console.log('GET /api/cart - Handling guest user');
       const ipAddress = getClientIP(req);
+      console.log('GET /api/cart - IP Address:', ipAddress);
+      
       const guestUser = await GuestUser.findOne({ ipAddress })
         .populate('cartItems.product')
         .lean();
       
+      console.log('GET /api/cart - Guest user found:', !!guestUser);
       cart = guestUser ? { items: guestUser.cartItems } : { items: [] };
     } else {
       // Handle registered user
+      console.log('GET /api/cart - Handling registered user');
       cart = await Cart.findOne({ user: userId })
         .populate('items.product')
         .lean();
+      console.log('GET /api/cart - Cart found:', !!cart);
     }
 
     const response = NextResponse.json({
@@ -49,9 +60,15 @@ export async function GET(req: NextRequest) {
     return addPerformanceHeaders(response, startTime);
   } catch (error) {
     console.error('Error in GET /api/cart:', error);
+    console.error('Error details:', {
+      name: error instanceof Error ? error.name : 'Unknown',
+      message: error instanceof Error ? error.message : 'Unknown error',
+      stack: error instanceof Error ? error.stack : undefined
+    });
     return NextResponse.json({
       success: false,
-      message: 'Internal server error'
+      message: 'Internal server error',
+      error: error instanceof Error ? error.message : 'Unknown error'
     }, { status: 500 });
   }
 }

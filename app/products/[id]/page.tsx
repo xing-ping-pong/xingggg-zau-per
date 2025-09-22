@@ -25,6 +25,7 @@ import { useCart } from "@/lib/contexts/cart-context"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { ProductPreview } from "@/components/product-preview"
+import ProductQuestions from "@/components/product-questions"
 import Image from "next/image"
 
 interface Product {
@@ -90,6 +91,7 @@ export default function ProductDetailPage() {
   })
   const [submittingReview, setSubmittingReview] = useState(false)
   const [reviewError, setReviewError] = useState("")
+  const [activeTab, setActiveTab] = useState<'reviews' | 'questions'>('reviews')
 
   // Mock fragrance notes - in real app this would come from product data
   const fragranceNotes = {
@@ -594,9 +596,36 @@ export default function ProductDetailPage() {
             </CardContent>
           </Card>
 
-          {/* Reviews */}
+          {/* Reviews & Questions */}
           <Card className="bg-card border-border">
             <CardContent className="p-6">
+              {/* Tabs */}
+              <div className="flex items-center gap-6 mb-6 border-b border-border">
+                <button
+                  onClick={() => setActiveTab('reviews')}
+                  className={`pb-3 text-lg font-medium transition-colors ${
+                    activeTab === 'reviews'
+                      ? 'text-foreground border-b-2 border-primary'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  REVIEWS
+                </button>
+                <button
+                  onClick={() => setActiveTab('questions')}
+                  className={`pb-3 text-lg font-medium transition-colors ${
+                    activeTab === 'questions'
+                      ? 'text-foreground border-b-2 border-primary'
+                      : 'text-muted-foreground hover:text-foreground'
+                  }`}
+                >
+                  QUESTIONS
+                </button>
+              </div>
+
+              {/* Reviews Tab Content */}
+              {activeTab === 'reviews' && (
+                <>
               <div className="flex items-center justify-between mb-6">
                 <h2 className="text-2xl font-serif font-bold text-foreground">Customer Reviews</h2>
                 <div className="flex items-center gap-2">
@@ -605,13 +634,13 @@ export default function ProductDetailPage() {
                       <Star
                         key={i}
                         className={`w-4 h-4 ${
-                          i < Math.floor(ratingStats.averageRating) ? "fill-primary text-primary" : "text-muted-foreground"
+                              i < Math.floor(ratingStats.averageRating) ? "fill-primary text-primary" : "text-muted-foreground"
                         }`}
                       />
                     ))}
                   </div>
                   <span className="text-sm text-muted-foreground">
-                    {ratingStats.averageRating.toFixed(1)} out of 5 ({ratingStats.totalReviews} reviews)
+                        {ratingStats.averageRating.toFixed(1)} out of 5 ({ratingStats.totalReviews} reviews)
                   </span>
                 </div>
               </div>
@@ -730,35 +759,35 @@ export default function ProductDetailPage() {
                 ) : reviews.length > 0 ? (
                   reviews.map((review, index) => (
                     <div key={review._id}>
-                      <div className="flex items-start gap-4">
-                        <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
+                    <div className="flex items-start gap-4">
+                      <div className="w-10 h-10 bg-primary/10 rounded-full flex items-center justify-center">
                           <span className="text-sm font-semibold text-primary">{review.name.charAt(0).toUpperCase()}</span>
-                        </div>
-                        <div className="flex-1">
-                          <div className="flex items-center gap-2 mb-2">
-                            <span className="font-semibold text-foreground">{review.name}</span>
-                            <div className="flex items-center">
-                              {[...Array(5)].map((_, i) => (
-                                <Star
-                                  key={i}
-                                  className={`w-3 h-3 ${
-                                    i < review.rating ? "fill-primary text-primary" : "text-muted-foreground"
-                                  }`}
-                                />
-                              ))}
-                            </div>
+                      </div>
+                      <div className="flex-1">
+                        <div className="flex items-center gap-2 mb-2">
+                          <span className="font-semibold text-foreground">{review.name}</span>
+                          <div className="flex items-center">
+                            {[...Array(5)].map((_, i) => (
+                              <Star
+                                key={i}
+                                className={`w-3 h-3 ${
+                                  i < review.rating ? "fill-primary text-primary" : "text-muted-foreground"
+                                }`}
+                              />
+                            ))}
+                          </div>
                             <span className="text-xs text-muted-foreground">
                               {new Date(review.createdAt).toLocaleDateString()}
                             </span>
-                          </div>
+                        </div>
                           {review.title && (
                             <h4 className="font-medium text-foreground mb-1">{review.title}</h4>
                           )}
-                          <p className="text-sm text-muted-foreground leading-relaxed">{review.comment}</p>
-                        </div>
+                        <p className="text-sm text-muted-foreground leading-relaxed">{review.comment}</p>
                       </div>
-                      {index < reviews.length - 1 && <Separator className="mt-6" />}
                     </div>
+                    {index < reviews.length - 1 && <Separator className="mt-6" />}
+                  </div>
                   ))
                 ) : (
                   <div className="text-center py-8 text-muted-foreground">
@@ -766,6 +795,13 @@ export default function ProductDetailPage() {
                   </div>
                 )}
               </div>
+                </>
+              )}
+
+              {/* Questions Tab Content */}
+              {activeTab === 'questions' && (
+                <ProductQuestions productId={product._id} />
+              )}
             </CardContent>
           </Card>
         </div>

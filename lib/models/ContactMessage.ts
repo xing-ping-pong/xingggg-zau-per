@@ -1,15 +1,18 @@
-import mongoose from 'mongoose';
-import { Document, Schema } from 'mongoose';
+import mongoose, { Schema, Document } from 'mongoose';
 
 export interface IContactMessage extends Document {
   name: string;
   email: string;
+  phone?: string;
   subject: string;
+  category: string;
   message: string;
-  user?: mongoose.Types.ObjectId;
-  adminReply?: string;
-  replyDate?: Date;
-  status: 'new' | 'read' | 'replied';
+  status: 'new' | 'read' | 'replied' | 'archived';
+  priority: 'low' | 'medium' | 'high';
+  assignedTo?: mongoose.Types.ObjectId; // Admin user who is handling this message
+  reply?: string;
+  repliedAt?: Date;
+  repliedBy?: mongoose.Types.ObjectId; // Admin user who replied
   createdAt: Date;
   updatedAt: Date;
 }
@@ -17,55 +20,91 @@ export interface IContactMessage extends Document {
 const ContactMessageSchema = new Schema<IContactMessage>({
   name: {
     type: String,
-    required: [true, 'Name is required'],
-    trim: true,
-    maxlength: [100, 'Name cannot exceed 100 characters']
+    required: true,
+    trim: true
   },
   email: {
     type: String,
-    required: [true, 'Email is required'],
+    required: true,
     trim: true,
-    lowercase: true,
-    match: [/^\w+([.-]?\w+)*@\w+([.-]?\w+)*(\.\w{2,3})+$/, 'Please enter a valid email']
+    lowercase: true
+  },
+  phone: {
+    type: String,
+    trim: true
   },
   subject: {
     type: String,
-    required: [true, 'Subject is required'],
-    trim: true,
-    maxlength: [200, 'Subject cannot exceed 200 characters']
+    required: true,
+    trim: true
+  },
+  category: {
+    type: String,
+    required: true,
+    enum: ['general', 'order', 'product', 'shipping', 'return', 'wholesale', 'other'],
+    default: 'general'
   },
   message: {
     type: String,
-    required: [true, 'Message is required'],
-    trim: true,
-    maxlength: [2000, 'Message cannot exceed 2000 characters']
-  },
-  user: {
-    type: Schema.Types.ObjectId,
-    ref: 'User',
-    default: null
-  },
-  adminReply: {
-    type: String,
-    trim: true,
-    maxlength: [2000, 'Admin reply cannot exceed 2000 characters']
-  },
-  replyDate: {
-    type: Date
+    required: true,
+    trim: true
   },
   status: {
     type: String,
-    required: true,
-    enum: ['new', 'read', 'replied'],
+    enum: ['new', 'read', 'replied', 'archived'],
     default: 'new'
+  },
+  priority: {
+    type: String,
+    enum: ['low', 'medium', 'high'],
+    default: 'medium'
+  },
+  assignedTo: {
+    type: Schema.Types.ObjectId,
+    ref: 'User'
+  },
+  reply: {
+    type: String,
+    trim: true
+  },
+  repliedAt: {
+    type: Date
+  },
+  repliedBy: {
+    type: Schema.Types.ObjectId,
+    ref: 'User'
   }
 }, {
   timestamps: true
 });
 
-// Index for better query performance
-ContactMessageSchema.index({ status: 1, createdAt: -1 });
-ContactMessageSchema.index({ user: 1 });
+// Indexes for efficient queries
+ContactMessageSchema.index({ status: 1 });
+ContactMessageSchema.index({ category: 1 });
+ContactMessageSchema.index({ priority: 1 });
+ContactMessageSchema.index({ createdAt: -1 });
 ContactMessageSchema.index({ email: 1 });
 
-export default mongoose.models.ContactMessage || mongoose.model<IContactMessage>('ContactMessage', ContactMessageSchema);
+// Auto-set priority based on category
+ContactMessageSchema.pre('save', function(next) {
+  if (this.isNew) {
+    switch (this.category) {
+      case 'order':
+      case 'shipping':
+        this.priority = 'high';
+        break;
+      case 'return':
+        this.priority = 'medium';
+        break;
+      case 'wholesale':
+        this.priority = 'high';
+        break;
+      default:
+        this.priority = 'medium';
+    }
+  }
+  next();
+});
+
+const ContactMessage = mongoose.models.ContactMessage || mongoose.model<IContactMessage>('ContactMessage', ContactMessageSchema);
+export default ContactMessage;

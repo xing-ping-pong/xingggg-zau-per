@@ -2,13 +2,14 @@
 
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { Heart, ShoppingCart, User, Menu, X, LogOut } from "lucide-react"
+import { Heart, ShoppingCart, User, Menu, X, LogOut, ChevronDown } from "lucide-react"
 import Link from "next/link"
 import { useCart } from "@/lib/contexts/cart-context"
 
 export function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+  const [isContactDropdownOpen, setIsContactDropdownOpen] = useState(false)
   const [user, setUser] = useState<any>(null)
   const { cartCount, wishlistCount } = useCart()
 
@@ -27,6 +28,21 @@ export function Header() {
       setUser(JSON.parse(userData))
     }
   }, [])
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (event: MouseEvent) => {
+      if (isContactDropdownOpen) {
+        const target = event.target as HTMLElement
+        if (!target.closest('.contact-dropdown')) {
+          setIsContactDropdownOpen(false)
+        }
+      }
+    }
+
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [isContactDropdownOpen])
 
   const scrollToSection = (sectionId: string) => {
     const element = document.getElementById(sectionId)
@@ -73,9 +89,43 @@ export function Header() {
             <Link href="/blog" className="text-foreground hover:text-primary transition-colors text-sm lg:text-base">
               Blog
             </Link>
-            <Link href="/#contact" className="text-foreground hover:text-primary transition-colors text-sm lg:text-base">
-              Contact
-            </Link>
+            
+            {/* Contact Dropdown */}
+            <div className="relative contact-dropdown">
+              <button
+                onClick={() => setIsContactDropdownOpen(!isContactDropdownOpen)}
+                className="flex items-center text-foreground hover:text-primary transition-colors text-sm lg:text-base"
+              >
+                Contact
+                <ChevronDown className="w-3 h-3 ml-1" />
+              </button>
+              
+              {isContactDropdownOpen && (
+                <div className="absolute top-full left-0 mt-2 w-48 bg-white rounded-lg shadow-lg border border-gray-200 py-2 z-50">
+                  <Link
+                    href="/contact"
+                    className="block px-4 py-2 text-gray-800 hover:bg-gray-100 transition-colors"
+                    onClick={() => setIsContactDropdownOpen(false)}
+                  >
+                    Contact Us
+                  </Link>
+                  <Link
+                    href="/faq"
+                    className="block px-4 py-2 text-gray-800 hover:bg-gray-100 transition-colors"
+                    onClick={() => setIsContactDropdownOpen(false)}
+                  >
+                    FAQs
+                  </Link>
+                  <Link
+                    href="/track-order"
+                    className="block px-4 py-2 text-gray-800 hover:bg-gray-100 transition-colors"
+                    onClick={() => setIsContactDropdownOpen(false)}
+                  >
+                    Track Your Order
+                  </Link>
+                </div>
+              )}
+            </div>
           </nav>
 
           {/* Desktop Actions */}
@@ -154,21 +204,32 @@ export function Header() {
         {isMobileMenuOpen && (
           <div className="md:hidden mt-4 pb-4 border-t border-border/20 bg-black/95 backdrop-blur-md">
             <nav className="flex flex-col space-y-4 mt-4">
-              <Link href="/" className="text-left text-foreground hover:text-primary transition-colors py-2">
-                Home
+            <Link href="/" className="text-left text-foreground hover:text-primary transition-colors py-2">
+              Home
+            </Link>
+            <Link href="/#collections" className="text-left text-foreground hover:text-primary transition-colors py-2">
+              Shop
+            </Link>
+            <Link href="/#featured" className="text-left text-foreground hover:text-primary transition-colors py-2">
+              Featured
+            </Link>
+            <Link href="/blog" className="text-left text-foreground hover:text-primary transition-colors py-2">
+              Blog
+            </Link>
+            
+            {/* Mobile Contact Links */}
+            <div className="space-y-2">
+              <div className="text-left text-foreground font-medium py-2">Contact</div>
+              <Link href="/contact" className="text-left text-muted-foreground hover:text-primary transition-colors py-1 pl-4">
+                Contact Us
               </Link>
-              <Link href="/#collections" className="text-left text-foreground hover:text-primary transition-colors py-2">
-                Shop
+              <Link href="/faq" className="text-left text-muted-foreground hover:text-primary transition-colors py-1 pl-4">
+                FAQs
               </Link>
-              <Link href="/#featured" className="text-left text-foreground hover:text-primary transition-colors py-2">
-                Featured
+              <Link href="/track-order" className="text-left text-muted-foreground hover:text-primary transition-colors py-1 pl-4">
+                Track Your Order
               </Link>
-              <Link href="/blog" className="text-left text-foreground hover:text-primary transition-colors py-2">
-                Blog
-              </Link>
-              <Link href="/#contact" className="text-left text-foreground hover:text-primary transition-colors py-2">
-                Contact
-              </Link>
+            </div>
               <div className="flex items-center justify-start space-x-4 pt-4 border-t border-border/20">
                 {user ? (
                   <>

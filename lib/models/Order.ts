@@ -32,11 +32,23 @@ export interface IOrder extends Document {
   }
   paymentMethod: 'cash_on_delivery'
   trackingNumber?: string
+  trackingUrl?: string
+  carrier?: string
   notes?: string
   estimatedDelivery?: Date
   deliveredAt?: Date
   cancelledAt?: Date
   cancellationReason?: string
+  notifications: {
+    emailSent: boolean
+    whatsappSent: boolean
+    emailSentAt?: Date
+    whatsappSentAt?: Date
+    trackingEmailSent: boolean
+    trackingWhatsappSent: boolean
+    trackingEmailSentAt?: Date
+    trackingWhatsappSentAt?: Date
+  }
   createdAt: Date
   updatedAt: Date
 }
@@ -171,6 +183,14 @@ const OrderSchema = new Schema<IOrder>({
     unique: true,
     sparse: true
   },
+  trackingUrl: {
+    type: String,
+    trim: true
+  },
+  carrier: {
+    type: String,
+    trim: true
+  },
   notes: {
     type: String,
     trim: true
@@ -187,6 +207,36 @@ const OrderSchema = new Schema<IOrder>({
   cancellationReason: {
     type: String,
     trim: true
+  },
+  notifications: {
+    emailSent: {
+      type: Boolean,
+      default: false
+    },
+    whatsappSent: {
+      type: Boolean,
+      default: false
+    },
+    emailSentAt: {
+      type: Date
+    },
+    whatsappSentAt: {
+      type: Date
+    },
+    trackingEmailSent: {
+      type: Boolean,
+      default: false
+    },
+    trackingWhatsappSent: {
+      type: Boolean,
+      default: false
+    },
+    trackingEmailSentAt: {
+      type: Date
+    },
+    trackingWhatsappSentAt: {
+      type: Date
+    }
   }
 }, {
   timestamps: true

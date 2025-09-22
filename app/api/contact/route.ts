@@ -1,79 +1,87 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import ContactMessage from '@/lib/models/ContactMessage';
-import { authenticateUser } from '@/lib/auth';
-import { contactMessageSchema } from '@/lib/utils/validation';
-import { asyncHandler } from '@/lib/utils/errorHandler';
 
-export const POST = asyncHandler(async (req: NextRequest) => {
-  await connectDB();
+// POST /api/contact - Submit contact form
+export async function POST(req: NextRequest) {
+  try {
+    console.log('POST /api/contact - Starting request');
+    await connectDB();
+    console.log('POST /api/contact - Database connected');
 
-  const body = await req.json();
-  const validatedData = contactMessageSchema.parse(body);
+    const { name, email, phone, subject, category, message } = await req.json();
+    
+    console.log('POST /api/contact - Request data:', { 
+      name, 
+      email, 
+      phone, 
+      subject, 
+      category, 
+      messageLength: message?.length 
+    });
 
-  // Get user if authenticated
-  const user = await authenticateUser(req as any);
+    // Validate required fields
+    if (!name || !email || !subject || !message) {
+      console.log('POST /api/contact - Missing required fields');
+      return NextResponse.json({
+        success: false,
+        message: 'Name, email, subject, and message are required'
+      }, { status: 400 });
+    }
 
-  const contactMessage = new ContactMessage({
-    ...validatedData,
-    user: user?._id || null
-  });
+    // Validate email format
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      console.log('POST /api/contact - Invalid email format');
+      return NextResponse.json({
+        success: false,
+        message: 'Please enter a valid email address'
+      }, { status: 400 });
+    }
 
-  await contactMessage.save();
+    // Create new contact message
+    const contactMessage = await ContactMessage.create({
+      name: name.trim(),
+      email: email.toLowerCase().trim(),
+      phone: phone?.trim() || undefined,
+      subject: subject.trim(),
+      category: category || 'general',
+      message: message.trim(),
+      status: 'new',
+      priority: getPriorityFromCategory(category)
+    });
 
-  return NextResponse.json({
-    success: true,
-    message: 'Message sent successfully',
-    data: { contactMessage }
-  }, { status: 201 });
-});
+    console.log('POST /api/contact - Contact message created:', contactMessage._id);
 
-export const GET = asyncHandler(async (req: NextRequest) => {
-  await connectDB();
+    return NextResponse.json({
+      success: true,
+      message: 'Message sent successfully! We\'ll get back to you soon.',
+      data: {
+        id: contactMessage._id,
+        status: contactMessage.status
+      }
+    }, { status: 201 });
 
-  const user = await authenticateUser(req as any);
-  if (!user || !user.isAdmin) {
+  } catch (error) {
+    console.error('Error submitting contact message:', error);
     return NextResponse.json({
       success: false,
-      message: 'Admin access required'
-    }, { status: 403 });
+      message: 'Failed to send message. Please try again.',
+      error: error instanceof Error ? error.message : 'Unknown error'
+    }, { status: 500 });
   }
+}
 
-  const { searchParams } = new URL(req.url);
-  const page = parseInt(searchParams.get('page') || '1');
-  const limit = parseInt(searchParams.get('limit') || '10');
-  const status = searchParams.get('status');
-
-  const query: any = {};
-  if (status) {
-    query.status = status;
+// Helper function to determine priority based on category
+function getPriorityFromCategory(category: string): 'low' | 'medium' | 'high' {
+  switch (category) {
+    case 'order':
+    case 'shipping':
+    case 'wholesale':
+      return 'high';
+    case 'return':
+      return 'medium';
+    default:
+      return 'medium';
   }
-
-  const skip = (page - 1) * limit;
-
-  const [messages, totalCount] = await Promise.all([
-    ContactMessage.find(query)
-      .populate('user', 'username email')
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(limit)
-      .lean(),
-    ContactMessage.countDocuments(query)
-  ]);
-
-  const totalPages = Math.ceil(totalCount / limit);
-
-  return NextResponse.json({
-    success: true,
-    data: {
-      messages,
-      pagination: {
-        currentPage: page,
-        totalPages,
-        totalCount,
-        hasNextPage: page < totalPages,
-        hasPrevPage: page > 1
-      }
-    }
-  });
-});
+}

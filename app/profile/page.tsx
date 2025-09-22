@@ -7,8 +7,9 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Alert, AlertDescription } from "@/components/ui/alert"
-import { User, Mail, Calendar, Shield, ArrowLeft, Home } from "lucide-react"
+import { User, Mail, Calendar, Shield, ArrowLeft, Home, Key } from "lucide-react"
 import { fetchWithAuth, isAuthenticated } from "@/lib/auth-utils"
+import ChangePasswordForm from "@/components/change-password-form"
 
 export default function ProfilePage() {
   const [user, setUser] = useState<any>(null)
@@ -16,6 +17,7 @@ export default function ProfilePage() {
   const [fetching, setFetching] = useState(true)
   const [error, setError] = useState("")
   const [success, setSuccess] = useState("")
+  const [activeTab, setActiveTab] = useState<'profile' | 'password'>('profile')
   const router = useRouter()
 
   useEffect(() => {
@@ -183,17 +185,48 @@ export default function ProfilePage() {
           </div>
         </div>
 
-        <Card className="bg-white/10 backdrop-blur-sm border-white/20">
-          <CardHeader className="text-center">
-            <CardTitle className="text-2xl font-bold text-white flex items-center justify-center gap-2">
-              <User className="w-6 h-6" />
-              User Profile
-            </CardTitle>
-            <CardDescription className="text-gray-300">
-              Manage your account information
-            </CardDescription>
-          </CardHeader>
-          <CardContent>
+        {/* Tab Navigation */}
+        <div className="mb-6">
+          <div className="flex space-x-1 bg-white/10 rounded-lg p-1">
+            <Button
+              onClick={() => setActiveTab('profile')}
+              variant={activeTab === 'profile' ? 'default' : 'ghost'}
+              className={`flex-1 ${
+                activeTab === 'profile'
+                  ? 'bg-amber-500 text-white'
+                  : 'text-gray-300 hover:text-white hover:bg-white/10'
+              }`}
+            >
+              <User className="w-4 h-4 mr-2" />
+              Profile Info
+            </Button>
+            <Button
+              onClick={() => setActiveTab('password')}
+              variant={activeTab === 'password' ? 'default' : 'ghost'}
+              className={`flex-1 ${
+                activeTab === 'password'
+                  ? 'bg-amber-500 text-white'
+                  : 'text-gray-300 hover:text-white hover:bg-white/10'
+              }`}
+            >
+              <Key className="w-4 h-4 mr-2" />
+              Change Password
+            </Button>
+          </div>
+        </div>
+
+        {activeTab === 'profile' ? (
+          <Card className="bg-white/10 backdrop-blur-sm border-white/20">
+            <CardHeader className="text-center">
+              <CardTitle className="text-2xl font-bold text-white flex items-center justify-center gap-2">
+                <User className="w-6 h-6" />
+                User Profile
+              </CardTitle>
+              <CardDescription className="text-gray-300">
+                Manage your account information
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
             <form onSubmit={handleUpdateProfile} className="space-y-6">
               {error && (
                 <Alert className="bg-red-500/10 border-red-500/20">
@@ -290,6 +323,14 @@ export default function ProfilePage() {
             </form>
           </CardContent>
         </Card>
+        ) : (
+          <ChangePasswordForm 
+            onSuccess={() => {
+              setSuccess("Password changed successfully!")
+              setTimeout(() => setSuccess(""), 3000)
+            }}
+          />
+        )}
       </div>
     </div>
   )

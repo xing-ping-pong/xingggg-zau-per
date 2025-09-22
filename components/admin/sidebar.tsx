@@ -11,6 +11,7 @@ const navigation = [
   { name: "Categories", href: "/admin/categories", icon: Users },
   { name: "Orders", href: "/admin/orders", icon: ShoppingCart },
   { name: "Reviews & Comments", href: "/admin/reviews", icon: Star },
+  { name: "Questions & Answers", href: "/admin/questions", icon: MessageCircle },
   { name: "Messages", href: "/admin/messages", icon: MessageSquare },
   { name: "Blog Posts", href: "/admin/blog", icon: FileText },
   { name: "Settings", href: "/admin/settings", icon: Settings },

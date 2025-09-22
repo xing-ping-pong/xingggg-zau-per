@@ -6,13 +6,17 @@ import Product from '@/lib/models/Product';
 // GET /api/admin/reviews - Get all product reviews with filters
 export async function GET(req: NextRequest) {
   try {
+    console.log('GET /api/admin/reviews - Starting request');
     await connectDB();
+    console.log('GET /api/admin/reviews - Database connected');
     
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '10');
     const status = searchParams.get('status') || '';
     const search = searchParams.get('search') || '';
+    
+    console.log('GET /api/admin/reviews - Params:', { page, limit, status, search });
     
     // Build query
     const query: any = {};
@@ -30,6 +34,7 @@ export async function GET(req: NextRequest) {
     const skip = (page - 1) * limit;
     
     // Execute queries
+    console.log('GET /api/admin/reviews - Executing queries');
     const [reviews, total] = await Promise.all([
       ProductReview.find(query)
         .populate('product', 'name')
@@ -40,6 +45,7 @@ export async function GET(req: NextRequest) {
       ProductReview.countDocuments(query)
     ]);
     
+    console.log('GET /api/admin/reviews - Query results:', { reviewsCount: reviews.length, total });
     const totalPages = Math.ceil(total / limit);
     
     return NextResponse.json({

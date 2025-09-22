@@ -22,6 +22,7 @@ import {
   ArrowLeft
 } from "lucide-react"
 import Link from "next/link"
+import NotificationPanel from "@/components/admin/notification-panel"
 
 interface Order {
   _id: string
@@ -47,6 +48,16 @@ interface Order {
   }
   trackingNumber?: string
   estimatedDelivery?: string
+  notifications?: {
+    emailSent: boolean
+    whatsappSent: boolean
+    emailSentAt?: string
+    whatsappSentAt?: string
+    trackingEmailSent: boolean
+    trackingWhatsappSent: boolean
+    trackingEmailSentAt?: string
+    trackingWhatsappSentAt?: string
+  }
   createdAt: string
 }
 
@@ -399,6 +410,19 @@ export default function OrdersPage() {
                   )}
                 </div>
               )}
+
+              {/* Notification Panel */}
+              <NotificationPanel 
+                order={selectedOrder} 
+                onUpdate={() => {
+                  fetchOrders()
+                  // Don't close the modal, just refresh the data
+                }}
+                onOrderUpdate={(updatedOrder) => {
+                  // Update the selected order with new data
+                  setSelectedOrder(updatedOrder)
+                }}
+              />
             </CardContent>
           </Card>
         </div>

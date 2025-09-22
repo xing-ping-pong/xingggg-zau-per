@@ -1,3 +1,5 @@
+import { NextResponse } from 'next/server';
+
 export function measurePerformance<T extends any[], R>(
   fn: (...args: T) => Promise<R>,
   label: string
@@ -17,7 +19,7 @@ export function measurePerformance<T extends any[], R>(
   };
 }
 
-export function addPerformanceHeaders(response: Response, startTime: number) {
+export function addPerformanceHeaders(response: NextResponse, startTime: number) {
   const endTime = performance.now();
   const duration = endTime - startTime;
   
