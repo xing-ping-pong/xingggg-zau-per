@@ -89,27 +89,7 @@ export async function PUT(
         // Don't fail the request if email fails
       }
 
-      // Send WhatsApp notification to admin
-      try {
-        // Check if WhatsApp service is available
-        if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN) {
-          const whatsappData = {
-            name: updatedMessage.name,
-            email: updatedMessage.email,
-            subject: updatedMessage.subject,
-            category: updatedMessage.category,
-            message: updatedMessage.message
-          };
-          
-          await WhatsAppService.sendContactFormNotification(whatsappData);
-          console.log('PUT /api/admin/messages/[id] - WhatsApp notification sent successfully');
-        } else {
-          console.log('PUT /api/admin/messages/[id] - WhatsApp credentials not configured, skipping notification');
-        }
-      } catch (whatsappError) {
-        console.error('PUT /api/admin/messages/[id] - Error sending WhatsApp notification:', whatsappError);
-        // Don't fail the request if WhatsApp fails
-      }
+      // WhatsApp notification is now sent when the contact form is submitted, not when replying
     }
     
     return NextResponse.json({

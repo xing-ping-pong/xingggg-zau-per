@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import ContactMessage from '@/lib/models/ContactMessage';
+const { WhatsAppService } = require('@/lib/services/whatsapp.js');
 
 // POST /api/contact - Submit contact form
 export async function POST(req: NextRequest) {
@@ -52,6 +53,27 @@ export async function POST(req: NextRequest) {
     });
 
     console.log('POST /api/contact - Contact message created:', contactMessage._id);
+
+    // Send WhatsApp notification to admin immediately
+    try {
+      if (process.env.TWILIO_ACCOUNT_SID && process.env.TWILIO_AUTH_TOKEN) {
+        const whatsappData = {
+          name: contactMessage.name,
+          email: contactMessage.email,
+          subject: contactMessage.subject,
+          category: contactMessage.category,
+          message: contactMessage.message
+        };
+        
+        await WhatsAppService.sendContactFormNotification(whatsappData);
+        console.log('POST /api/contact - WhatsApp notification sent to admin');
+      } else {
+        console.log('POST /api/contact - WhatsApp credentials not configured, skipping notification');
+      }
+    } catch (whatsappError) {
+      console.error('POST /api/contact - Error sending WhatsApp notification:', whatsappError);
+      // Don't fail the request if WhatsApp fails
+    }
 
     return NextResponse.json({
       success: true,
