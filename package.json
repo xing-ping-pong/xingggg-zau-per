@@ -18,6 +18,10 @@
     "migrate:stock": "node scripts/migrate-stock-field.js",
     "migrate:featured": "node scripts/migrate-featured-field.js",
     "migrate": "node scripts/migrate-mysql-to-mongodb.js",
+    "migrate:mongodb": "node scripts/migrate-mongodb-account.js",
+    "migrate:backup": "node scripts/migrate-mongodb-account.js backup",
+    "migrate:verify": "node scripts/migrate-mongodb-account.js verify",
+    "migrate:full": "node scripts/migrate-mongodb-account.js full",
     "test:perf": "node scripts/test-performance.js"
   },
   "dependencies": {
