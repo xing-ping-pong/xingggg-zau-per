@@ -35,6 +35,7 @@ export interface IOrder extends Document {
   trackingUrl?: string
   carrier?: string
   notes?: string
+  deliveryRemarks?: string
   estimatedDelivery?: Date
   deliveredAt?: Date
   cancelledAt?: Date
@@ -192,6 +193,10 @@ const OrderSchema = new Schema<IOrder>({
     trim: true
   },
   notes: {
+    type: String,
+    trim: true
+  },
+  deliveryRemarks: {
     type: String,
     trim: true
   },

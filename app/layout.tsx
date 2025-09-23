@@ -19,7 +19,7 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: "ROSIA Perfumes - Luxury Fragrances",
+  title: "ZAU Perfumes - Luxury Fragrances",
   description: "Sophisticated simplicity for the independent mind. Discover our curated collection of luxury perfumes.",
   generator: "v0.app",
 }

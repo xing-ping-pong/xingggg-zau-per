@@ -76,7 +76,7 @@ export async function PUT(
           updatedMessage.name,
           updatedMessage.subject,
           reply.trim(),
-          'ROSIA Support Team'
+          'ZAU Support Team'
         );
         
         if (emailSent) {

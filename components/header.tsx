@@ -70,9 +70,9 @@ export function Header() {
           {/* Logo */}
           <Link href="/" className="flex items-center space-x-2">
             <div className="w-7 h-7 sm:w-8 sm:h-8 luxury-gradient rounded-full flex items-center justify-center">
-              <span className="text-black font-bold text-xs sm:text-sm">R</span>
+              <span className="text-black font-bold text-xs sm:text-sm">Z</span>
             </div>
-            <span className="font-serif text-xl sm:text-2xl font-bold text-foreground">ROSIA</span>
+            <span className="font-serif text-xl sm:text-2xl font-bold text-foreground">ZAU</span>
           </Link>
 
           {/* Desktop Navigation */}

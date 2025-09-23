@@ -144,9 +144,9 @@ export function DealsSection() {
             {products.length > 0 ? (
               products.map((product) => (
                 <div key={product._id} className="relative">
-                  {/* Time Left Badge */}
-                  <div className="absolute top-4 right-4 z-20">
-                    <div className="bg-black/50 text-white px-3 py-1 rounded-full text-sm font-bold flex items-center">
+                  {/* Time Left Badge - Override the default New/24/7 badge */}
+                  <div className="absolute top-3 left-3 z-20">
+                    <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-3 py-1 rounded-full text-xs font-bold flex items-center shadow-lg">
                       <Clock className="w-3 h-3 mr-1" />
                       {getTimeLeft(product)}
                     </div>

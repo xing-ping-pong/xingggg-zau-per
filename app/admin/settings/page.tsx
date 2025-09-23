@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
@@ -15,14 +15,14 @@ import { Globe, Shield, Database, Bell, Users, CreditCard, Save } from "lucide-r
 
 export default function AdminSettings() {
   const [settings, setSettings] = useState({
-    siteName: "ROSIA",
+    siteName: "ZAU",
     siteDescription: "Luxury Perfume Collection",
-    contactEmail: "contact@rosia.com",
-    supportEmail: "support@rosia.com",
-    currency: "USD",
-    taxRate: "8.5",
-    shippingFee: "15.00",
-    freeShippingThreshold: "100.00",
+    contactEmail: "contact@zauperfumes.com.pk",
+    supportEmail: "support@zauperfumes.com.pk",
+    currency: "PKR",
+    taxRate: "17.0",
+    shippingFee: "500.00",
+    freeShippingThreshold: "5000.00",
     maintenanceMode: false,
     emailNotifications: true,
     orderNotifications: true,
@@ -34,15 +34,68 @@ export default function AdminSettings() {
     socialLogin: true,
     twoFactorAuth: false,
     apiKey: "sk_live_51234567890abcdef",
-    webhookUrl: "https://rosia.com/api/webhooks",
+    webhookUrl: "https://zauperfumes.com.pk/api/webhooks",
     backupFrequency: "daily",
     maxFileSize: "10",
     allowedFileTypes: "jpg,png,webp,pdf",
   })
+  const [loading, setLoading] = useState(false)
+  const [saving, setSaving] = useState(false)
+  const [message, setMessage] = useState("")
 
-  const handleSave = () => {
-    // Handle save logic here
-    console.log("Settings saved:", settings)
+  useEffect(() => {
+    fetchSettings()
+  }, [])
+
+  const fetchSettings = async () => {
+    try {
+      setLoading(true)
+      const token = localStorage.getItem("token");
+      const response = await fetch('/api/admin/settings', {
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+      const data = await response.json()
+      
+      if (data.success) {
+        setSettings(data.data)
+      }
+    } catch (error) {
+      console.error('Error fetching settings:', error)
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  const handleSave = async () => {
+    try {
+      setSaving(true)
+      setMessage("")
+      
+      const token = localStorage.getItem("token");
+      const response = await fetch('/api/admin/settings', {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${token}`
+        },
+        body: JSON.stringify(settings),
+      })
+      
+      const data = await response.json()
+      
+      if (data.success) {
+        setMessage("Settings saved successfully!")
+        setTimeout(() => setMessage(""), 3000)
+      } else {
+        setMessage(data.message || "Failed to save settings")
+      }
+    } catch (error) {
+      setMessage("Network error. Please try again.")
+    } finally {
+      setSaving(false)
+    }
   }
 
   const handleInputChange = (key: string, value: string | boolean) => {
@@ -54,13 +107,23 @@ export default function AdminSettings() {
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-4xl font-playfair font-bold text-amber-400 mb-2">Settings</h1>
-          <p className="text-gray-400">Manage your ROSIA admin panel configuration</p>
+          <p className="text-gray-400">Manage your ZAU admin panel configuration</p>
         </div>
-        <Button onClick={handleSave} className="bg-amber-400 hover:bg-amber-500 text-black">
+        <Button 
+          onClick={handleSave} 
+          disabled={saving || loading}
+          className="bg-amber-400 hover:bg-amber-500 text-black disabled:opacity-50"
+        >
           <Save className="mr-2 h-4 w-4" />
-          Save Changes
+          {saving ? "Saving..." : "Save Changes"}
         </Button>
       </div>
+
+      {message && (
+        <div className={`p-4 rounded-lg ${message.includes('success') ? 'bg-green-900/20 text-green-300 border border-green-500/20' : 'bg-red-900/20 text-red-300 border border-red-500/20'}`}>
+          {message}
+        </div>
+      )}
 
       <Tabs defaultValue="general" className="space-y-6">
         <TabsList className="bg-gray-900 border border-gray-800">
@@ -219,7 +282,7 @@ export default function AdminSettings() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="shippingFee" className="text-gray-300">
-                    Shipping Fee ($)
+                    Shipping Fee (PKR)
                   </Label>
                   <Input
                     id="shippingFee"
@@ -230,7 +293,7 @@ export default function AdminSettings() {
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="freeShippingThreshold" className="text-gray-300">
-                    Free Shipping Threshold ($)
+                    Free Shipping Threshold (PKR)
                   </Label>
                   <Input
                     id="freeShippingThreshold"
@@ -471,3 +534,4 @@ export default function AdminSettings() {
     </div>
   )
 }
+

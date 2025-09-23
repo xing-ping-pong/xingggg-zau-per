@@ -69,14 +69,25 @@ export default function BlogDetailPage() {
   const fetchBlog = async () => {
     try {
       setLoading(true)
-      const response = await fetch(`/api/blogs?slug=${slug}`)
-      const data = await response.json()
+      // First, get the blog ID by slug
+      const slugResponse = await fetch(`/api/blogs?slug=${slug}`)
+      const slugData = await slugResponse.json()
 
-      if (data.success && data.data.blogs.length > 0) {
-        const fetchedBlog = data.data.blogs[0]
-        setBlog(fetchedBlog)
-        setLikesCount(fetchedBlog.likes || 0)
-        fetchComments(fetchedBlog._id)
+      if (slugData.success && slugData.data.blogs.length > 0) {
+        const blogId = slugData.data.blogs[0]._id
+        
+        // Then fetch the specific blog to increment view count
+        const response = await fetch(`/api/blogs/${blogId}`)
+        const data = await response.json()
+
+        if (data.success && data.data.blog) {
+          const fetchedBlog = data.data.blog
+          setBlog(fetchedBlog)
+          setLikesCount(fetchedBlog.likes || 0)
+          fetchComments(fetchedBlog._id)
+        } else {
+          setError('Blog post not found')
+        }
       } else {
         setError('Blog post not found')
       }
@@ -210,7 +221,7 @@ export default function BlogDetailPage() {
         </Link>
       </div>
 
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-12">
         {/* Main Content */}
         <div className="lg:col-span-2">
           <article className="space-y-8">
@@ -225,22 +236,35 @@ export default function BlogDetailPage() {
               
               <h1 className="text-4xl font-bold">{blog.title}</h1>
               
-              <div className="flex items-center space-x-4 text-sm text-muted-foreground">
-                <div className="flex items-center space-x-2">
-                  <Calendar className="h-4 w-4" />
-                  <span>{blog.publishedAt ? formatDate(blog.publishedAt) : formatDate(blog.createdAt)}</span>
+              <div className="flex items-center justify-between">
+                <div className="flex items-center space-x-4 text-sm text-muted-foreground">
+                  <div className="flex items-center space-x-2">
+                    <Calendar className="h-4 w-4" />
+                    <span>{blog.publishedAt ? formatDate(blog.publishedAt) : formatDate(blog.createdAt)}</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Eye className="h-4 w-4" />
+                    <span>{blog.views}</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <Heart className="h-4 w-4" />
+                    <span>{likesCount}</span>
+                  </div>
+                  <div className="flex items-center space-x-2">
+                    <MessageCircle className="h-4 w-4" />
+                    <span>{Array.isArray(comments) ? comments.length : 0}</span>
+                  </div>
                 </div>
-                <div className="flex items-center space-x-2">
-                  <Eye className="h-4 w-4" />
-                  <span>{blog.views}</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <Heart className="h-4 w-4" />
-                  <span>{likesCount}</span>
-                </div>
-                <div className="flex items-center space-x-2">
-                  <MessageCircle className="h-4 w-4" />
-                  <span>{Array.isArray(comments) ? comments.length : 0}</span>
+                
+                {/* Author Info - moved to header */}
+                <div className="flex items-center space-x-3">
+                  <div className="w-10 h-10 rounded-full bg-gradient-to-r from-amber-400 to-amber-600 flex items-center justify-center text-white font-bold text-sm">
+                    {blog.author.name.charAt(0).toUpperCase()}
+                  </div>
+                  <div>
+                    <div className="font-medium text-sm">{blog.author.name}</div>
+                    <div className="text-xs text-muted-foreground">{blog.author.email}</div>
+                  </div>
                 </div>
               </div>
             </header>
@@ -292,7 +316,7 @@ export default function BlogDetailPage() {
           </article>
 
           {/* Comments Section */}
-          <div className="mt-12 space-y-6">
+          <div className="mt-16 mb-12 space-y-6">
             <h2 className="text-2xl font-bold">Comments ({Array.isArray(comments) ? comments.length : 0})</h2>
             
             {/* Add Comment Form */}
@@ -397,25 +421,7 @@ export default function BlogDetailPage() {
         </div>
 
         {/* Sidebar */}
-        <div className="space-y-6">
-          {/* Author Info */}
-          <Card>
-            <CardHeader>
-              <CardTitle>About the Author</CardTitle>
-            </CardHeader>
-            <CardContent>
-              <div className="flex items-center space-x-3">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-r from-amber-400 to-amber-600 flex items-center justify-center text-white font-bold">
-                  {blog.author.name.charAt(0).toUpperCase()}
-                </div>
-                <div>
-                  <div className="font-medium">{blog.author.name}</div>
-                  <div className="text-sm text-muted-foreground">{blog.author.email}</div>
-                </div>
-              </div>
-            </CardContent>
-          </Card>
-
+        <div className="space-y-8 mt-8 lg:mt-0">
           {/* Related Posts */}
           <Card>
             <CardHeader>

@@ -138,11 +138,11 @@ ${data.shippingAddress.street}
 ${data.shippingAddress.city}, ${data.shippingAddress.state} ${data.shippingAddress.zipCode}
 ${data.shippingAddress.country}
 
-Thank you for choosing ROSIA Perfumes! 🌹
+Thank you for choosing ZAU Perfumes! 🌹
 
 If you have any questions, please contact our customer service.
 
-_© 2024 ROSIA Perfumes. All rights reserved._`;
+_© 2024 ZAU Perfumes. All rights reserved._`;
   }
 
   private generateOrderConfirmationMessage(data: Omit<TrackingWhatsAppData, 'trackingNumber' | 'trackingUrl' | 'estimatedDelivery'>): string {
@@ -171,9 +171,9 @@ ${data.shippingAddress.country}
 
 We'll send you a tracking number once your order ships! 🚚
 
-Thank you for choosing ROSIA Perfumes! 🌹
+Thank you for choosing ZAU Perfumes! 🌹
 
-_© 2024 ROSIA Perfumes. All rights reserved._`;
+_© 2024 ZAU Perfumes. All rights reserved._`;
   }
 
   // Alternative method using WhatsApp Cloud API with templates

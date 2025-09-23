@@ -42,7 +42,8 @@ function CartPageContent() {
     address: '',
     city: '',
     zipCode: '',
-    country: ''
+    country: '',
+    deliveryRemarks: ''
   })
   const [couponCode, setCouponCode] = useState('')
   const [couponDiscount, setCouponDiscount] = useState(0)
@@ -61,6 +62,8 @@ function CartPageContent() {
   // Fetch product details for cart items
   useEffect(() => {
     const fetchCartProducts = async () => {
+      console.log('Cart items:', cartItems)
+      
       if (cartItems.length === 0) {
         setProducts([]) // Clear products when cart is empty
         setLoading(false)
@@ -69,14 +72,31 @@ function CartPageContent() {
 
       try {
         setLoading(true)
+        console.log('Fetching products for cart items:', cartItems.map(item => item.productId))
+        
         const productPromises = cartItems.map(async (cartItem) => {
-          const response = await fetch(`/api/products/${cartItem.productId}`)
-          const data = await response.json()
-          return data.success ? { ...data.data, cartQuantity: cartItem.quantity } : null
+          try {
+            console.log(`Fetching product ${cartItem.productId}`)
+            const response = await fetch(`/api/products/${cartItem.productId}`)
+            const data = await response.json()
+            console.log(`Product ${cartItem.productId} response:`, data)
+            
+            if (data.success) {
+              return { ...data.data, cartQuantity: cartItem.quantity }
+            } else {
+              console.error(`Failed to fetch product ${cartItem.productId}:`, data.message)
+              return null
+            }
+          } catch (error) {
+            console.error(`Error fetching product ${cartItem.productId}:`, error)
+            return null
+          }
         })
 
         const products = await Promise.all(productPromises)
-        setProducts(products.filter(Boolean))
+        const validProducts = products.filter(Boolean)
+        console.log('Valid products found:', validProducts.length, 'out of', cartItems.length)
+        setProducts(validProducts)
       } catch (error) {
         console.error('Error fetching cart products:', error)
       } finally {
@@ -343,6 +363,20 @@ function CartPageContent() {
               <div className="text-center py-8">
                 <p className="text-muted-foreground">No products found in cart</p>
                 <p className="text-sm text-muted-foreground mt-2">Cart items: {cartItems.reduce((sum, item) => sum + item.quantity, 0)}</p>
+                <div className="mt-4 space-y-2">
+                  {cartItems.map((item, index) => (
+                    <div key={index} className="text-sm text-muted-foreground">
+                      Product ID: {item.productId} (Qty: {item.quantity})
+                    </div>
+                  ))}
+                </div>
+                <Button 
+                  onClick={() => clearCart()} 
+                  variant="outline" 
+                  className="mt-4"
+                >
+                  Clear Cart
+                </Button>
               </div>
             ) : (
               products.map((product) => {
@@ -380,8 +414,8 @@ function CartPageContent() {
                               <span className="text-sm text-muted-foreground line-through">
                                 ${product.price.toFixed(2)}
                               </span>
-                              <span className="text-sm bg-red-100 text-red-600 px-2 py-1 rounded">
-                                -{product.discount}%
+                              <span className="text-sm bg-gradient-to-r from-red-500 to-red-600 text-white px-3 py-1 rounded-lg font-bold shadow-md">
+                                -{product.discount}% OFF
                               </span>
                             </>
                           )}
@@ -445,26 +479,26 @@ function CartPageContent() {
               <div className="space-y-2">
                 <div className="flex justify-between">
                   <span>Subtotal</span>
-                  <span>${subtotal.toFixed(2)}</span>
+                  <span>PKR {subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Shipping</span>
-                  <span>{shipping === 0 ? 'Free' : `$${shipping.toFixed(2)}`}</span>
+                  <span>{shipping === 0 ? 'Free' : `PKR ${shipping.toFixed(2)}`}</span>
                 </div>
                 <div className="flex justify-between">
                   <span>Tax</span>
-                  <span>${tax.toFixed(2)}</span>
+                  <span>PKR {tax.toFixed(2)}</span>
                 </div>
                 {couponApplied && (
                   <div className="flex justify-between text-green-600">
                     <span>Coupon Discount ({couponDiscount}%)</span>
-                    <span>-${couponSavings.toFixed(2)}</span>
+                    <span>-PKR {couponSavings.toFixed(2)}</span>
                   </div>
                 )}
                 <Separator />
                 <div className="flex justify-between text-lg font-semibold">
                   <span>Total</span>
-                  <span>${total.toFixed(2)}</span>
+                  <span>PKR {total.toFixed(2)}</span>
                 </div>
               </div>
             </Card>
@@ -552,6 +586,20 @@ function CartPageContent() {
                       required
                     />
                   </div>
+                </div>
+                
+                {/* Delivery Remarks */}
+                <div>
+                  <Label htmlFor="deliveryRemarks">Delivery Remarks (Optional)</Label>
+                  <Input
+                    id="deliveryRemarks"
+                    placeholder="Any special instructions for the delivery person..."
+                    value={guestInfo.deliveryRemarks}
+                    onChange={(e) => setGuestInfo({...guestInfo, deliveryRemarks: e.target.value})}
+                  />
+                  <p className="text-xs text-muted-foreground mt-1">
+                    Leave any special instructions for the delivery person (e.g., "Call before delivery", "Leave at gate", etc.)
+                  </p>
                 </div>
               </div>
             </Card>

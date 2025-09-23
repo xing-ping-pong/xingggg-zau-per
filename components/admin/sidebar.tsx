@@ -36,7 +36,7 @@ export function Sidebar({ isOpen, onClose }: SidebarProps) {
       >
         <div className="flex h-16 items-center justify-between px-6 border-b border-gray-800">
           <div className="flex items-center">
-            <h1 className="text-2xl font-playfair font-bold text-amber-400">ROSIA</h1>
+            <h1 className="text-2xl font-playfair font-bold text-amber-400">ZAU</h1>
             <span className="ml-2 text-sm text-gray-400">Admin</span>
           </div>
           <button

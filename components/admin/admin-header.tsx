@@ -30,7 +30,7 @@ export function AdminHeader({ onMenuClick }: AdminHeaderProps) {
             <Menu className="h-5 w-5" />
           </Button>
           <h2 className="text-lg font-semibold text-white hidden sm:block">Admin Panel</h2>
-          <h2 className="text-base font-semibold text-white sm:hidden">ROSIA</h2>
+          <h2 className="text-base font-semibold text-white sm:hidden">ZAU</h2>
         </div>
 
         <div className="flex items-center space-x-2 lg:space-x-4">
@@ -51,7 +51,7 @@ export function AdminHeader({ onMenuClick }: AdminHeaderProps) {
               <DropdownMenuLabel className="font-normal">
                 <div className="flex flex-col space-y-1">
                   <p className="text-sm font-medium leading-none text-white">Admin User</p>
-                  <p className="text-xs leading-none text-gray-400">admin@rosia.com</p>
+                  <p className="text-xs leading-none text-gray-400">admin@zauperfumes.com.pk</p>
                 </div>
               </DropdownMenuLabel>
               <DropdownMenuSeparator className="bg-gray-800" />

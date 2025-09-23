@@ -236,7 +236,7 @@ export default function OrderConfirmationPage() {
                           )}
                         </div>
                         <div className="text-right">
-                          <p className="font-medium">${item.totalPrice.toFixed(2)}</p>
+                          <p className="font-medium">PKR {item.totalPrice.toFixed(2)}</p>
                         </div>
                       </div>
                     ))}
@@ -288,28 +288,28 @@ export default function OrderConfirmationPage() {
                   <div className="space-y-2">
                     <div className="flex justify-between">
                       <span>Subtotal</span>
-                      <span>${order.pricing.subtotal.toFixed(2)}</span>
+                      <span>PKR {order.pricing.subtotal.toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Shipping</span>
                       <span>
-                        {order.pricing.shipping === 0 ? 'Free' : `$${order.pricing.shipping.toFixed(2)}`}
+                        {order.pricing.shipping === 0 ? 'Free' : `PKR ${order.pricing.shipping.toFixed(2)}`}
                       </span>
                     </div>
                     <div className="flex justify-between">
                       <span>Tax</span>
-                      <span>${order.pricing.tax.toFixed(2)}</span>
+                      <span>PKR {order.pricing.tax.toFixed(2)}</span>
                     </div>
                     {order.pricing.couponDiscount && order.pricing.couponDiscount > 0 && (
                       <div className="flex justify-between text-green-600">
                         <span>Coupon Discount ({order.pricing.couponCode})</span>
-                        <span>-${order.pricing.couponDiscount.toFixed(2)}</span>
+                        <span>-PKR {order.pricing.couponDiscount.toFixed(2)}</span>
                       </div>
                     )}
                     <Separator />
                     <div className="flex justify-between text-lg font-bold">
                       <span>Total</span>
-                      <span>${order.pricing.total.toFixed(2)}</span>
+                      <span>PKR {order.pricing.total.toFixed(2)}</span>
                     </div>
                   </div>
                 </CardContent>

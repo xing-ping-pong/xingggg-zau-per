@@ -9,9 +9,9 @@ export function Footer() {
           <div className="lg:col-span-2">
             <div className="flex items-center space-x-2 mb-4">
               <div className="w-8 h-8 luxury-gradient rounded-full flex items-center justify-center">
-                <span className="text-black font-bold text-sm">R</span>
+                <span className="text-black font-bold text-sm">Z</span>
               </div>
-              <span className="font-serif text-2xl font-bold text-foreground">ROSIA</span>
+              <span className="font-serif text-2xl font-bold text-foreground">ZAU</span>
             </div>
             <p className="text-muted-foreground leading-relaxed mb-6 max-w-md">
               Sophisticated simplicity for the independent mind. We craft luxury fragrances that tell your unique story,
@@ -113,7 +113,7 @@ export function Footer() {
         {/* Bottom Bar */}
         <div className="border-t border-border pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
-            <p className="text-muted-foreground text-sm">Copyright © 2025 ROSIA Perfumes. All Rights Reserved.</p>
+            <p className="text-muted-foreground text-sm">Copyright © 2025 ZAU Perfumes. All Rights Reserved.</p>
             <div className="flex space-x-6 text-sm">
               <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
                 Privacy Policy

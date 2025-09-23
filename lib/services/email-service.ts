@@ -57,7 +57,7 @@ class EmailService {
       }
 
       const mailOptions = {
-        from: `"${process.env.EMAIL_FROM_NAME || 'ROSIA Perfumes'}" <${process.env.EMAIL_USER}>`,
+        from: `"${process.env.EMAIL_FROM_NAME || 'ZAU Perfumes'}" <${process.env.EMAIL_USER}>`,
         to: data.customerEmail,
         subject: `🚚 Your Order #${data.orderNumber} Has Been Shipped!`,
         html: this.generateTrackingEmailHTML(data),
@@ -80,7 +80,7 @@ class EmailService {
     <head>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Order Shipped - ROSIA Perfumes</title>
+      <title>Order Shipped - ZAU Perfumes</title>
       <style>
         body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
@@ -135,13 +135,13 @@ class EmailService {
           </div>
 
           <div style="text-align: center; margin: 30px 0;">
-            <p>Thank you for choosing ROSIA Perfumes! 🌹</p>
+            <p>Thank you for choosing ZAU Perfumes! 🌹</p>
             <p>If you have any questions, please contact our customer service.</p>
           </div>
         </div>
 
         <div class="footer">
-          <p>© 2024 ROSIA Perfumes. All rights reserved.</p>
+          <p>© 2024 ZAU Perfumes. All rights reserved.</p>
           <p>This email was sent to ${data.customerEmail}</p>
         </div>
       </div>
@@ -176,11 +176,11 @@ ${data.shippingAddress.street}
 ${data.shippingAddress.city}, ${data.shippingAddress.state} ${data.shippingAddress.zipCode}
 ${data.shippingAddress.country}
 
-Thank you for choosing ROSIA Perfumes! 🌹
+Thank you for choosing ZAU Perfumes! 🌹
 
 If you have any questions, please contact our customer service.
 
-© 2024 ROSIA Perfumes. All rights reserved.
+© 2024 ZAU Perfumes. All rights reserved.
     `;
   }
 
@@ -193,7 +193,7 @@ If you have any questions, please contact our customer service.
       }
 
       const mailOptions = {
-        from: `"${process.env.EMAIL_FROM_NAME || 'ROSIA Perfumes'}" <${process.env.EMAIL_USER}>`,
+        from: `"${process.env.EMAIL_FROM_NAME || 'ZAU Perfumes'}" <${process.env.EMAIL_USER}>`,
         to: data.customerEmail,
         subject: `✅ Order Confirmation #${data.orderNumber}`,
         html: this.generateOrderConfirmationHTML(data),
@@ -216,7 +216,7 @@ If you have any questions, please contact our customer service.
     <head>
       <meta charset="utf-8">
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
-      <title>Order Confirmation - ROSIA Perfumes</title>
+      <title>Order Confirmation - ZAU Perfumes</title>
       <style>
         body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
@@ -262,12 +262,12 @@ If you have any questions, please contact our customer service.
 
           <div style="text-align: center; margin: 30px 0;">
             <p>We'll send you a tracking number once your order ships! 🚚</p>
-            <p>Thank you for choosing ROSIA Perfumes! 🌹</p>
+            <p>Thank you for choosing ZAU Perfumes! 🌹</p>
           </div>
         </div>
 
         <div class="footer">
-          <p>© 2024 ROSIA Perfumes. All rights reserved.</p>
+          <p>© 2024 ZAU Perfumes. All rights reserved.</p>
         </div>
       </div>
     </body>
@@ -298,9 +298,9 @@ ${data.shippingAddress.country}
 
 We'll send you a tracking number once your order ships! 🚚
 
-Thank you for choosing ROSIA Perfumes! 🌹
+Thank you for choosing ZAU Perfumes! 🌹
 
-© 2024 ROSIA Perfumes. All rights reserved.
+© 2024 ZAU Perfumes. All rights reserved.
     `;
   }
 }

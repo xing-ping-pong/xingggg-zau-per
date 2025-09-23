@@ -414,7 +414,7 @@ export default function ProductsPage() {
 
                 <div className="space-y-2">
                   <Label htmlFor="price" className="text-gray-300">
-                    Price ($)
+                    Price (PKR)
                   </Label>
                   <Input
                     id="price"
@@ -791,7 +791,7 @@ export default function ProductsPage() {
                   <TableCell>{product.category?.name || 'Uncategorized'}</TableCell>
                     <TableCell>
                     <div className="flex items-center space-x-2">
-                      <span>${product.price.toFixed(2)}</span>
+                      <span>PKR {product.price.toFixed(2)}</span>
                       {product.discount > 0 && (
                         <Badge variant="secondary">
                           -{product.discount}%

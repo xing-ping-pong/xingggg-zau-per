@@ -63,9 +63,9 @@ export default function AdminDashboard() {
   }
 
   const formatCurrency = (amount: number) => {
-    return new Intl.NumberFormat('en-US', {
+    return new Intl.NumberFormat('ur-PK', {
       style: 'currency',
-      currency: 'USD'
+      currency: 'PKR'
     }).format(amount)
   }
 
@@ -183,7 +183,7 @@ export default function AdminDashboard() {
     },
     { 
       title: "Avg Order Value", 
-      value: stats.totalOrders > 0 ? formatCurrency(stats.totalRevenue / stats.totalOrders) : "$0", 
+      value: stats.totalOrders > 0 ? formatCurrency(stats.totalRevenue / stats.totalOrders) : "PKR 0", 
       icon: TrendingUp, 
       change: "Per order average" 
     }
@@ -193,7 +193,7 @@ export default function AdminDashboard() {
     <div className="space-y-8">
       <div>
         <h1 className="text-4xl font-playfair font-bold text-amber-400 mb-2">Admin Dashboard</h1>
-        <p className="text-gray-400">Welcome to ROSIA Admin Panel - Real-time data</p>
+        <p className="text-gray-400">Welcome to ZAU Admin Panel - Real-time data</p>
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">

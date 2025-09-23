@@ -1,6 +1,7 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
+import { useSearchParams } from "next/navigation"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
@@ -40,6 +41,62 @@ export default function TrackOrderPage() {
   const [orderDetails, setOrderDetails] = useState<OrderDetails | null>(null)
   const [loading, setLoading] = useState(false)
   const { showToast } = useToast()
+  const searchParams = useSearchParams()
+
+  // Handle URL parameters for prepopulated data and auto-tracking
+  useEffect(() => {
+    const urlOrderNumber = searchParams.get('orderNumber')
+    const urlEmail = searchParams.get('email')
+    const autoTrack = searchParams.get('autoTrack')
+
+    if (urlOrderNumber) {
+      setOrderNumber(urlOrderNumber)
+    }
+    if (urlEmail) {
+      setEmail(urlEmail)
+    }
+
+    // Auto-track if parameters are provided and autoTrack is true
+    if (urlOrderNumber && urlEmail && autoTrack === 'true') {
+      // Longer delay to ensure state is updated, then auto-track
+      setTimeout(() => {
+        autoTrackOrder(urlOrderNumber, urlEmail)
+      }, 500)
+    }
+  }, [searchParams])
+
+  // Separate function for auto-tracking to avoid dependency issues
+  const autoTrackOrder = async (orderNum: string, emailAddr: string) => {
+    if (!orderNum || !emailAddr) {
+      return
+    }
+
+    try {
+      setLoading(true)
+      
+      const response = await fetch('/api/orders/track', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ orderNumber: orderNum, email: emailAddr }),
+      })
+      
+      const data = await response.json()
+      
+      if (data.success) {
+        setOrderDetails(data.data)
+        showToast('Order found successfully!', 'success')
+      } else {
+        showToast(data.message || 'Order not found. Please check your order number and email.', 'error')
+      }
+    } catch (error) {
+      console.error('Error tracking order:', error)
+      showToast('Failed to track order. Please try again.', 'error')
+    } finally {
+      setLoading(false)
+    }
+  }
 
 
   const handleTrackOrder = async (e: React.FormEvent) => {
@@ -138,7 +195,7 @@ export default function TrackOrderPage() {
                       Order Number *
                     </label>
                     <Input
-                      placeholder="e.g., ROS-2024-001234"
+                      placeholder="e.g., ZAU-2024-001234"
                       value={orderNumber}
                       onChange={(e) => setOrderNumber(e.target.value)}
                       required
@@ -231,12 +288,12 @@ export default function TrackOrderPage() {
                           <p className="font-medium text-foreground">{item.name}</p>
                           <p className="text-sm text-muted-foreground">Quantity: {item.quantity}</p>
                         </div>
-                        <p className="font-semibold text-foreground">${item.price.toFixed(2)}</p>
+                        <p className="font-semibold text-foreground">PKR {item.price.toFixed(2)}</p>
                       </div>
                     ))}
                     <div className="flex justify-between items-center pt-3 border-t border-border">
                       <p className="text-lg font-semibold text-foreground">Total</p>
-                      <p className="text-lg font-bold text-foreground">${orderDetails.total.toFixed(2)}</p>
+                      <p className="text-lg font-bold text-foreground">PKR {orderDetails.total.toFixed(2)}</p>
                     </div>
                   </div>
                 </CardContent>

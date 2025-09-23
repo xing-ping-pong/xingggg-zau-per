@@ -18,7 +18,7 @@ export function HeroSection() {
       {/* Content */}
       <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8 max-w-4xl mx-auto">
         <h1 className="font-serif text-4xl sm:text-5xl md:text-6xl lg:text-7xl xl:text-8xl font-bold text-white mb-4 sm:mb-6 text-balance">
-          ROSIA
+          ZAU
           <span className="block text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-light mt-2 text-primary">
             Perfumes
           </span>

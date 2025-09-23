@@ -3,6 +3,7 @@ import { z } from 'zod';
 import connectDB from '@/lib/mongodb';
 import Blog from '@/lib/models/Blog';
 import BlogReview from '@/lib/models/BlogReview';
+import BlogView from '@/lib/models/BlogView';
 
 const updateBlogSchema = z.object({
   title: z.string().min(1).max(200).optional(),
@@ -52,9 +53,52 @@ export async function GET(
       );
     }
     
-    // Increment view count
-    await Blog.findByIdAndUpdate(blog._id, { $inc: { views: 1 } });
-    blog.views += 1;
+    // Get client IP address
+    const getClientIP = (req: NextRequest) => {
+      const forwarded = req.headers.get('x-forwarded-for');
+      const realIP = req.headers.get('x-real-ip');
+      const clientIP = req.headers.get('x-client-ip');
+      
+      if (forwarded) {
+        return forwarded.split(',')[0].trim();
+      }
+      if (realIP) {
+        return realIP;
+      }
+      if (clientIP) {
+        return clientIP;
+      }
+      
+      return 'unknown';
+    };
+    
+    const ipAddress = getClientIP(req);
+    const userAgent = req.headers.get('user-agent') || 'unknown';
+    
+    // Check if this IP has already viewed this blog
+    const existingView = await BlogView.findOne({
+      blog: blog._id,
+      ipAddress: ipAddress
+    });
+    
+    // Only increment view count if this is a new view from this IP
+    if (!existingView && ipAddress !== 'unknown') {
+      try {
+        // Create new view record
+        await BlogView.create({
+          blog: blog._id,
+          ipAddress: ipAddress,
+          userAgent: userAgent
+        });
+        
+        // Increment view count
+        await Blog.findByIdAndUpdate(blog._id, { $inc: { views: 1 } });
+        blog.views += 1;
+      } catch (error) {
+        // If there's a duplicate key error, the view was already recorded
+        console.log('View already recorded for this IP:', error);
+      }
+    }
     
     let reviews = [];
     if (includeReviews) {

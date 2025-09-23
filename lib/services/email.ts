@@ -78,7 +78,7 @@ class EmailService {
     customerName: string,
     originalSubject: string,
     adminReply: string,
-    adminName: string = 'ROSIA Support Team'
+    adminName: string = 'ZAU Support Team'
   ): Promise<boolean> {
     const subject = `Re: ${originalSubject}`;
     
@@ -117,7 +117,7 @@ class EmailService {
       <head>
         <meta charset="utf-8">
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
-        <title>Reply from ROSIA Perfumes</title>
+        <title>Reply from ZAU Perfumes</title>
         <style>
           body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -192,7 +192,7 @@ class EmailService {
       <body>
         <div class="container">
           <div class="header">
-            <div class="logo">ROSIA</div>
+            <div class="logo">ZAU</div>
             <div class="tagline">Luxury Perfumes</div>
           </div>
           
@@ -200,7 +200,7 @@ class EmailService {
             Dear ${customerName},
           </div>
           
-          <p>Thank you for contacting ROSIA Perfumes. We have received your message and our team has prepared a response for you.</p>
+          <p>Thank you for contacting ZAU Perfumes. We have received your message and our team has prepared a response for you.</p>
           
           <div class="original-subject">
             <strong>Your Original Message:</strong><br>
@@ -214,19 +214,19 @@ class EmailService {
           <div class="signature">
             <p>Best regards,<br>
             <strong>${adminName}</strong><br>
-            ROSIA Perfumes Support Team</p>
+            ZAU Perfumes Support Team</p>
           </div>
           
           <div class="contact-info">
             <p><strong>Need further assistance?</strong></p>
-            <p>📧 Email: hello@rosiaperfumes.com<br>
-            📞 Phone: +1 (555) 123-4567<br>
-            🌐 Website: <a href="https://rosiaperfumes.com">rosiaperfumes.com</a></p>
+            <p>📧 Email: hello@zauperfumes.com.pk<br>
+            📞 Phone: +92 300 1234567<br>
+            🌐 Website: <a href="https://zauperfumes.com.pk">zauperfumes.com.pk</a></p>
           </div>
           
           <div class="footer">
             <p>This email was sent in response to your inquiry. Please do not reply directly to this email.</p>
-            <p>&copy; 2024 ROSIA Perfumes. All rights reserved.</p>
+            <p>&copy; 2024 ZAU Perfumes. All rights reserved.</p>
           </div>
         </div>
       </body>
@@ -252,16 +252,16 @@ ${adminReply}
 
 Best regards,
 ${adminName}
-ROSIA Perfumes Support Team
+ZAU Perfumes Support Team
 
 Need further assistance?
-Email: hello@rosiaperfumes.com
-Phone: +1 (555) 123-4567
-Website: https://rosiaperfumes.com
+Email: hello@zauperfumes.com.pk
+Phone: +92 300 1234567
+Website: https://zauperfumes.com.pk
 
 This email was sent in response to your inquiry. Please do not reply directly to this email.
 
-© 2024 ROSIA Perfumes. All rights reserved.
+© 2024 ZAU Perfumes. All rights reserved.
     `.trim();
   }
 }

@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import Category from '@/lib/models/Category';
+import { authenticateUser } from '@/lib/auth';
 
 export async function GET(req: NextRequest) {
   try {
@@ -39,8 +40,21 @@ export async function POST(req: NextRequest) {
   try {
     await connectDB();
 
-    // This would require admin authentication in a real app
+    const user = await authenticateUser(req);
+    if (!user || !user.isAdmin) {
+      return NextResponse.json({
+        success: false,
+        message: 'Unauthorized'
+      }, { status: 401 });
+    }
+
     const body = await req.json();
+
+    // Generate slug from name
+    const slug = body.name
+      .toLowerCase()
+      .replace(/[^a-z0-9]+/g, '-')
+      .replace(/(^-|-$)/g, '');
 
     // Validate parent category exists if provided
     if (body.parentCategory) {
@@ -53,7 +67,14 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    const category = new Category(body);
+    const category = new Category({
+      name: body.name,
+      description: body.description,
+      parentCategory: body.parentCategory || null,
+      isActive: body.isActive !== undefined ? body.isActive : true,
+      slug: slug
+    });
+    
     await category.save();
 
     return NextResponse.json({

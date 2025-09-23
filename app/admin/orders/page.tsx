@@ -19,7 +19,8 @@ import {
   XCircle,
   Clock,
   Loader2,
-  ArrowLeft
+  ArrowLeft,
+  Printer
 } from "lucide-react"
 import Link from "next/link"
 import NotificationPanel from "@/components/admin/notification-panel"
@@ -286,7 +287,7 @@ export default function OrdersPage() {
                       </div>
                     </TableCell>
                     <TableCell className="font-medium">
-                      ${order.pricing.total.toFixed(2)}
+                      PKR {order.pricing.total.toFixed(2)}
                     </TableCell>
                     <TableCell>
                       <Badge className={getStatusColor(order.status)}>
@@ -309,9 +310,35 @@ export default function OrdersPage() {
                         <Button
                           size="sm"
                           variant="ghost"
-                          onClick={() => setSelectedOrder(order)}
+                          onClick={async () => {
+                            try {
+                              const token = localStorage.getItem("token");
+                              const response = await fetch(`/api/orders/${order._id}/print`, {
+                                headers: {
+                                  'Authorization': `Bearer ${token}`
+                                }
+                              });
+                              
+                              if (response.ok) {
+                                const html = await response.text();
+                                const printWindow = window.open('', '_blank');
+                                if (printWindow) {
+                                  printWindow.document.write(html);
+                                  printWindow.document.close();
+                                  printWindow.print();
+                                }
+                              } else {
+                                console.error('Failed to fetch print document');
+                                alert('Failed to generate print document. Please try again.');
+                              }
+                            } catch (error) {
+                              console.error('Error printing order:', error);
+                              alert('Error printing order. Please try again.');
+                            }
+                          }}
+                          title="Print Delivery Order"
                         >
-                          <Edit className="h-4 w-4" />
+                          <Printer className="h-4 w-4" />
                         </Button>
                       </div>
                     </TableCell>
@@ -387,7 +414,7 @@ export default function OrdersPage() {
                       <span>{item.productName}</span>
                       <div className="text-right">
                         <p>Qty: {item.quantity}</p>
-                        <p className="font-medium">${item.totalPrice.toFixed(2)}</p>
+                        <p className="font-medium">PKR {item.totalPrice.toFixed(2)}</p>
                       </div>
                     </div>
                   ))}
@@ -395,7 +422,7 @@ export default function OrdersPage() {
                 <div className="mt-4 pt-4 border-t">
                   <div className="flex justify-between text-lg font-bold">
                     <span>Total</span>
-                    <span>${selectedOrder.pricing.total.toFixed(2)}</span>
+                    <span>PKR {selectedOrder.pricing.total.toFixed(2)}</span>
                   </div>
                 </div>
               </div>

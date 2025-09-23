@@ -96,13 +96,18 @@ export function ProductPreview({ product, showQuickActions = true }: ProductPrev
             alt={product.name}
             className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
           />
+        {/* Top Left - New Badge (only if product is new) */}
         {isNew && (
-          <div className="absolute top-3 left-3 bg-primary text-primary-foreground px-2 py-1 rounded-full text-xs font-semibold">
-            New
+          <div className="absolute top-3 left-3 z-10">
+            <div className="bg-gradient-to-r from-green-500 to-green-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+              New
+            </div>
           </div>
         )}
+        
+        {/* Top Right - Discount Badge */}
         {product.discount > 0 && (
-          <div className="absolute top-3 right-3 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
+          <div className="absolute top-3 right-3 z-10 bg-gradient-to-r from-red-500 to-red-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg border border-white/20">
             -{product.discount}%
           </div>
         )}
@@ -140,10 +145,10 @@ export function ProductPreview({ product, showQuickActions = true }: ProductPrev
                       <p className="text-muted-foreground">{product.category?.name}</p>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <span className="text-3xl font-bold">${discountedPrice.toFixed(2)}</span>
+                      <span className="text-3xl font-bold">PKR {discountedPrice.toFixed(2)}</span>
                       {product.discount > 0 && (
                         <span className="text-lg text-muted-foreground line-through">
-                          ${product.price.toFixed(2)}
+                          PKR {product.price.toFixed(2)}
                         </span>
                       )}
                     </div>
@@ -218,10 +223,10 @@ export function ProductPreview({ product, showQuickActions = true }: ProductPrev
         <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{product.description}</p>
         <div className="flex items-center justify-between flex-wrap gap-2">
           <div className="flex items-center space-x-2">
-            <span className="text-xl font-bold text-foreground">${discountedPrice.toFixed(2)}</span>
+            <span className="text-xl font-bold text-foreground">PKR {discountedPrice.toFixed(2)}</span>
             {product.discount > 0 && (
               <span className="text-base text-muted-foreground line-through">
-                ${product.price.toFixed(2)}
+                PKR {product.price.toFixed(2)}
               </span>
             )}
           </div>

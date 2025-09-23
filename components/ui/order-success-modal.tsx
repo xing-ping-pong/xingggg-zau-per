@@ -84,7 +84,7 @@ export function OrderSuccessModal({
               Order Placed Successfully!
             </h2>
             <p className="text-gray-300">
-              Thank you for choosing ROSIA. Your order is being processed.
+              Thank you for choosing ZAU. Your order is being processed.
             </p>
           </div>
 
@@ -101,7 +101,7 @@ export function OrderSuccessModal({
 
             <div className="flex items-center justify-between">
               <span className="text-gray-400">Total Amount</span>
-              <span className="text-xl font-bold text-white">${total.toFixed(2)}</span>
+              <span className="text-xl font-bold text-white">PKR {total.toFixed(2)}</span>
             </div>
 
             <Separator className="bg-purple-500/20" />

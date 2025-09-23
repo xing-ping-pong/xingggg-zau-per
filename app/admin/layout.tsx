@@ -14,14 +14,17 @@ import {
   X,
   Star,
   MessageCircle,
-  MessageSquare
+  MessageSquare,
+  FolderTree
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ToastProvider } from "@/components/ui/toast"
+import { AdminAuthGuard } from "@/components/admin-auth-guard"
 
 const navigation = [
   { name: "Dashboard", href: "/admin", icon: LayoutDashboard },
   { name: "Products", href: "/admin/products", icon: Package },
+  { name: "Categories", href: "/admin/categories", icon: FolderTree },
   { name: "Blogs", href: "/admin/blogs", icon: FileText },
   { name: "Coupons", href: "/admin/coupons", icon: Tag },
   { name: "Orders", href: "/admin/orders", icon: ShoppingCart },
@@ -31,7 +34,7 @@ const navigation = [
   { name: "Settings", href: "/admin/settings", icon: Settings },
 ]
 
-export default function AdminLayout({
+function AdminLayoutContent({
   children,
 }: {
   children: React.ReactNode
@@ -146,5 +149,19 @@ export default function AdminLayout({
       </div>
     </div>
     </ToastProvider>
+  )
+}
+
+export default function AdminLayout({
+  children,
+}: {
+  children: React.ReactNode
+}) {
+  return (
+    <AdminAuthGuard>
+      <AdminLayoutContent>
+        {children}
+      </AdminLayoutContent>
+    </AdminAuthGuard>
   )
 }

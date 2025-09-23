@@ -1,10 +1,84 @@
+"use client"
+
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Textarea } from "@/components/ui/textarea"
-import { Card, CardContent } from "@/components/ui/card"
-import { Mail, Phone, MapPin } from "lucide-react"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { Mail, Phone, MapPin, Clock, Send } from "lucide-react"
+import { useState } from "react"
+import { useToast } from "@/lib/contexts/toast-context"
+
+interface ContactFormData {
+  name: string
+  email: string
+  phone: string
+  subject: string
+  category: string
+  message: string
+}
 
 export function ContactSection() {
+  const [formData, setFormData] = useState<ContactFormData>({
+    name: "",
+    email: "",
+    phone: "",
+    subject: "",
+    category: "",
+    message: ""
+  })
+
+  const [submitting, setSubmitting] = useState(false)
+  const { showToast } = useToast()
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault()
+    
+    if (!formData.name || !formData.email || !formData.subject || !formData.message) {
+      showToast('Please fill in all required fields', 'error')
+      return
+    }
+
+    try {
+      setSubmitting(true)
+      
+      const response = await fetch('/api/contact', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(formData),
+      })
+      
+      const data = await response.json()
+      
+      if (data.success) {
+        showToast(data.message || 'Message sent successfully! We\'ll get back to you soon.', 'success')
+        
+        // Reset form
+        setFormData({
+          name: "",
+          email: "",
+          phone: "",
+          subject: "",
+          category: "",
+          message: ""
+        })
+      } else {
+        showToast(data.message || 'Failed to send message. Please try again.', 'error')
+      }
+    } catch (error) {
+      console.error('Error sending message:', error)
+      showToast('Failed to send message. Please try again.', 'error')
+    } finally {
+      setSubmitting(false)
+    }
+  }
+
+  const handleInputChange = (field: keyof ContactFormData, value: string) => {
+    setFormData(prev => ({ ...prev, [field]: value }))
+  }
+
   return (
     <section id="contact" className="py-20 px-4">
       <div className="container mx-auto">
@@ -35,7 +109,7 @@ export function ContactSection() {
                     </div>
                     <div>
                       <h4 className="font-semibold text-foreground">Email</h4>
-                      <p className="text-muted-foreground">hello@rosiaperfumes.com</p>
+                      <p className="text-muted-foreground">hello@zauperfumes.com.pk</p>
                     </div>
                   </div>
                 </CardContent>
@@ -49,7 +123,7 @@ export function ContactSection() {
                     </div>
                     <div>
                       <h4 className="font-semibold text-foreground">Phone</h4>
-                      <p className="text-muted-foreground">+1 (555) 123-4567</p>
+                      <p className="text-muted-foreground">+92 300 1234567</p>
                     </div>
                   </div>
                 </CardContent>
@@ -66,7 +140,7 @@ export function ContactSection() {
                       <p className="text-muted-foreground">
                         123 Fragrance Avenue
                         <br />
-                        New York, NY 10001
+                        Karachi, Sindh 75500
                       </p>
                     </div>
                   </div>
@@ -78,50 +152,108 @@ export function ContactSection() {
           {/* Contact Form */}
           <Card className="border-0 bg-card">
             <CardContent className="p-8">
-              <form className="space-y-6">
+              <form onSubmit={handleSubmit} className="space-y-4">
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div>
-                    <label htmlFor="firstName" className="block text-sm font-medium text-foreground mb-2">
-                      First Name
+                    <label className="text-sm font-medium text-foreground mb-2 block">
+                      Full Name *
                     </label>
-                    <Input id="firstName" placeholder="Your first name" className="bg-background border-border" />
+                    <Input
+                      placeholder="Your full name"
+                      value={formData.name}
+                      onChange={(e) => handleInputChange('name', e.target.value)}
+                      required
+                    />
                   </div>
                   <div>
-                    <label htmlFor="lastName" className="block text-sm font-medium text-foreground mb-2">
-                      Last Name
+                    <label className="text-sm font-medium text-foreground mb-2 block">
+                      Email Address *
                     </label>
-                    <Input id="lastName" placeholder="Your last name" className="bg-background border-border" />
+                    <Input
+                      type="email"
+                      placeholder="your.email@example.com"
+                      value={formData.email}
+                      onChange={(e) => handleInputChange('email', e.target.value)}
+                      required
+                    />
                   </div>
                 </div>
+
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <div>
-                  <label htmlFor="email" className="block text-sm font-medium text-foreground mb-2">
-                    Email
+                    <label className="text-sm font-medium text-foreground mb-2 block">
+                      Phone Number
                   </label>
                   <Input
-                    id="email"
-                    type="email"
-                    placeholder="your.email@example.com"
-                    className="bg-background border-border"
+                      type="tel"
+                      placeholder="+92 300 1234567"
+                      value={formData.phone}
+                      onChange={(e) => handleInputChange('phone', e.target.value)}
                   />
                 </div>
                 <div>
-                  <label htmlFor="subject" className="block text-sm font-medium text-foreground mb-2">
-                    Subject
-                  </label>
-                  <Input id="subject" placeholder="How can we help you?" className="bg-background border-border" />
+                    <label className="text-sm font-medium text-foreground mb-2 block">
+                      Category
+                    </label>
+                    <Select value={formData.category} onValueChange={(value) => handleInputChange('category', value)}>
+                      <SelectTrigger>
+                        <SelectValue placeholder="Select a category" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="general">General Inquiry</SelectItem>
+                        <SelectItem value="order">Order Support</SelectItem>
+                        <SelectItem value="product">Product Question</SelectItem>
+                        <SelectItem value="shipping">Shipping & Delivery</SelectItem>
+                        <SelectItem value="return">Returns & Exchanges</SelectItem>
+                        <SelectItem value="wholesale">Wholesale Inquiry</SelectItem>
+                        <SelectItem value="other">Other</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </div>
                 </div>
+
                 <div>
-                  <label htmlFor="message" className="block text-sm font-medium text-foreground mb-2">
-                    Message
+                  <label className="text-sm font-medium text-foreground mb-2 block">
+                    Subject *
+                  </label>
+                  <Input
+                    placeholder="Brief description of your inquiry"
+                    value={formData.subject}
+                    onChange={(e) => handleInputChange('subject', e.target.value)}
+                    required
+                  />
+                </div>
+
+                <div>
+                  <label className="text-sm font-medium text-foreground mb-2 block">
+                    Message *
                   </label>
                   <Textarea
-                    id="message"
-                    placeholder="Tell us more about your fragrance preferences or any questions you have..."
-                    rows={5}
-                    className="bg-background border-border resize-none"
+                    placeholder="Please provide details about your inquiry..."
+                    className="min-h-[120px]"
+                    value={formData.message}
+                    onChange={(e) => handleInputChange('message', e.target.value)}
+                    required
                   />
                 </div>
-                <Button className="w-full luxury-gradient text-black font-semibold py-6">Send Message</Button>
+
+                <Button
+                  type="submit"
+                  disabled={submitting}
+                  className="w-full bg-black text-white hover:bg-gray-800"
+                >
+                  {submitting ? (
+                    <>
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin mr-2" />
+                      Sending...
+                    </>
+                  ) : (
+                    <>
+                      <Send className="w-4 h-4 mr-2" />
+                      Send Message
+                    </>
+                  )}
+                </Button>
               </form>
             </CardContent>
           </Card>

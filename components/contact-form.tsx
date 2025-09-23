@@ -95,7 +95,7 @@ export function ContactForm() {
               <Mail className="w-5 h-5 text-primary mt-1" />
               <div>
                 <h3 className="font-semibold text-foreground">Email</h3>
-                <p className="text-muted-foreground">hello@rosiaperfumes.com</p>
+                <p className="text-muted-foreground">hello@zauperfumes.com.pk</p>
               </div>
             </div>
 
@@ -103,7 +103,7 @@ export function ContactForm() {
               <Phone className="w-5 h-5 text-primary mt-1" />
               <div>
                 <h3 className="font-semibold text-foreground">Phone</h3>
-                <p className="text-muted-foreground">+1 (555) 123-4567</p>
+                <p className="text-muted-foreground">+92 300 1234567</p>
               </div>
             </div>
 
@@ -112,8 +112,8 @@ export function ContactForm() {
               <div>
                 <h3 className="font-semibold text-foreground">Address</h3>
                 <p className="text-muted-foreground">
-                  123 Perfume Street<br />
-                  New York, NY 10001
+                  123 Luxury Perfume Plaza<br />
+                  Karachi, Sindh 75500
                 </p>
               </div>
             </div>
