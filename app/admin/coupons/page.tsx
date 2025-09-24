@@ -351,7 +351,7 @@ export default function CouponsPage() {
               <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="minOrderAmount" className="text-gray-300">
-                    Minimum Order Amount ($)
+                    Minimum Order Amount (PKR)
                   </Label>
                   <Input
                     id="minOrderAmount"
@@ -367,7 +367,7 @@ export default function CouponsPage() {
 
                 <div className="space-y-2">
                   <Label htmlFor="maxDiscountAmount" className="text-gray-300">
-                    Maximum Discount ($)
+                    Maximum Discount (PKR)
                   </Label>
                   <Input
                     id="maxDiscountAmount"
@@ -493,7 +493,7 @@ export default function CouponsPage() {
                       <span className="font-semibold">{coupon.discountPercentage}%</span>
                       {coupon.minOrderAmount && (
                         <span className="text-xs text-muted-foreground">
-                          Min: ${coupon.minOrderAmount}
+                          Min: PKR {coupon.minOrderAmount}
                         </span>
                       )}
                     </div>

@@ -22,6 +22,15 @@ export const metadata: Metadata = {
   title: "ZAU Perfumes - Luxury Fragrances",
   description: "Sophisticated simplicity for the independent mind. Discover our curated collection of luxury perfumes.",
   generator: "v0.app",
+  icons: {
+    icon: [
+      { url: "/favicon.png", sizes: "32x32", type: "image/png" },
+      { url: "/api/favicon", sizes: "32x32", type: "image/png" }
+    ],
+    shortcut: "/favicon.png",
+    apple: "/favicon.png",
+  },
+  manifest: "/site.webmanifest",
 }
 
 export default function RootLayout({

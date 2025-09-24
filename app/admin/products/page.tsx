@@ -21,6 +21,7 @@ import {
 import { Badge } from "@/components/ui/badge"
 import { Plus, Edit, Trash2, Upload, Loader2, ArrowLeft } from "lucide-react"
 import Link from "next/link"
+import { ImageUpload } from "@/components/ui/image-upload"
 
 interface Product {
   _id: string;
@@ -183,11 +184,19 @@ export default function ProductsPage() {
         discount: parseFloat(formData.discount) || 0,
         discountEndDate: discountEndDate,
         stockQuantity: parseInt(formData.stock) || 0,
-        imageUrl: formData.imageUrl || '/placeholder.jpg'
+        imageUrl: formData.imageUrl || '/placeholder.jpg',
+        images: formData.images || [] // Include the images array
       }
 
       console.log('📝 Submitting product data:', JSON.stringify(productData, null, 2))
       console.log('📝 Form data before conversion:', JSON.stringify(formData, null, 2))
+      console.log('🖼️ Images debug:', {
+        formDataImages: formData.images,
+        productDataImages: productData.images,
+        imagesLength: formData.images?.length || 0,
+        formDataKeys: Object.keys(formData),
+        hasImagesField: 'images' in formData
+      })
 
       const url = editingProduct ? `/api/products/${editingProduct._id}` : '/api/products'
       const method = editingProduct ? 'PUT' : 'POST'
@@ -442,7 +451,6 @@ export default function ProductsPage() {
                 />
               </div>
 
-              <div className="grid grid-cols-2 gap-4">
                 <div className="space-y-2">
                   <Label htmlFor="category" className="text-gray-300">
                     Category
@@ -464,18 +472,24 @@ export default function ProductsPage() {
                   </Select>
                 </div>
 
+              {/* Image Upload Component */}
                 <div className="space-y-2">
-                  <Label htmlFor="imageUrl" className="text-gray-300">
-                    Image URL
+                <Label className="text-gray-300">
+                  Product Images
                   </Label>
-                  <Input
-                    id="imageUrl"
-                    value={formData.imageUrl}
-                    onChange={(e) => setFormData({ ...formData, imageUrl: e.target.value })}
-                    className="bg-gray-800 border-gray-700 text-white"
-                    placeholder="/image-name.jpg"
-                  />
-                </div>
+                <ImageUpload
+                  onImageUpload={(urls) => {
+                    console.log('🖼️ Admin form: Received images from ImageUpload:', urls)
+                    setFormData({ 
+                      ...formData, 
+                      images: urls,
+                      imageUrl: urls[0] || "" // Set first image as primary
+                    })
+                    console.log('🖼️ Admin form: Updated formData.images to:', urls)
+                  }}
+                  existingImages={formData.images}
+                  maxImages={5}
+                />
               </div>
 
               <div className="grid grid-cols-3 gap-4">
@@ -791,8 +805,8 @@ export default function ProductsPage() {
                   <TableCell>{product.category?.name || 'Uncategorized'}</TableCell>
                     <TableCell>
                     <div className="flex items-center space-x-2">
-                      <span>PKR {product.price.toFixed(2)}</span>
-                      {product.discount > 0 && (
+                      <span>PKR {product.price % 1 === 0 ? product.price.toString() : product.price.toFixed(2)}</span>
+                      {Number(product.discount) > 0 && (
                         <Badge variant="secondary">
                           -{product.discount}%
                         </Badge>

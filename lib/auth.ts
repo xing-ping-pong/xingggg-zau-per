@@ -1,6 +1,7 @@
 import jwt from 'jsonwebtoken';
 import { NextApiRequest, NextApiResponse, NextRequest } from 'next';
 import User, { IUser } from './models/User';
+import connectDB from './mongodb';
 
 const JWT_SECRET = process.env.JWT_SECRET || 'your-secret-key';
 const JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '7d';
@@ -45,9 +46,12 @@ export async function authenticateUser(req: NextApiRequest | NextRequest): Promi
   if (!payload) return null;
 
   try {
+    // Ensure MongoDB connection is established
+    await connectDB();
     const user = await User.findById(payload.userId).select('-password');
     return user;
   } catch (error) {
+    console.error('Authentication error:', error);
     return null;
   }
 }

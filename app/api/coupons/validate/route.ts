@@ -6,7 +6,7 @@ export async function POST(req: NextRequest) {
   try {
     await connectDB()
 
-    const { code } = await req.json()
+    const { code, orderTotal } = await req.json()
 
     if (!code) {
       return NextResponse.json({
@@ -40,6 +40,14 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({
         success: false,
         message: 'This coupon has expired'
+      }, { status: 400 })
+    }
+
+    // Check minimum order amount
+    if (coupon.minOrderAmount && orderTotal && orderTotal < coupon.minOrderAmount) {
+      return NextResponse.json({
+        success: false,
+        message: `Minimum order amount of PKR ${coupon.minOrderAmount} required for this coupon`
       }, { status: 400 })
     }
 

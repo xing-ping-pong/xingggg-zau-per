@@ -108,6 +108,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   useEffect(() => {
     const syncData = async () => {
       try {
+        // Only sync if we have a valid user state
+        if (!userId || userId === 'guest-user') {
+          console.log('Skipping sync - no valid user ID');
+          return;
+        }
+
+        console.log(`Syncing data for user: ${userId}, isGuest: ${isGuest}`);
+        
         // Sync cart
         const cartResponse = await fetch(`/api/cart?userId=${isGuest ? 'guest' : userId}&isGuest=${isGuest}`)
         const cartData = await cartResponse.json()
@@ -138,7 +146,9 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       }
     }
 
-    syncData()
+    // Add a small delay to prevent race conditions
+    const timeoutId = setTimeout(syncData, 100)
+    return () => clearTimeout(timeoutId)
   }, [userId, isGuest])
 
   // Save to localStorage whenever cart or wishlist changes
@@ -413,9 +423,45 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     }
   }
 
-  const clearCart = () => {
-    setCartItems([])
-    localStorage.removeItem('cart-items')
+  const clearCart = async () => {
+    try {
+      // Clear local state
+      setCartItems([])
+      localStorage.removeItem('cart-items')
+      
+      // Clear database cart for both guest and registered users
+      if (isGuest) {
+        // Clear guest cart by IP
+        await fetch('/api/cart', {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            userId: 'guest',
+            isGuest: true,
+            clearAll: true
+          }),
+        })
+      } else {
+        // Clear registered user cart
+        await fetch('/api/cart', {
+          method: 'DELETE',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            userId: userId,
+            isGuest: false,
+            clearAll: true
+          }),
+        })
+      }
+      
+      console.log('Cart cleared successfully');
+    } catch (error) {
+      console.error('Error clearing cart:', error);
+    }
   }
 
   const isInCart = (productId: string) => cartItems.some(item => item.productId === productId)

@@ -29,23 +29,23 @@ interface Order {
   _id: string
   orderNumber: string
   status: string
-  guestInfo: {
-    firstName: string
-    lastName: string
-    email: string
-    phone: string
-    address: string
-    city: string
-    zipCode: string
-    country: string
+  guestInfo?: {
+    firstName?: string
+    lastName?: string
+    email?: string
+    phone?: string
+    address?: string
+    city?: string
+    zipCode?: string
+    country?: string
   }
   items: Array<{
     productName: string
     quantity: number
     totalPrice: number
   }>
-  pricing: {
-    total: number
+  pricing?: {
+    total?: number
   }
   trackingNumber?: string
   estimatedDelivery?: string
@@ -173,9 +173,9 @@ export default function OrdersPage() {
   const filteredOrders = orders.filter(order => {
     const matchesSearch = searchTerm === "" || 
       order.orderNumber.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.guestInfo.email.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.guestInfo.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-      order.guestInfo.lastName.toLowerCase().includes(searchTerm.toLowerCase())
+      (order.guestInfo?.email && order.guestInfo.email.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (order.guestInfo?.firstName && order.guestInfo.firstName.toLowerCase().includes(searchTerm.toLowerCase())) ||
+      (order.guestInfo?.lastName && order.guestInfo.lastName.toLowerCase().includes(searchTerm.toLowerCase()))
     
     return matchesSearch
   })
@@ -270,10 +270,13 @@ export default function OrdersPage() {
                     <TableCell>
                       <div>
                         <p className="font-medium">
-                          {order.guestInfo.firstName} {order.guestInfo.lastName}
+                          {order.guestInfo?.firstName && order.guestInfo?.lastName 
+                            ? `${order.guestInfo.firstName} ${order.guestInfo.lastName}`
+                            : 'Guest Customer'
+                          }
                         </p>
                         <p className="text-sm text-muted-foreground">
-                          {order.guestInfo.email}
+                          {order.guestInfo?.email || 'No email provided'}
                         </p>
                       </div>
                     </TableCell>
@@ -287,7 +290,7 @@ export default function OrdersPage() {
                       </div>
                     </TableCell>
                     <TableCell className="font-medium">
-                      PKR {order.pricing.total.toFixed(2)}
+                      PKR {order.pricing?.total?.toFixed(2) || '0.00'}
                     </TableCell>
                     <TableCell>
                       <Badge className={getStatusColor(order.status)}>
@@ -393,14 +396,17 @@ export default function OrdersPage() {
                 <h3 className="font-semibold mb-2">Customer Information</h3>
                 <div className="grid grid-cols-2 gap-4 text-sm">
                   <div>
-                    <p><strong>Name:</strong> {selectedOrder.guestInfo.firstName} {selectedOrder.guestInfo.lastName}</p>
-                    <p><strong>Email:</strong> {selectedOrder.guestInfo.email}</p>
-                    <p><strong>Phone:</strong> {selectedOrder.guestInfo.phone}</p>
+                    <p><strong>Name:</strong> {selectedOrder.guestInfo?.firstName && selectedOrder.guestInfo?.lastName 
+                      ? `${selectedOrder.guestInfo.firstName} ${selectedOrder.guestInfo.lastName}`
+                      : 'Guest Customer'
+                    }</p>
+                    <p><strong>Email:</strong> {selectedOrder.guestInfo?.email || 'No email provided'}</p>
+                    <p><strong>Phone:</strong> {selectedOrder.guestInfo?.phone || 'No phone provided'}</p>
                   </div>
                   <div>
-                    <p><strong>Address:</strong> {selectedOrder.guestInfo.address}</p>
-                    <p><strong>City:</strong> {selectedOrder.guestInfo.city}</p>
-                    <p><strong>Country:</strong> {selectedOrder.guestInfo.country}</p>
+                    <p><strong>Address:</strong> {selectedOrder.guestInfo?.address || 'No address provided'}</p>
+                    <p><strong>City:</strong> {selectedOrder.guestInfo?.city || 'No city provided'}</p>
+                    <p><strong>Country:</strong> {selectedOrder.guestInfo?.country || 'No country provided'}</p>
                   </div>
                 </div>
               </div>
@@ -422,7 +428,7 @@ export default function OrdersPage() {
                 <div className="mt-4 pt-4 border-t">
                   <div className="flex justify-between text-lg font-bold">
                     <span>Total</span>
-                    <span>PKR {selectedOrder.pricing.total.toFixed(2)}</span>
+                    <span>PKR {selectedOrder.pricing?.total?.toFixed(2) || '0.00'}</span>
                   </div>
                 </div>
               </div>

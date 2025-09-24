@@ -192,7 +192,7 @@ class EmailService {
       <body>
         <div class="container">
           <div class="header">
-            <div class="logo">ZAU</div>
+            <img src="${process.env.VERCEL_URL ? 'https://' + process.env.VERCEL_URL : process.env.NEXTAUTH_URL || 'https://your-domain.com'}/logo.png" alt="ZAU Perfumes" style="width: 80px; height: 80px; margin: 0 auto 20px; display: block;" />
             <div class="tagline">Luxury Perfumes</div>
           </div>
           
@@ -243,7 +243,7 @@ class EmailService {
     return `
 Dear ${customerName},
 
-Thank you for contacting ROSIA Perfumes. We have received your message and our team has prepared a response for you.
+Thank you for contacting ZAU Perfumes. We have received your message and our team has prepared a response for you.
 
 Your Original Message: ${originalSubject}
 

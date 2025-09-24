@@ -250,7 +250,7 @@ export default function OrderTrackingPage() {
                             </p>
                           </div>
                           <div className="text-right">
-                            <p className="font-medium">${item.totalPrice.toFixed(2)}</p>
+                            <p className="font-medium">PKR {item.totalPrice.toFixed(2)}</p>
                           </div>
                         </div>
                       ))}
@@ -258,7 +258,7 @@ export default function OrderTrackingPage() {
                     <div className="mt-4 pt-4 border-t">
                       <div className="flex justify-between text-lg font-bold">
                         <span>Total</span>
-                        <span>${order.pricing.total.toFixed(2)}</span>
+                        <span>PKR {order.pricing.total.toFixed(2)}</span>
                       </div>
                     </div>
                   </CardContent>

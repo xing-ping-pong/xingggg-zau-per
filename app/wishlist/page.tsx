@@ -395,7 +395,7 @@ export default function WishlistPage() {
                       New
                     </div>
                   )}
-                  {product.discount > 0 && (
+                  {Number(product.discount) > 0 && (
                     <div className="absolute top-3 right-3 bg-red-500 text-white px-2 py-1 rounded-full text-xs font-semibold">
                       -{product.discount}%
                     </div>
@@ -442,11 +442,11 @@ export default function WishlistPage() {
                   <div className="flex items-center justify-between flex-wrap gap-2">
                     <div className="flex items-center space-x-2">
                       <span className="text-xl font-bold text-foreground">
-                        ${typeof discountedPrice === 'number' ? discountedPrice.toFixed(2) : '0.00'}
+                        PKR {typeof discountedPrice === 'number' ? discountedPrice.toFixed(2) : '0.00'}
                       </span>
-                      {product.discount > 0 && (
+                      {Number(product.discount) > 0 && (
                         <span className="text-base text-muted-foreground line-through">
-                          ${typeof product.price === 'number' ? product.price.toFixed(2) : '0.00'}
+                          PKR {typeof product.price === 'number' ? product.price.toFixed(2) : '0.00'}
                         </span>
                       )}
                     </div>

@@ -7,11 +7,12 @@ export function Footer() {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-12">
           {/* Brand */}
           <div className="lg:col-span-2">
-            <div className="flex items-center space-x-2 mb-4">
-              <div className="w-8 h-8 luxury-gradient rounded-full flex items-center justify-center">
-                <span className="text-black font-bold text-sm">Z</span>
-              </div>
-              <span className="font-serif text-2xl font-bold text-foreground">ZAU</span>
+            <div className="flex items-center mb-4">
+              <img 
+                src="/logo.png" 
+                alt="ZAU Perfumes" 
+                className="w-16 h-16 object-contain"
+              />
             </div>
             <p className="text-muted-foreground leading-relaxed mb-6 max-w-md">
               Sophisticated simplicity for the independent mind. We craft luxury fragrances that tell your unique story,

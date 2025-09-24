@@ -257,7 +257,7 @@ export default function AdminReviewsPage() {
     
     return (
       <Badge variant={variants[status as keyof typeof variants] || "secondary"}>
-        {status.charAt(0).toUpperCase() + status.slice(1)}
+        {status ? status.charAt(0).toUpperCase() + status.slice(1) : 'Unknown'}
       </Badge>
     )
   }

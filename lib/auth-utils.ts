@@ -29,8 +29,10 @@ export async function fetchWithAuth(url: string, options: RequestInit = {}) {
     throw new Error("No authentication token found");
   }
 
+  // Don't set Content-Type for FormData, let the browser set it with boundary
+  const isFormData = options.body instanceof FormData;
   const headers = {
-    "Content-Type": "application/json",
+    ...(isFormData ? {} : { "Content-Type": "application/json" }),
     "Authorization": `Bearer ${token}`,
     ...options.headers,
   };

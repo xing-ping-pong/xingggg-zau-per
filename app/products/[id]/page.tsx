@@ -26,6 +26,8 @@ import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
 import { ProductPreview } from "@/components/product-preview"
 import ProductQuestions from "@/components/product-questions"
+import { ProductImageGallery } from "@/components/ui/product-image-gallery"
+import { ShareButton } from "@/components/ui/share-button"
 import Image from "next/image"
 
 interface Product {
@@ -68,7 +70,6 @@ export default function ProductDetailPage() {
   const [loading, setLoading] = useState(true)
   const [relatedLoading, setRelatedLoading] = useState(false)
   const [error, setError] = useState("")
-  const [selectedImage, setSelectedImage] = useState(0)
   const [quantity, setQuantity] = useState(1)
   const [addingToCart, setAddingToCart] = useState(false)
   const [addingToWishlist, setAddingToWishlist] = useState(false)
@@ -287,8 +288,32 @@ export default function ProductDetailPage() {
     ? product.price - (product.price * product.discount / 100)
     : product.price
 
-  const allImages = [product.imageUrl, ...(product.images || [])].filter(Boolean)
+  // Format price to remove unnecessary decimal places
+  const formatPrice = (price: number) => {
+    return price % 1 === 0 ? price.toString() : price.toFixed(2)
+  }
+
+  // Show main image first, then additional images (excluding the main image to avoid duplication)
+  const additionalImages = (product.images || []).filter(img => img !== product.imageUrl)
+  const allImages = [product.imageUrl, ...additionalImages].filter(Boolean)
   const timeLeft = getTimeLeft()
+
+  // Debug logging
+  console.log('🖼️ Product images debug:', {
+    imageUrl: product.imageUrl,
+    images: product.images,
+    additionalImages: additionalImages,
+    allImages: allImages,
+    allImagesLength: allImages.length
+  })
+  
+  console.log('💰 Price debug:', {
+    price: product.price,
+    discount: product.discount,
+    discountedPrice: discountedPrice,
+    hasDiscount: product.discount > 0,
+    discountCondition: product?.discount && product.discount > 0
+  })
 
   return (
     <div className="min-h-screen bg-background">
@@ -322,43 +347,24 @@ export default function ProductDetailPage() {
         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16">
           {/* Product Images */}
           <div className="space-y-4">
-            <div className="relative aspect-square overflow-hidden rounded-lg bg-card border border-primary/20">
-              <img
-                src={allImages[selectedImage] || "/placeholder.svg"}
-                alt={product?.name || "Product"}
-                className="w-full h-full object-cover hover:scale-105 transition-transform duration-500"
-              />
-              {product?.discount && product.discount > 0 && (
-                <Badge className="absolute top-4 left-4 bg-primary text-primary-foreground">-{product.discount}%</Badge>
-              )}
+            <ProductImageGallery
+              images={allImages}
+              productName={product?.name || "Product"}
+              discount={product?.discount || 0}
+              className="w-full"
+            />
+            
+            {/* Stock Status Badges */}
               {product && product.stockQuantity <= 5 && product.stockQuantity > 0 && (
-                <Badge className="absolute top-4 right-4 bg-amber-500 text-white">
+              <div className="flex justify-center">
+                <Badge className="bg-amber-500 text-white">
                   {product.stockQuantity === 1 ? 'Last One!' : `Only ${product.stockQuantity} left!`}
                 </Badge>
+              </div>
               )}
               {product && product.stockQuantity === 0 && (
-                <Badge className="absolute top-4 right-4 bg-red-500 text-white">Out of Stock</Badge>
-              )}
-            </div>
-
-            {/* Thumbnail Images */}
-            {allImages.length > 1 && (
-              <div className="flex gap-2">
-                {allImages.map((image, index) => (
-                  <button
-                    key={index}
-                    onClick={() => setSelectedImage(index)}
-                    className={`relative aspect-square w-20 h-20 rounded-lg overflow-hidden border-2 transition-colors ${
-                      selectedImage === index ? "border-primary" : "border-border hover:border-primary/50"
-                    }`}
-                  >
-                    <img
-                      src={image || "/placeholder.svg"}
-                      alt={`${product?.name || "Product"} view ${index + 1}`}
-                      className="w-full h-full object-cover"
-                    />
-                  </button>
-                ))}
+              <div className="flex justify-center">
+                <Badge className="bg-red-500 text-white">Out of Stock</Badge>
               </div>
             )}
           </div>
@@ -388,9 +394,9 @@ export default function ProductDetailPage() {
 
               {/* Price */}
               <div className="flex items-center gap-3 mb-6">
-                <span className="text-3xl font-bold text-primary">PKR {discountedPrice.toFixed(2)}</span>
-                {product?.discount && product.discount > 0 && (
-                  <span className="text-xl text-muted-foreground line-through">PKR {product.price.toFixed(2)}</span>
+                <span className="text-3xl font-bold text-primary">PKR {formatPrice(discountedPrice)}</span>
+                {product?.discount && Number(product.discount) > 0 && (
+                  <span className="text-xl text-muted-foreground line-through">PKR {formatPrice(product.price)}</span>
                 )}
               </div>
             </div>
@@ -516,9 +522,14 @@ export default function ProductDetailPage() {
                     <Heart className={`w-4 h-4 ${isInWishlist(product?._id || "") ? "fill-current" : ""}`} />
                   )}
                 </Button>
-                <Button variant="outline" size="icon">
-                  <Share2 className="w-4 h-4" />
-                </Button>
+                <ShareButton
+                  productName={product?.name || "Product"}
+                  productPrice={product?.price || 0}
+                  productImage={product?.imageUrl}
+                  discount={product?.discount || 0}
+                  variant="icon"
+                  size="md"
+                />
               </div>
             </div>
 

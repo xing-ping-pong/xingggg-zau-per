@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
-import Product from '@/lib/models/Product';
-import Category from '@/lib/models/Category';
+import { Product, Category } from '@/lib/models';
 import { addPerformanceHeaders } from '@/lib/utils/performance';
+import mongoose from 'mongoose';
 
 export async function GET(req: NextRequest) {
   const startTime = performance.now();
@@ -62,11 +62,7 @@ export async function GET(req: NextRequest) {
     // Execute query
     const [products, totalCount] = await Promise.all([
       Product.find(query)
-        .populate({
-          path: 'category',
-          select: 'name slug',
-          options: { strictPopulate: false }
-        })
+        .populate('category', 'name')
         .sort(sort)
         .skip(skip)
         .limit(limit)
@@ -109,7 +105,7 @@ export async function POST(req: NextRequest) {
     // This would require admin authentication in a real app
     const body = await req.json();
     
-    // Validate category exists
+    // Validate category exists and convert to ObjectId
     if (body.category) {
       const category = await Category.findById(body.category);
       if (!category) {
@@ -118,11 +114,12 @@ export async function POST(req: NextRequest) {
           message: 'Category not found'
         }, { status: 400 });
       }
+      // Convert category string to ObjectId
+      body.category = new mongoose.Types.ObjectId(body.category);
     }
 
     const product = new Product(body);
     await product.save();
-    await product.populate('category', 'name slug');
 
     const response = NextResponse.json({
       success: true,

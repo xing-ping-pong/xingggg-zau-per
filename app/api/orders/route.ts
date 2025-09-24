@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server'
 import connectDB from '@/lib/mongodb'
 import Order from '@/lib/models/Order'
 import Product from '@/lib/models/Product'
+import Coupon from '@/lib/models/Coupon'
 
 export async function POST(req: NextRequest) {
   try {
@@ -10,9 +11,11 @@ export async function POST(req: NextRequest) {
     const {
       guestInfo,
       items,
-      pricing,
-      couponCode
+      pricing
     } = await req.json()
+
+    // Extract coupon code from pricing object
+    const couponCode = pricing?.couponCode
 
     // Validate required fields
     if (!guestInfo || !items || !pricing) {
@@ -41,14 +44,45 @@ export async function POST(req: NextRequest) {
       }, { status: 400 })
     }
 
+    // Validate pricing structure
+    if (!pricing || typeof pricing !== 'object') {
+      return NextResponse.json({
+        success: false,
+        message: 'Pricing information is required'
+      }, { status: 400 })
+    }
+
+    const requiredPricingFields = ['subtotal', 'shipping', 'tax', 'total']
+    for (const field of requiredPricingFields) {
+      if (typeof pricing[field] !== 'number' || pricing[field] < 0) {
+        return NextResponse.json({
+          success: false,
+          message: `Invalid pricing: ${field} must be a non-negative number`
+        }, { status: 400 })
+      }
+    }
+
     // Verify products exist and get current data
     const productIds = items.map(item => item.productId)
+    
+    // Validate product IDs are valid MongoDB ObjectIds
+    const mongoose = require('mongoose')
+    const invalidIds = productIds.filter(id => !mongoose.Types.ObjectId.isValid(id))
+    if (invalidIds.length > 0) {
+      return NextResponse.json({
+        success: false,
+        message: `Invalid product IDs: ${invalidIds.join(', ')}`
+      }, { status: 400 })
+    }
+    
     const products = await Product.find({ _id: { $in: productIds } })
     
     if (products.length !== productIds.length) {
+      const foundIds = products.map(p => p._id.toString())
+      const missingIds = productIds.filter(id => !foundIds.includes(id))
       return NextResponse.json({
         success: false,
-        message: 'One or more products not found'
+        message: `Products not found: ${missingIds.join(', ')}`
       }, { status: 400 })
     }
 
@@ -82,9 +116,40 @@ export async function POST(req: NextRequest) {
       }
     })
 
-    // Generate order number
-    const orderCount = await Order.countDocuments()
-    const orderNumber = `ORD-${String(orderCount + 1).padStart(6, '0')}`
+    // Generate unique order number
+    let orderNumber
+    let attempts = 0
+    const maxAttempts = 10
+    
+    // Get the highest existing order number
+    const lastOrder = await Order.findOne({}, { orderNumber: 1 }).sort({ orderNumber: -1 })
+    let nextNumber = 1
+    
+    if (lastOrder && lastOrder.orderNumber) {
+      const lastNumber = parseInt(lastOrder.orderNumber.replace('ORD-', ''))
+      if (!isNaN(lastNumber)) {
+        nextNumber = lastNumber + 1
+      }
+    }
+    
+    do {
+      orderNumber = `ORD-${String(nextNumber + attempts).padStart(6, '0')}`
+      
+      // Check if this order number already exists
+      const existingOrder = await Order.findOne({ orderNumber })
+      if (!existingOrder) {
+        break
+      }
+      
+      attempts++
+    } while (attempts < maxAttempts)
+    
+    if (attempts >= maxAttempts) {
+      // Fallback to timestamp-based order number
+      orderNumber = `ORD-${Date.now().toString().slice(-6)}`
+    }
+    
+    console.log(`Generated order number: ${orderNumber} (attempts: ${attempts})`)
 
     // Create the order
     const order = new Order({
@@ -97,7 +162,19 @@ export async function POST(req: NextRequest) {
       estimatedDelivery: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000) // 7 days from now
     })
 
-    await order.save()
+    try {
+      await order.save()
+    } catch (saveError) {
+      if (saveError.code === 11000 && saveError.keyPattern?.orderNumber) {
+        // Duplicate order number error - generate a new one
+        console.log(`Duplicate order number detected: ${orderNumber}, generating new one...`)
+        orderNumber = `ORD-${Date.now().toString().slice(-6)}`
+        order.orderNumber = orderNumber
+        await order.save()
+      } else {
+        throw saveError
+      }
+    }
 
     // Update product stock quantities
     for (const item of orderItems) {
@@ -107,6 +184,19 @@ export async function POST(req: NextRequest) {
       )
     }
 
+    // Update coupon usage count if coupon was used
+    if (couponCode) {
+      console.log(`Updating coupon usage for code: ${couponCode}`)
+      const updateResult = await Coupon.findOneAndUpdate(
+        { code: couponCode.toUpperCase() },
+        { $inc: { usedCount: 1 } },
+        { new: true }
+      )
+      console.log(`Coupon usage updated:`, updateResult ? `New count: ${updateResult.usedCount}` : 'Coupon not found')
+    } else {
+      console.log('No coupon code provided, skipping usage update')
+    }
+
     return NextResponse.json({
       success: true,
       message: 'Order placed successfully',
@@ -114,16 +204,27 @@ export async function POST(req: NextRequest) {
         orderNumber: order.orderNumber,
         orderId: order._id,
         status: order.status,
-        total: order.pricing.total,
+        total: order.pricing?.total || 0,
         estimatedDelivery: order.estimatedDelivery
       }
     })
 
   } catch (error) {
     console.error('Error creating order:', error)
+    console.error('Error stack:', error instanceof Error ? error.stack : 'No stack trace')
+    
+    // Log request body safely
+    try {
+      const requestBody = await req.json()
+      console.error('Request body:', JSON.stringify(requestBody, null, 2))
+    } catch (parseError) {
+      console.error('Could not parse request body for logging')
+    }
+    
     return NextResponse.json({
       success: false,
-      message: error instanceof Error ? error.message : 'Internal server error'
+      message: error instanceof Error ? error.message : 'Internal server error',
+      error: process.env.NODE_ENV === 'development' ? error : undefined
     }, { status: 500 })
   }
 }

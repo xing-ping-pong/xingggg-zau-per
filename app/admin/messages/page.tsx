@@ -349,7 +349,7 @@ export default function AdminMessagesPage() {
                       <TableCell className="max-w-[150px] truncate">{message.subject}</TableCell>
                       <TableCell>
                         <Badge variant="outline" className="text-xs">
-                          {message.category.charAt(0).toUpperCase() + message.category.slice(1)}
+                          {message.category ? message.category.charAt(0).toUpperCase() + message.category.slice(1) : 'Unknown'}
                         </Badge>
                       </TableCell>
                       <TableCell>
@@ -357,7 +357,7 @@ export default function AdminMessagesPage() {
                           variant="outline" 
                           className={`text-xs ${getPriorityColor(message.priority)}`}
                         >
-                          {message.priority.charAt(0).toUpperCase() + message.priority.slice(1)}
+                          {message.priority ? message.priority.charAt(0).toUpperCase() + message.priority.slice(1) : 'Unknown'}
                         </Badge>
                       </TableCell>
                       <TableCell className="text-center">
@@ -367,7 +367,7 @@ export default function AdminMessagesPage() {
                         >
                           <div className="flex items-center gap-1">
                             {getStatusIcon(message.status)}
-                            {message.status.charAt(0).toUpperCase() + message.status.slice(1)}
+                            {message.status ? message.status.charAt(0).toUpperCase() + message.status.slice(1) : 'Unknown'}
                           </div>
                         </Badge>
                       </TableCell>
@@ -457,10 +457,10 @@ export default function AdminMessagesPage() {
                 <div>
                   <p className="text-sm text-muted-foreground">Category:</p>
                   <Badge variant="outline" className="text-xs">
-                    {selectedMessage.category.charAt(0).toUpperCase() + selectedMessage.category.slice(1)}
+                    {selectedMessage.category ? selectedMessage.category.charAt(0).toUpperCase() + selectedMessage.category.slice(1) : 'Unknown'}
                   </Badge>
                   <p className="text-sm text-muted-foreground mt-1">
-                    Priority: {selectedMessage.priority.charAt(0).toUpperCase() + selectedMessage.priority.slice(1)}
+                    Priority: {selectedMessage.priority ? selectedMessage.priority.charAt(0).toUpperCase() + selectedMessage.priority.slice(1) : 'Unknown'}
                   </p>
                 </div>
               </div>

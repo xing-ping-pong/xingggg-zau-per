@@ -29,8 +29,15 @@ export function AdminHeader({ onMenuClick }: AdminHeaderProps) {
           >
             <Menu className="h-5 w-5" />
           </Button>
-          <h2 className="text-lg font-semibold text-white hidden sm:block">Admin Panel</h2>
-          <h2 className="text-base font-semibold text-white sm:hidden">ZAU</h2>
+          <div className="flex items-center space-x-2">
+            <img 
+              src="/logo.png" 
+              alt="ZAU Perfumes" 
+              className="w-10 h-10 object-contain"
+            />
+            <h2 className="text-lg font-semibold text-white hidden sm:block">Admin Panel</h2>
+            <h2 className="text-base font-semibold text-white sm:hidden">Admin</h2>
+          </div>
         </div>
 
         <div className="flex items-center space-x-2 lg:space-x-4">

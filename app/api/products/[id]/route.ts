@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
-import Product from '@/lib/models/Product';
-import Category from '@/lib/models/Category';
+import { Category, Product } from '@/lib/models';
 import { addPerformanceHeaders } from '@/lib/utils/performance';
+import mongoose from 'mongoose';
 
 export async function GET(
   req: NextRequest,
@@ -56,12 +56,13 @@ export async function PUT(
       name: body.name,
       description: body.description,
       price: body.price,
-      category: body.category,
+      category: body.category ? new mongoose.Types.ObjectId(body.category) : null,
       stockQuantity: body.stockQuantity || body.stock || 0, // Use stockQuantity if available, fallback to stock
       isFeatured: body.featured, // Map 'featured' to 'isFeatured'
       discount: body.discount, // Now we have discount field
       discountEndDate: body.discountEndDate ? new Date(body.discountEndDate) : null,
       imageUrl: body.imageUrl,
+      images: body.images || [], // Include the images array
     };
     
     console.log('📝 Mapped update data:', JSON.stringify(updateData, null, 2));

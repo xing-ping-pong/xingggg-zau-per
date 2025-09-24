@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
-import { Heart, ShoppingCart, User, Menu, X, LogOut, ChevronDown } from "lucide-react"
+import { Heart, ShoppingCart, User, Menu, X, LogOut, ChevronDown, Instagram, Facebook, Youtube } from "lucide-react"
 import Link from "next/link"
 import { useCart } from "@/lib/contexts/cart-context"
 
@@ -10,16 +10,21 @@ export function Header() {
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isContactDropdownOpen, setIsContactDropdownOpen] = useState(false)
+  const [isMobileContactDropdownOpen, setIsMobileContactDropdownOpen] = useState(false)
   const [user, setUser] = useState<any>(null)
   const { cartCount, wishlistCount } = useCart()
 
   useEffect(() => {
     const handleScroll = () => {
       setIsScrolled(window.scrollY > 50)
+      // Auto-close mobile menu when scrolling
+      if (isMobileMenuOpen) {
+        setIsMobileMenuOpen(false)
+      }
     }
     window.addEventListener("scroll", handleScroll)
     return () => window.removeEventListener("scroll", handleScroll)
-  }, [])
+  }, [isMobileMenuOpen])
 
   useEffect(() => {
     // Check if user is logged in
@@ -62,17 +67,19 @@ export function Header() {
   return (
     <header
       className={`fixed top-0 left-0 right-0 z-50 transition-all duration-300 ${
-        isScrolled ? "bg-black/95 backdrop-blur-md border-b border-primary/20" : "bg-transparent"
+        isScrolled ? "bg-black/95 backdrop-blur-md border-b border-primary/20" : 
+        isMobileMenuOpen ? "bg-black border-b border-primary/20" : "bg-transparent"
       }`}
     >
       <div className="container mx-auto px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
         <div className="flex items-center justify-between">
           {/* Logo */}
-          <Link href="/" className="flex items-center space-x-2">
-            <div className="w-7 h-7 sm:w-8 sm:h-8 luxury-gradient rounded-full flex items-center justify-center">
-              <span className="text-black font-bold text-xs sm:text-sm">Z</span>
-            </div>
-            <span className="font-serif text-xl sm:text-2xl font-bold text-foreground">ZAU</span>
+          <Link href="/" className="flex items-center">
+            <img 
+              src="/logo.png" 
+              alt="ZAU Perfumes" 
+              className="w-16 h-16 sm:w-20 sm:h-20 object-contain"
+            />
           </Link>
 
           {/* Desktop Navigation */}
@@ -200,92 +207,161 @@ export function Header() {
           </Button>
         </div>
 
-        {/* Mobile Menu */}
+        {/* Mobile Menu Overlay */}
         {isMobileMenuOpen && (
-          <div className="md:hidden mt-4 pb-4 border-t border-border/20 bg-black/95 backdrop-blur-md">
-            <nav className="flex flex-col space-y-4 mt-4">
-            <Link href="/" className="text-left text-foreground hover:text-primary transition-colors py-2">
-              Home
-            </Link>
-            <Link href="/#collections" className="text-left text-foreground hover:text-primary transition-colors py-2">
-              Shop
-            </Link>
-            <Link href="/#featured" className="text-left text-foreground hover:text-primary transition-colors py-2">
-              Featured
-            </Link>
-            <Link href="/blog" className="text-left text-foreground hover:text-primary transition-colors py-2">
-              Blog
-            </Link>
+          <>
+            {/* Backdrop */}
+            <div 
+              className="fixed inset-0 bg-black/50 z-40 md:hidden"
+              onClick={() => setIsMobileMenuOpen(false)}
+            />
             
-            {/* Mobile Contact Links */}
-            <div className="space-y-2">
-              <div className="text-left text-foreground font-medium py-2">Contact</div>
-              <Link href="/contact" className="text-left text-muted-foreground hover:text-primary transition-colors py-1 pl-4">
-                Contact Us
-              </Link>
-              <Link href="/faq" className="text-left text-muted-foreground hover:text-primary transition-colors py-1 pl-4">
-                FAQs
-              </Link>
-              <Link href="/track-order" className="text-left text-muted-foreground hover:text-primary transition-colors py-1 pl-4">
-                Track Your Order
-              </Link>
-            </div>
-              <div className="flex items-center justify-start space-x-4 pt-4 border-t border-border/20">
-                {user ? (
-                  <>
-                    <div className="flex flex-col space-y-2">
-                      <span className="text-sm text-foreground">Welcome, {user.username}</span>
-                      {user.isAdmin && (
-                        <Link href="/admin">
-                          <Button variant="outline" size="sm" className="text-xs">
-                            Admin Panel
-                          </Button>
-                        </Link>
-                      )}
-                      <Button variant="ghost" size="sm" onClick={handleLogout} className="flex items-center">
-                        <LogOut className="w-4 h-4 mr-2" />
-                        Logout
-                      </Button>
+            {/* Sidebar */}
+            <div className="fixed left-0 top-0 h-full w-80 max-w-[80vw] bg-black/98 backdrop-blur-lg z-50 md:hidden transform transition-transform duration-300 ease-in-out">
+              {/* Header */}
+              <div className="flex items-center justify-between p-6 border-b border-gray-700">
+                <img 
+                  src="/logo.png" 
+                  alt="ZAU Perfumes" 
+                  className="w-12 h-12 object-contain"
+                />
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="text-gray-300 hover:text-white hover:bg-gray-800"
+                >
+                  <X className="w-6 h-6" />
+                </Button>
+              </div>
+
+              {/* Navigation */}
+              <nav className="flex flex-col py-6">
+                <Link 
+                  href="/" 
+                  className="flex items-center justify-between px-6 py-4 text-white hover:bg-gray-800 transition-colors border-b border-gray-700"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <span className="font-medium">HOME</span>
+                </Link>
+                
+                <Link 
+                  href="/#collections" 
+                  className="flex items-center justify-between px-6 py-4 text-white hover:bg-gray-800 transition-colors border-b border-gray-700"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <span className="font-medium">SHOP</span>
+                </Link>
+                
+                <Link 
+                  href="/#featured" 
+                  className="flex items-center justify-between px-6 py-4 text-white hover:bg-gray-800 transition-colors border-b border-gray-700"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <span className="font-medium">FEATURED</span>
+                </Link>
+                
+                <Link 
+                  href="/blog" 
+                  className="flex items-center justify-between px-6 py-4 text-white hover:bg-gray-800 transition-colors border-b border-gray-700"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  <span className="font-medium">BLOG</span>
+                </Link>
+                
+                {/* Contact with Dropdown */}
+                <div className="border-b border-gray-700">
+                  <button
+                    onClick={() => setIsMobileContactDropdownOpen(!isMobileContactDropdownOpen)}
+                    className="flex items-center justify-between w-full px-6 py-4 text-white hover:bg-gray-800 transition-colors"
+                  >
+                    <span className="font-medium">CONTACT</span>
+                    <ChevronDown className={`w-4 h-4 text-gray-400 transition-transform ${isMobileContactDropdownOpen ? 'rotate-180' : ''}`} />
+                  </button>
+                  
+                  {isMobileContactDropdownOpen && (
+                    <div className="bg-black/80 backdrop-blur-sm">
+                      <Link 
+                        href="/contact" 
+                        className="block px-6 py-3 text-gray-300 hover:text-white hover:bg-black/60 transition-colors"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        Contact Us
+                      </Link>
+                      <Link 
+                        href="/faq" 
+                        className="block px-6 py-3 text-gray-300 hover:text-white hover:bg-black/60 transition-colors"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        FAQs
+                      </Link>
+                      <Link 
+                        href="/track-order" 
+                        className="block px-6 py-3 text-gray-300 hover:text-white hover:bg-black/60 transition-colors"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        Track Your Order
+                      </Link>
                     </div>
-                  </>
+                  )}
+                </div>
+              </nav>
+
+              {/* User Section */}
+              <div className="px-6 py-4 border-t border-gray-700">
+                {user ? (
+                  <div className="space-y-3">
+                    <div className="text-sm text-gray-300">Welcome, {user.username}</div>
+                    {user.isAdmin && (
+                      <Link href="/admin" onClick={() => setIsMobileMenuOpen(false)}>
+                        <Button variant="outline" size="sm" className="w-full border-gray-600 text-white hover:bg-gray-800">
+                          Admin Panel
+                        </Button>
+                      </Link>
+                    )}
+                    <Button 
+                      variant="ghost" 
+                      size="sm" 
+                      onClick={handleLogout} 
+                      className="w-full justify-start text-gray-300 hover:text-white hover:bg-gray-800"
+                    >
+                      <LogOut className="w-4 h-4 mr-2" />
+                      Logout
+                    </Button>
+                  </div>
                 ) : (
-                  <>
-                    <Link href="/login">
-                      <Button variant="ghost" size="sm" className="flex items-center">
+                  <div className="space-y-3">
+                    <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>
+                      <Button variant="ghost" size="sm" className="w-full justify-start text-gray-300 hover:text-white hover:bg-gray-800">
                         <User className="w-4 h-4 mr-2" />
-                        Login
+                        Log in
                       </Button>
                     </Link>
-                    <Link href="/register">
-                      <Button variant="outline" size="sm" className="text-xs">
+                    <Link href="/register" onClick={() => setIsMobileMenuOpen(false)}>
+                      <Button variant="outline" size="sm" className="w-full border-gray-600 text-white hover:bg-gray-800">
                         Sign Up
                       </Button>
                     </Link>
-                  </>
+                  </div>
                 )}
-                <Link href="/wishlist">
-                  <Button variant="ghost" size="sm" className="relative">
-                    <Heart className="w-4 h-4" />
-                    {wishlistCount > 0 && (
-                      <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                        {wishlistCount}
-                      </span>
-                    )}
-                  </Button>
-                </Link>
-                <Link href="/cart">
-                  <Button variant="ghost" size="sm" className="relative">
-                    <ShoppingCart className="w-4 h-4" />
-                    {cartCount > 0 && (
-                      <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs rounded-full w-4 h-4 flex items-center justify-center">
-                        {cartCount}
-                      </span>
-                    )}
-                  </Button>
-                </Link>
               </div>
-            </nav>
-          </div>
+
+              {/* Social Media */}
+              <div className="px-6 py-4 border-t border-gray-700">
+                <div className="flex space-x-4">
+                  <a href="#" className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-gray-700 transition-colors">
+                    <Instagram className="w-5 h-5 text-gray-300" />
+                  </a>
+                  <a href="#" className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-gray-700 transition-colors">
+                    <Facebook className="w-5 h-5 text-gray-300" />
+                  </a>
+                  <a href="#" className="w-10 h-10 bg-gray-800 rounded-lg flex items-center justify-center hover:bg-gray-700 transition-colors">
+                    <Youtube className="w-5 h-5 text-gray-300" />
+                  </a>
+                </div>
+              </div>
+            </div>
+          </>
         )}
       </div>
     </header>

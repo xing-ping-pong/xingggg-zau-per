@@ -110,7 +110,7 @@ class WhatsAppService {
 
   private generateTrackingMessage(data: TrackingWhatsAppData): string {
     const itemsList = data.items.map(item => 
-      `• ${item.name} x${item.quantity} - $${item.price.toFixed(2)}`
+      `• ${item.name} x${item.quantity} - PKR ${item.price.toFixed(2)}`
     ).join('\n');
 
     return `🎉 *Your Order Has Been Shipped!*
@@ -131,7 +131,7 @@ Order Number: #${data.orderNumber}
 *Items Ordered:*
 ${itemsList}
 
-*Total: $${data.totalAmount.toFixed(2)}*
+*Total: PKR {data.totalAmount.toFixed(2)}*
 
 🚚 *SHIPPING ADDRESS:*
 ${data.shippingAddress.street}
@@ -147,7 +147,7 @@ _© 2024 ZAU Perfumes. All rights reserved._`;
 
   private generateOrderConfirmationMessage(data: Omit<TrackingWhatsAppData, 'trackingNumber' | 'trackingUrl' | 'estimatedDelivery'>): string {
     const itemsList = data.items.map(item => 
-      `• ${item.name} x${item.quantity} - $${item.price.toFixed(2)}`
+      `• ${item.name} x${item.quantity} - PKR ${item.price.toFixed(2)}`
     ).join('\n');
 
     return `✅ *Order Confirmed!*
@@ -162,7 +162,7 @@ Order Number: #${data.orderNumber}
 *Items Ordered:*
 ${itemsList}
 
-*Total: $${data.totalAmount.toFixed(2)}*
+*Total: PKR {data.totalAmount.toFixed(2)}*
 
 🚚 *SHIPPING ADDRESS:*
 ${data.shippingAddress.street}

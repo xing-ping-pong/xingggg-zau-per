@@ -132,7 +132,10 @@ function CartPageContent() {
         headers: {
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify({ code: couponCode }),
+        body: JSON.stringify({ 
+          code: couponCode,
+          orderTotal: subtotal 
+        }),
       })
       
       const data = await response.json()
@@ -189,6 +192,18 @@ function CartPageContent() {
     setShowSuccessModal(false)
   }
 
+  // Function to clear cart and localStorage (for debugging database migration issues)
+  const handleClearCart = async () => {
+    try {
+      await clearCart()
+      localStorage.removeItem('cart')
+      window.location.reload()
+    } catch (error) {
+      console.error('Error clearing cart:', error)
+      alert('Error clearing cart. Please try again.')
+    }
+  }
+
   const handleCheckout = async () => {
     // Validate guest information
     const requiredFields = ['firstName', 'lastName', 'email', 'phone', 'address', 'city', 'zipCode', 'country']
@@ -242,6 +257,9 @@ function CartPageContent() {
       console.log('Order API Response Data:', data)
 
       if (data.success) {
+        // Clear cart immediately after successful order
+        clearCart()
+        
         // Show success modal
         setOrderDetails({
           orderNumber: data.data.orderNumber,
@@ -345,8 +363,21 @@ function CartPageContent() {
 
       <div className="container mx-auto px-4 py-8">
         <div className="mb-8">
-          <h1 className="text-3xl font-bold mb-2">Shopping Cart</h1>
-          <p className="text-muted-foreground">{cartItems.reduce((sum, item) => sum + item.quantity, 0)} item(s) in your cart</p>
+          <div className="flex items-center justify-between">
+            <div>
+              <h1 className="text-3xl font-bold mb-2">Shopping Cart</h1>
+              <p className="text-muted-foreground">{cartItems.reduce((sum, item) => sum + item.quantity, 0)} item(s) in your cart</p>
+            </div>
+            {cartItems.length > 0 && (
+              <Button 
+                variant="outline" 
+                onClick={handleClearCart}
+                className="text-red-600 border-red-600 hover:bg-red-50"
+              >
+                Clear Cart (Fix DB Issues)
+              </Button>
+            )}
+          </div>
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
@@ -408,11 +439,11 @@ function CartPageContent() {
                         <h3 className="font-semibold text-lg">{product.name}</h3>
                         <p className="text-sm text-muted-foreground line-clamp-2">{product.description}</p>
                         <div className="flex items-center space-x-2 mt-2">
-                          <span className="text-lg font-bold">${discountedPrice.toFixed(2)}</span>
-                          {product.discount > 0 && (
+                          <span className="text-lg font-bold">PKR {discountedPrice.toFixed(2)}</span>
+                          {Number(product.discount) > 0 && (
                             <>
                               <span className="text-sm text-muted-foreground line-through">
-                                ${product.price.toFixed(2)}
+                                PKR {product.price.toFixed(2)}
                               </span>
                               <span className="text-sm bg-gradient-to-r from-red-500 to-red-600 text-white px-3 py-1 rounded-lg font-bold shadow-md">
                                 -{product.discount}% OFF

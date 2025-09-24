@@ -288,12 +288,12 @@ export default function TrackOrderPage() {
                           <p className="font-medium text-foreground">{item.name}</p>
                           <p className="text-sm text-muted-foreground">Quantity: {item.quantity}</p>
                         </div>
-                        <p className="font-semibold text-foreground">PKR {item.price.toFixed(2)}</p>
+                        <p className="font-semibold text-foreground">PKR {item.price % 1 === 0 ? item.price.toString() : item.price.toFixed(2)}</p>
                       </div>
                     ))}
                     <div className="flex justify-between items-center pt-3 border-t border-border">
                       <p className="text-lg font-semibold text-foreground">Total</p>
-                      <p className="text-lg font-bold text-foreground">PKR {orderDetails.total.toFixed(2)}</p>
+                      <p className="text-lg font-bold text-foreground">PKR {orderDetails.total % 1 === 0 ? orderDetails.total.toString() : orderDetails.total.toFixed(2)}</p>
                     </div>
                   </div>
                 </CardContent>

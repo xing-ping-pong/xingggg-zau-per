@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
-import Category from '@/lib/models/Category';
+import { Category } from '@/lib/models';
 import { authenticateUser } from '@/lib/auth';
 
 export async function GET(req: NextRequest) {
@@ -19,7 +19,6 @@ export async function GET(req: NextRequest) {
     }
 
     const categories = await Category.find(query)
-      .populate('parentCategory', 'name slug')
       .sort({ name: 1 })
       .lean();
 

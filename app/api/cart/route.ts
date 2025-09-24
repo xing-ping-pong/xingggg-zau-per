@@ -263,12 +263,58 @@ export async function DELETE(req: NextRequest) {
     await connectDB();
 
     const body = await req.json();
-    const { userId, productId, isGuest = false } = body;
+    const { userId, productId, isGuest = false, clearAll = false } = body;
 
-    if (!userId || !productId) {
+    if (!userId) {
       return NextResponse.json({
         success: false,
-        message: 'User ID and Product ID are required'
+        message: 'User ID is required'
+      }, { status: 400 });
+    }
+
+    // Handle clear all cart items
+    if (clearAll) {
+      if (isGuest) {
+        // Clear guest cart by IP
+        const ipAddress = getClientIP(req);
+        const guestUser = await GuestUser.findOne({ ipAddress });
+        
+        if (guestUser) {
+          guestUser.cartItems = [];
+          await guestUser.save();
+        }
+
+        const response = NextResponse.json({
+          success: true,
+          message: 'Cart cleared successfully',
+          data: { cart: { items: [] } }
+        });
+
+        return addPerformanceHeaders(response, startTime);
+      } else {
+        // Clear registered user cart
+        const cart = await Cart.findOne({ user: userId });
+        
+        if (cart) {
+          cart.items = [];
+          await cart.save();
+        }
+
+        const response = NextResponse.json({
+          success: true,
+          message: 'Cart cleared successfully',
+          data: { cart: { items: [] } }
+        });
+
+        return addPerformanceHeaders(response, startTime);
+      }
+    }
+
+    // Handle single product removal
+    if (!productId) {
+      return NextResponse.json({
+        success: false,
+        message: 'Product ID is required for single item removal'
       }, { status: 400 });
     }
 

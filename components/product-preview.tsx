@@ -7,6 +7,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/components/ui/dialog"
 import { Heart, ShoppingCart, Star, Eye, Loader2 } from "lucide-react"
 import { useCart } from "@/lib/contexts/cart-context"
+import { ShareButton } from "@/components/ui/share-button"
 
 interface Product {
   _id: string;
@@ -43,6 +44,11 @@ export function ProductPreview({ product, showQuickActions = true }: ProductPrev
   // Calculate discounted price
   const getDiscountedPrice = (price: number, discount: number) => {
     return discount > 0 ? price - (price * discount / 100) : price
+  }
+
+  // Format price to remove unnecessary decimal places
+  const formatPrice = (price: number) => {
+    return price % 1 === 0 ? price.toString() : price.toFixed(2)
   }
 
   // Check if product is new (created in last 7 days)
@@ -106,7 +112,7 @@ export function ProductPreview({ product, showQuickActions = true }: ProductPrev
         )}
         
         {/* Top Right - Discount Badge */}
-        {product.discount > 0 && (
+        {Number(product.discount) > 0 && (
           <div className="absolute top-3 right-3 z-10 bg-gradient-to-r from-red-500 to-red-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg border border-white/20">
             -{product.discount}%
           </div>
@@ -123,6 +129,15 @@ export function ProductPreview({ product, showQuickActions = true }: ProductPrev
                 }`}
               />
             </button>
+            <ShareButton
+              productName={product.name}
+              productPrice={product.price}
+              productImage={product.imageUrl}
+              discount={product.discount}
+              variant="icon"
+              size="sm"
+              className="w-8 h-8 bg-white/90 rounded-full flex items-center justify-center transition-colors hover:bg-white"
+            />
             <Dialog open={isPreviewOpen} onOpenChange={setIsPreviewOpen}>
               <DialogTrigger asChild>
                 <button className="w-8 h-8 bg-white/90 rounded-full flex items-center justify-center transition-colors hover:bg-white">
@@ -145,10 +160,10 @@ export function ProductPreview({ product, showQuickActions = true }: ProductPrev
                       <p className="text-muted-foreground">{product.category?.name}</p>
                     </div>
                     <div className="flex items-center space-x-2">
-                      <span className="text-3xl font-bold">PKR {discountedPrice.toFixed(2)}</span>
-                      {product.discount > 0 && (
+                      <span className="text-3xl font-bold">PKR {formatPrice(discountedPrice)}</span>
+                      {Number(product.discount) > 0 && (
                         <span className="text-lg text-muted-foreground line-through">
-                          PKR {product.price.toFixed(2)}
+                          PKR {formatPrice(product.price)}
                         </span>
                       )}
                     </div>
@@ -223,10 +238,10 @@ export function ProductPreview({ product, showQuickActions = true }: ProductPrev
         <p className="text-sm text-muted-foreground mb-3 line-clamp-2">{product.description}</p>
         <div className="flex items-center justify-between flex-wrap gap-2">
           <div className="flex items-center space-x-2">
-            <span className="text-xl font-bold text-foreground">PKR {discountedPrice.toFixed(2)}</span>
-            {product.discount > 0 && (
+            <span className="text-xl font-bold text-foreground">PKR {formatPrice(discountedPrice)}</span>
+            {Number(product.discount) > 0 && (
               <span className="text-base text-muted-foreground line-through">
-                PKR {product.price.toFixed(2)}
+                PKR {formatPrice(product.price)}
               </span>
             )}
           </div>

@@ -118,11 +118,11 @@ class EmailService {
             ${data.items.map(item => `
               <div class="item">
                 <span>${item.name} x${item.quantity}</span>
-                <span>$${item.price.toFixed(2)}</span>
+                <span>PKR {item.price.toFixed(2)}</span>
               </div>
             `).join('')}
             
-            <div class="total">Total: $${data.totalAmount.toFixed(2)}</div>
+            <div class="total">Total: PKR {data.totalAmount.toFixed(2)}</div>
           </div>
 
           <div class="order-details">
@@ -167,9 +167,9 @@ Track Your Package: ${data.trackingUrl}
 Order Number: #${data.orderNumber}
 
 Items Ordered:
-${data.items.map(item => `- ${item.name} x${item.quantity} - $${item.price.toFixed(2)}`).join('\n')}
+${data.items.map(item => `- ${item.name} x${item.quantity} - PKR ${item.price.toFixed(2)}`).join('\n')}
 
-Total: $${data.totalAmount.toFixed(2)}
+Total: PKR {data.totalAmount.toFixed(2)}
 
 🚚 SHIPPING ADDRESS:
 ${data.shippingAddress.street}
@@ -244,11 +244,11 @@ If you have any questions, please contact our customer service.
             ${data.items.map(item => `
               <div class="item">
                 <span>${item.name} x${item.quantity}</span>
-                <span>$${item.price.toFixed(2)}</span>
+                <span>PKR {item.price.toFixed(2)}</span>
               </div>
             `).join('')}
             
-            <div class="total">Total: $${data.totalAmount.toFixed(2)}</div>
+            <div class="total">Total: PKR {data.totalAmount.toFixed(2)}</div>
           </div>
 
           <div class="order-details">
@@ -287,9 +287,9 @@ Thank you for your order! We've received your order #${data.orderNumber} and wil
 Order Number: #${data.orderNumber}
 
 Items Ordered:
-${data.items.map(item => `- ${item.name} x${item.quantity} - $${item.price.toFixed(2)}`).join('\n')}
+${data.items.map(item => `- ${item.name} x${item.quantity} - PKR ${item.price.toFixed(2)}`).join('\n')}
 
-Total: $${data.totalAmount.toFixed(2)}
+Total: PKR {data.totalAmount.toFixed(2)}
 
 🚚 SHIPPING ADDRESS:
 ${data.shippingAddress.street}
