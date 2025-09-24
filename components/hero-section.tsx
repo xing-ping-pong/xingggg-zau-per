@@ -28,14 +28,8 @@ export function HeroSection() {
           </span>
         </h1>
         <p className="text-lg sm:text-xl md:text-2xl text-white/90 mb-6 sm:mb-8 max-w-2xl mx-auto text-pretty leading-relaxed">
-          Sophisticated simplicity for the independent mind. Discover our exclusive collection of luxury fragrances and premium colognes, meticulously crafted with the finest ingredients from around the world. Each scent tells a unique story, designed for those who appreciate authentic elegance and timeless sophistication.
+        Sophisticated simplicity for the independent mind. Discover fragrances that tell your story.
         </p>
-        <div className="text-white/80 text-sm sm:text-base max-w-3xl mx-auto mb-6 sm:mb-8 space-y-2">
-          <p>✨ Authentic designer perfumes from renowned brands</p>
-          <p>🌍 Worldwide shipping with premium packaging</p>
-          <p>💎 Exclusive limited edition collections</p>
-          <p>🎁 Complimentary samples with every order</p>
-        </div>
         <Button
           size="lg"
           className="luxury-gradient text-black font-semibold px-6 sm:px-8 py-4 sm:py-6 text-base sm:text-lg hover:scale-105 transition-transform duration-300"
