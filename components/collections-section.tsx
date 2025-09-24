@@ -4,6 +4,7 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Loader2, ArrowRight } from "lucide-react"
 import { useRouter } from "next/navigation"
+import Image from "next/image"
 
 interface Category {
   _id: string;
@@ -76,8 +77,8 @@ export function CollectionsSection() {
           <h2 className="font-serif text-3xl sm:text-4xl md:text-5xl font-bold text-foreground mb-4 text-balance">
             Our Collections
           </h2>
-          <p className="text-muted-foreground text-base sm:text-lg max-w-2xl mx-auto text-pretty">
-            Curated fragrances for every personality, crafted with the finest ingredients
+          <p className="text-muted-foreground text-base sm:text-lg max-w-3xl mx-auto text-pretty">
+            Discover our meticulously curated fragrance collections, each designed to capture the essence of luxury and sophistication. From timeless classics to contemporary masterpieces, our selection represents the pinnacle of perfumery artistry. Every bottle in our collection is carefully chosen for its exceptional quality, authentic craftsmanship, and ability to create unforgettable moments.
           </p>
         </div>
 
@@ -138,10 +139,12 @@ export function CollectionsSection() {
                   <div key={category._id} className="group relative overflow-hidden rounded-2xl hover-lift cursor-pointer"
                        onClick={() => router.push(`/products?category=${category.slug}`)}>
                     <div className="aspect-[4/5] sm:aspect-[4/5] relative">
-                      <img
+                      <Image
                         src={getCategoryImage(category.name, index)}
-                        alt={`${category.name} Collection`}
-                        className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                        alt={`${category.name} Collection - Luxury fragrance collection`}
+                        fill
+                        className="object-cover transition-transform duration-700 group-hover:scale-110"
+                        sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                       

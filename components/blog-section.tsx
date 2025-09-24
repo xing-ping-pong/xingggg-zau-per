@@ -5,6 +5,7 @@ import { Card, CardContent } from "@/components/ui/card"
 import { Button } from "@/components/ui/button"
 import { Calendar, ArrowRight, Loader2 } from "lucide-react"
 import Link from "next/link"
+import Image from "next/image"
 
 interface BlogPost {
   _id: string;
@@ -119,10 +120,12 @@ export function BlogSection() {
             blogPosts.map((post) => (
               <Card key={post._id} className="group hover-lift border-0 bg-background overflow-hidden">
                 <div className="relative aspect-[4/3] overflow-hidden">
-                  <img
+                  <Image
                     src={post.featuredImage || "/placeholder.svg"}
-                    alt={post.title}
-                    className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+                    alt={`${post.title} - Blog post featured image`}
+                    fill
+                    className="object-cover transition-transform duration-700 group-hover:scale-110"
+                    sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                   />
                 </div>
                 <CardContent className="p-6">
