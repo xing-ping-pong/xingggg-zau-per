@@ -9,16 +9,20 @@ interface PageProps {
 
 async function getPage(slug: string) {
   try {
-    const response = await fetch(`${process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'}/api/pages/${slug}`, {
-      cache: 'no-store' // Always fetch fresh data
-    })
+    // Import the database connection and model directly for server-side rendering
+    const connectDB = (await import('@/lib/mongodb')).default
+    const Page = (await import('@/lib/models/page')).default
     
-    if (!response.ok) {
+    await connectDB()
+    
+    const page = await Page.findOne({ slug, isActive: true })
+    
+    if (!page) {
+      console.error(`Page not found: ${slug}`)
       return null
     }
     
-    const data = await response.json()
-    return data.success ? data.data.page : null
+    return page
   } catch (error) {
     console.error('Error fetching page:', error)
     return null
