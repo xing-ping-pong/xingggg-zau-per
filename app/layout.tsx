@@ -4,6 +4,7 @@ import { Playfair_Display, Inter } from "next/font/google"
 import { Suspense } from "react"
 import { CartProvider } from "@/lib/contexts/cart-context"
 import { ToastProvider } from "@/lib/contexts/toast-context"
+import { StructuredData } from "@/components/structured-data"
 import "./globals.css"
 
 const playfair = Playfair_Display({
@@ -19,8 +20,11 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-  title: "ZAU Perfumes - Luxury Fragrances & Premium Cologne Collection",
-  description: "Discover ZAU Perfumes' exclusive collection of luxury fragrances and premium colognes. Sophisticated simplicity for the independent mind. Shop authentic designer perfumes with worldwide shipping.",
+  title: "ZAU Perfumes - Luxury Fragrances Collection",
+  description: "Discover ZAU Perfumes' exclusive collection of luxury fragrances and premium colognes. Sophisticated simplicity for the independent mind. Shop authentic designer perfumes.",
+  alternates: {
+    canonical: 'https://zauperfumes.com'
+  },
   keywords: "luxury perfumes, designer fragrances, premium cologne, ZAU perfumes, authentic perfumes, luxury scents, exclusive fragrances",
   authors: [{ name: "ZAU Perfumes" }],
   creator: "ZAU Perfumes",
@@ -40,8 +44,8 @@ export const metadata: Metadata = {
   openGraph: {
     type: 'website',
     locale: 'en_US',
-    url: 'https://xingggg-zau-per.vercel.app',
-    title: 'ZAU Perfumes - Luxury Fragrances & Premium Cologne Collection',
+    url: 'https://zauperfumes.com',
+    title: 'ZAU Perfumes - Luxury Fragrances Collection',
     description: 'Discover ZAU Perfumes\' exclusive collection of luxury fragrances and premium colognes. Sophisticated simplicity for the independent mind.',
     siteName: 'ZAU Perfumes',
     images: [
@@ -55,7 +59,7 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: 'summary_large_image',
-    title: 'ZAU Perfumes - Luxury Fragrances & Premium Cologne Collection',
+    title: 'ZAU Perfumes - Luxury Fragrances Collection',
     description: 'Discover ZAU Perfumes\' exclusive collection of luxury fragrances and premium colognes.',
     images: ['/logo.png'],
   },
@@ -75,33 +79,10 @@ export default function RootLayout({
 }: Readonly<{
   children: React.ReactNode
 }>) {
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    "name": "ZAU Perfumes",
-    "description": "Luxury fragrances and premium cologne collection",
-    "url": "https://xingggg-zau-per.vercel.app",
-    "logo": "https://xingggg-zau-per.vercel.app/logo.png",
-    "contactPoint": {
-      "@type": "ContactPoint",
-      "contactType": "customer service",
-      "availableLanguage": "English"
-    },
-    "sameAs": [],
-    "potentialAction": {
-      "@type": "SearchAction",
-      "target": "https://xingggg-zau-per.vercel.app/products?q={search_term_string}",
-      "query-input": "required name=search_term_string"
-    }
-  }
-
   return (
     <html lang="en" className="dark">
       <head>
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-        />
+        <StructuredData />
       </head>
       <body className={`font-sans ${playfair.variable} ${inter.variable} antialiased`}>
         <CartProvider>

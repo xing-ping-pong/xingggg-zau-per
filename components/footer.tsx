@@ -1,4 +1,5 @@
 import { Facebook, Instagram, Twitter, Youtube } from "lucide-react"
+import Link from "next/link"
 
 export function Footer() {
   return (
@@ -51,29 +52,24 @@ export function Footer() {
             <h3 className="font-semibold text-foreground mb-4">Quick Links</h3>
             <ul className="space-y-3">
               <li>
-                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="/about-us" className="text-muted-foreground hover:text-foreground transition-colors">
                   About Us
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="/our-story" className="text-muted-foreground hover:text-foreground transition-colors">
                   Our Story
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Ingredients
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="/sustainability" className="text-muted-foreground hover:text-foreground transition-colors">
                   Sustainability
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="/press" className="text-muted-foreground hover:text-foreground transition-colors">
                   Press
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -83,29 +79,24 @@ export function Footer() {
             <h3 className="font-semibold text-foreground mb-4">Customer Care</h3>
             <ul className="space-y-3">
               <li>
-                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="/help-center" className="text-muted-foreground hover:text-foreground transition-colors">
                   Help Center
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="/shipping-info" className="text-muted-foreground hover:text-foreground transition-colors">
                   Shipping Info
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="/returns" className="text-muted-foreground hover:text-foreground transition-colors">
                   Returns
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Size Guide
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+                <Link href="/contact" className="text-muted-foreground hover:text-foreground transition-colors">
                   Contact Us
-                </a>
+                </Link>
               </li>
             </ul>
           </div>
@@ -116,15 +107,15 @@ export function Footer() {
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className="text-muted-foreground text-sm">Copyright © 2025 ZAU Perfumes. All Rights Reserved.</p>
             <div className="flex space-x-6 text-sm">
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+              <Link href="/privacy-policy" className="text-muted-foreground hover:text-foreground transition-colors">
                 Privacy Policy
-              </a>
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+              </Link>
+              <Link href="/terms-conditions" className="text-muted-foreground hover:text-foreground transition-colors">
                 Terms & Conditions
-              </a>
-              <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
+              </Link>
+              <Link href="/cookie-policy" className="text-muted-foreground hover:text-foreground transition-colors">
                 Cookie Policy
-              </a>
+              </Link>
             </div>
           </div>
         </div>

@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { usePathname } from "next/navigation"
 import { cn } from "@/lib/utils"
-import { Package, ShoppingCart, MessageSquare, FileText, Users, BarChart3, Settings, X, Star, MessageCircle } from "lucide-react"
+import { Package, ShoppingCart, MessageSquare, FileText, Users, BarChart3, Settings, X, Star, MessageCircle, File } from "lucide-react"
 
 const navigation = [
   { name: "Dashboard", href: "/admin", icon: BarChart3 },
@@ -14,6 +14,7 @@ const navigation = [
   { name: "Questions & Answers", href: "/admin/questions", icon: MessageCircle },
   { name: "Messages", href: "/admin/messages", icon: MessageSquare },
   { name: "Blog Posts", href: "/admin/blog", icon: FileText },
+  { name: "Pages", href: "/admin/pages", icon: File },
   { name: "Settings", href: "/admin/settings", icon: Settings },
 ]
 

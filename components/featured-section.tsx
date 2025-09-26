@@ -79,7 +79,7 @@ export function FeaturedSection() {
             Curated Selections
           </h2>
           <p className="text-muted-foreground text-base sm:text-lg max-w-3xl mx-auto text-pretty">
-            Explore our handpicked selection of the world's most coveted fragrances, each chosen for its exceptional quality, distinctive character, and ability to evoke powerful emotions. From iconic designer masterpieces to rare artisanal creations, our featured collection represents the finest in luxury perfumery, offering something extraordinary for every discerning fragrance enthusiast.
+          Discover our most coveted fragrances, carefully selected for their exceptional quality
           </p>
         </div>
 

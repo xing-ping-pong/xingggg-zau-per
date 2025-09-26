@@ -190,24 +190,38 @@ export default function ProductQuestions({ productId }: ProductQuestionsProps) {
                 <div>
                   <h4 className="font-medium mb-3">Add your details *</h4>
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label htmlFor="question-first-name" className="sr-only">First name</label>
+                      <Input
+                        id="question-first-name"
+                        placeholder="First name"
+                        value={formData.firstName}
+                        onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
+                        required
+                      />
+                    </div>
+                    <div>
+                      <label htmlFor="question-last-name" className="sr-only">Last name</label>
+                      <Input
+                        id="question-last-name"
+                        placeholder="Last name"
+                        value={formData.lastName}
+                        onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                        required
+                      />
+                    </div>
+                  </div>
+                  <div className="mt-4">
+                    <label htmlFor="question-email" className="sr-only">Email address</label>
                     <Input
-                      placeholder="First name"
-                      value={formData.firstName}
-                      onChange={(e) => setFormData({ ...formData, firstName: e.target.value })}
-                    />
-                    <Input
-                      placeholder="Last name"
-                      value={formData.lastName}
-                      onChange={(e) => setFormData({ ...formData, lastName: e.target.value })}
+                      id="question-email"
+                      placeholder="Email"
+                      type="email"
+                      value={formData.email}
+                      onChange={(e) => setFormData({ ...formData, email: e.target.value })}
+                      required
                     />
                   </div>
-                  <Input
-                    placeholder="Email"
-                    type="email"
-                    value={formData.email}
-                    onChange={(e) => setFormData({ ...formData, email: e.target.value })}
-                    className="mt-4"
-                  />
                 </div>
 
                 <div className="flex gap-3 pt-4">

@@ -13,11 +13,16 @@ export function NewsletterSection() {
           </p>
 
           <div className="flex flex-col sm:flex-row gap-4 max-w-md mx-auto">
-            <Input
-              type="email"
-              placeholder="Enter your email address"
-              className="flex-1 bg-background border-border py-6"
-            />
+            <div className="flex-1">
+              <label htmlFor="newsletter-email" className="sr-only">Email address for newsletter subscription</label>
+              <Input
+                id="newsletter-email"
+                type="email"
+                placeholder="Enter your email address"
+                className="w-full bg-background border-border py-6"
+                required
+              />
+            </div>
             <Button className="luxury-gradient text-black font-semibold px-8 py-6">Subscribe</Button>
           </div>
 
