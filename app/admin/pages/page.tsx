@@ -210,26 +210,23 @@ export default function AdminPagesPage() {
 
     try {
       setSeeding(true)
-      // Mock API call
-      await new Promise(resolve => setTimeout(resolve, 1200)); 
-      const success = Math.random() > 0.1; 
+      const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
       
-      if (success) {
-        const defaultPages: Page[] = [
-            { _id: '101', slug: 'home', title: 'Homepage', content: '<h1>Welcome!</h1>', metaTitle: 'Home', metaDescription: 'Site homepage.', isActive: true, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
-            { _id: '102', slug: 'contact', title: 'Contact Us', content: '<p>Get in touch.</p>', metaTitle: 'Contact', metaDescription: 'Contact information.', isActive: true, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
-        ];
-        
-        // Merge existing pages with new default pages (without duplicates)
-        setPages(prevPages => {
-            const existingSlugs = new Set(prevPages.map(p => p.slug));
-            const newPages = defaultPages.filter(p => !existingSlugs.has(p.slug));
-            return [...prevPages, ...newPages];
-        });
-
-        showToast('Default pages seeded successfully (Mock)', 'success')
+      const response = await fetch('/api/admin/seed-pages', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+      
+      const data = await response.json()
+      
+      if (data.success) {
+        showToast(data.message, 'success')
+        // Refresh the pages list
+        fetchPages()
       } else {
-        showToast('Failed to seed pages (Mock Failure)', 'error')
+        showToast(data.message || 'Failed to seed pages', 'error')
       }
     } catch (error) {
       console.error('Error seeding pages:', error)
