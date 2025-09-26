@@ -161,23 +161,6 @@ export default async function DynamicPage({ params }: PageProps) {
                 }
                 
                 return sections.map((section, index) => (
-                  <div key={index} className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow">
-                    <h3 className="font-serif text-lg font-semibold text-foreground mb-3">{section.title}</h3>
-                    {section.description && (
-                      <p className="text-muted-foreground text-sm leading-relaxed font-light mb-4">
-                        {section.description}
-                      </p>
-                    )}
-                    {section.listItems.length > 0 && (
-                      <div className="space-y-2">
-                        {section.listItems.map((item, itemIndex) => (
-                          <div key={itemIndex} className="text-muted-foreground text-sm font-light">
-                            • {item}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
                 ))
               })()}
             </div>
