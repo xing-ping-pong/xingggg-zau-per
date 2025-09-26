@@ -112,88 +112,77 @@ export default async function DynamicPage({ params }: PageProps) {
       <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
         <div className="max-w-4xl mx-auto">
           <div className="space-y-8">
-            {/* Structured Content Layout */}
+            {/* Parse and structure the content into cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-              {/* Information We Collect */}
-              <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow">
-                <h3 className="font-serif text-lg font-semibold text-foreground mb-3">Information We Collect</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed font-light mb-4">
-                  We collect information you provide directly to us, such as when you create an account, make a purchase, or contact us for support.
-                </p>
-                <div className="space-y-2">
-                  <div className="text-muted-foreground text-sm font-light">• Personal Information</div>
-                  <div className="text-muted-foreground text-sm font-light">• Usage Information</div>
-                  <div className="text-muted-foreground text-sm font-light">• Device Information</div>
-                </div>
-              </div>
-
-              {/* How We Use Your Information */}
-              <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow">
-                <h3 className="font-serif text-lg font-semibold text-foreground mb-3">How We Use Your Information</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed font-light mb-4">
-                  We use the information we collect to provide, maintain, and improve our services.
-                </p>
-                <div className="space-y-2">
-                  <div className="text-muted-foreground text-sm font-light">• Process and fulfill orders</div>
-                  <div className="text-muted-foreground text-sm font-light">• Provide customer support</div>
-                  <div className="text-muted-foreground text-sm font-light">• Send marketing communications</div>
-                </div>
-              </div>
-
-              {/* Information Sharing */}
-              <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow">
-                <h3 className="font-serif text-lg font-semibold text-foreground mb-3">Information Sharing</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed font-light mb-4">
-                  We do not sell, trade, or otherwise transfer your personal information to third parties without your consent.
-                </p>
-                <div className="space-y-2">
-                  <div className="text-muted-foreground text-sm font-light">• Service providers</div>
-                  <div className="text-muted-foreground text-sm font-light">• Legal requirements</div>
-                  <div className="text-muted-foreground text-sm font-light">• Business transfers</div>
-                </div>
-              </div>
-
-              {/* Data Security */}
-              <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow">
-                <h3 className="font-serif text-lg font-semibold text-foreground mb-3">Data Security</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed font-light mb-4">
-                  We implement appropriate security measures to protect your personal information against unauthorized access.
-                </p>
-                <div className="space-y-2">
-                  <div className="text-muted-foreground text-sm font-light">• Encryption in transit</div>
-                  <div className="text-muted-foreground text-sm font-light">• Secure data storage</div>
-                  <div className="text-muted-foreground text-sm font-light">• Regular security audits</div>
-                </div>
-              </div>
-
-              {/* Your Rights */}
-              <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow">
-                <h3 className="font-serif text-lg font-semibold text-foreground mb-3">Your Rights</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed font-light mb-4">
-                  You have certain rights regarding your personal information, including the right to access, update, or delete your data.
-                </p>
-                <div className="space-y-2">
-                  <div className="text-muted-foreground text-sm font-light">• Access your data</div>
-                  <div className="text-muted-foreground text-sm font-light">• Update your information</div>
-                  <div className="text-muted-foreground text-sm font-light">• Delete your account</div>
-                </div>
-              </div>
-
-              {/* Contact Us */}
-              <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow">
-                <h3 className="font-serif text-lg font-semibold text-foreground mb-3">Contact Us</h3>
-                <p className="text-muted-foreground text-sm leading-relaxed font-light mb-4">
-                  If you have any questions about this privacy policy, please contact us.
-                </p>
-                <div className="space-y-2">
-                  <div className="text-muted-foreground text-sm font-light">• Email: privacy@zauperfumes.com</div>
-                  <div className="text-muted-foreground text-sm font-light">• Phone: +1 (555) 123-4567</div>
-                  <div className="text-muted-foreground text-sm font-light">• Address: 123 Perfume St, NY</div>
-                </div>
-              </div>
+              {(() => {
+                // Simple HTML parsing to extract sections
+                const content = page.content
+                const sections = []
+                
+                // Split content by H2 headings
+                const h2Regex = /<h2[^>]*>(.*?)<\/h2>/gi
+                const parts = content.split(h2Regex)
+                
+                for (let i = 1; i < parts.length; i += 2) {
+                  const title = parts[i].replace(/<[^>]*>/g, '').trim()
+                  const contentAfterTitle = parts[i + 1] || ''
+                  
+                  // Extract first paragraph
+                  const pMatch = contentAfterTitle.match(/<p[^>]*>(.*?)<\/p>/i)
+                  const description = pMatch ? pMatch[1].replace(/<[^>]*>/g, '').trim() : ''
+                  
+                  // Extract list items
+                  const listItems = []
+                  const ulMatch = contentAfterTitle.match(/<ul[^>]*>(.*?)<\/ul>/is)
+                  if (ulMatch) {
+                    const liMatches = ulMatch[1].match(/<li[^>]*>(.*?)<\/li>/gi)
+                    if (liMatches) {
+                      listItems.push(...liMatches.map(li => li.replace(/<[^>]*>/g, '').trim()))
+                    }
+                  }
+                  
+                  sections.push({
+                    title,
+                    description,
+                    listItems
+                  })
+                }
+                
+                // If no H2 sections found, create a single card with the content
+                if (sections.length === 0) {
+                  const pMatch = content.match(/<p[^>]*>(.*?)<\/p>/i)
+                  const description = pMatch ? pMatch[1].replace(/<[^>]*>/g, '').trim() : content.replace(/<[^>]*>/g, '').trim()
+                  
+                  sections.push({
+                    title: 'Information',
+                    description: description.substring(0, 200) + (description.length > 200 ? '...' : ''),
+                    listItems: []
+                  })
+                }
+                
+                return sections.map((section, index) => (
+                  <div key={index} className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow">
+                    <h3 className="font-serif text-lg font-semibold text-foreground mb-3">{section.title}</h3>
+                    {section.description && (
+                      <p className="text-muted-foreground text-sm leading-relaxed font-light mb-4">
+                        {section.description}
+                      </p>
+                    )}
+                    {section.listItems.length > 0 && (
+                      <div className="space-y-2">
+                        {section.listItems.map((item, itemIndex) => (
+                          <div key={itemIndex} className="text-muted-foreground text-sm font-light">
+                            • {item}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ))
+              })()}
             </div>
 
-            {/* Fallback for content that doesn't fit the structured layout */}
+            {/* Fallback for any remaining content */}
             <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-8 shadow-lg">
               <div 
                 className="prose prose-sm max-w-none

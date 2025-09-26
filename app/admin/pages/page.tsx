@@ -9,7 +9,7 @@ import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger, Dialog
 import { Label } from "@/components/ui/label"
 import { Switch } from "@/components/ui/switch"
 import { Badge } from "@/components/ui/badge"
-import { Plus, Edit, Trash2, Eye, Save, Loader2, X } from "lucide-react"
+import { Plus, Edit, Trash2, Eye, Save, Loader2, X, Info, Code, FileText } from "lucide-react"
 
 // --- FIX: MOCK useToast to resolve compilation error ---
 // The original import "@/lib/contexts/toast-context" failed to resolve.
@@ -254,6 +254,132 @@ export default function AdminPagesPage() {
         <h1 className="text-3xl font-bold">Pages Management</h1>
         
         <div className="flex gap-4">
+          {/* Content Structure Guide */}
+          <Dialog>
+            <DialogTrigger asChild>
+              <Button variant="outline">
+                <Info className="w-4 h-4 mr-2" />
+                Content Guide
+              </Button>
+            </DialogTrigger>
+            <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
+              <DialogHeader>
+                <DialogTitle className="flex items-center gap-2">
+                  <FileText className="w-5 h-5" />
+                  Content Structure Guide
+                </DialogTitle>
+                <DialogDescription>
+                  Learn how to structure your page content for optimal card display
+                </DialogDescription>
+              </DialogHeader>
+              
+              <div className="space-y-6">
+                {/* How it works */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">How It Works</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <p className="text-sm text-muted-foreground">
+                      The page template automatically parses your HTML content and creates beautiful cards based on the structure below.
+                    </p>
+                    <div className="bg-muted/50 p-4 rounded-lg">
+                      <h4 className="font-semibold mb-2">Automatic Parsing:</h4>
+                      <ul className="text-sm space-y-1 text-muted-foreground">
+                        <li>• <strong>H2 headings</strong> become card titles</li>
+                        <li>• <strong>First paragraph</strong> after H2 becomes description</li>
+                        <li>• <strong>List items</strong> (ul/li) become bullet points</li>
+                        <li>• <strong>Responsive grid</strong> (1-3 columns based on screen size)</li>
+                      </ul>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Example Structure */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Example Structure</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="bg-muted/50 p-4 rounded-lg">
+                      <pre className="text-sm overflow-x-auto">
+{`<h2>Information We Collect</h2>
+<p>We collect information you provide directly to us, such as when you create an account, make a purchase, or contact us for support.</p>
+<ul>
+  <li>Personal Information</li>
+  <li>Usage Information</li>
+  <li>Device Information</li>
+</ul>
+
+<h2>How We Use Your Information</h2>
+<p>We use the information we collect to provide, maintain, and improve our services.</p>
+<ul>
+  <li>Process and fulfill orders</li>
+  <li>Provide customer support</li>
+  <li>Send marketing communications</li>
+</ul>
+
+<h2>Data Security</h2>
+<p>We implement appropriate security measures to protect your personal information against unauthorized access.</p>
+<ul>
+  <li>Encryption in transit</li>
+  <li>Secure data storage</li>
+  <li>Regular security audits</li>
+</ul>`}
+                      </pre>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Best Practices */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Best Practices</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-4">
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                      <div className="space-y-2">
+                        <h4 className="font-semibold text-green-600">✅ Do</h4>
+                        <ul className="text-sm space-y-1 text-muted-foreground">
+                          <li>• Use H2 for main sections</li>
+                          <li>• Keep descriptions concise (1-2 sentences)</li>
+                          <li>• Use bullet points for lists</li>
+                          <li>• Structure content logically</li>
+                          <li>• Test on different screen sizes</li>
+                        </ul>
+                      </div>
+                      <div className="space-y-2">
+                        <h4 className="font-semibold text-red-600">❌ Don't</h4>
+                        <ul className="text-sm space-y-1 text-muted-foreground">
+                          <li>• Use H1 in content (reserved for page title)</li>
+                          <li>• Make descriptions too long</li>
+                          <li>• Skip H2 headings</li>
+                          <li>• Use complex nested HTML</li>
+                          <li>• Forget to test the result</li>
+                        </ul>
+                      </div>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                {/* Fallback Behavior */}
+                <Card>
+                  <CardHeader>
+                    <CardTitle className="text-lg">Fallback Behavior</CardTitle>
+                  </CardHeader>
+                  <CardContent>
+                    <div className="bg-amber-50/50 p-4 rounded-lg border border-amber-200">
+                      <p className="text-sm text-amber-800">
+                        <strong>Note:</strong> If no H2 headings are found, the system will create a single "Information" card with the first paragraph content. 
+                        The full content will still be displayed below in a fallback section.
+                      </p>
+                    </div>
+                  </CardContent>
+                </Card>
+              </div>
+            </DialogContent>
+          </Dialog>
+
           {/* Seed Pages Button (Triggers Confirmation Dialog) */}
           <Button
             variant="outline"
