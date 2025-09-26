@@ -99,11 +99,6 @@ export function Footer() {
               </li>
               <li>
                 <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Size Guide
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-muted-foreground hover:text-foreground transition-colors">
                   Contact Us
                 </a>
               </li>
