@@ -111,34 +111,105 @@ export default async function DynamicPage({ params }: PageProps) {
       {/* Content Section */}
       <section className="container mx-auto px-4 sm:px-6 lg:px-8 py-12 sm:py-16">
         <div className="max-w-4xl mx-auto">
-          <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-3xl p-8 md:p-12 shadow-xl shadow-black/5 relative overflow-hidden">
-            {/* Subtle background pattern */}
-            <div className="absolute inset-0 opacity-5">
-              <div className="absolute top-0 left-0 w-full h-full bg-gradient-to-br from-amber-500/10 via-transparent to-amber-600/10"></div>
+          <div className="space-y-8">
+            {/* Structured Content Layout */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+              {/* Information We Collect */}
+              <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow">
+                <h3 className="font-serif text-lg font-semibold text-foreground mb-3">Information We Collect</h3>
+                <p className="text-muted-foreground text-sm leading-relaxed font-light mb-4">
+                  We collect information you provide directly to us, such as when you create an account, make a purchase, or contact us for support.
+                </p>
+                <div className="space-y-2">
+                  <div className="text-muted-foreground text-sm font-light">• Personal Information</div>
+                  <div className="text-muted-foreground text-sm font-light">• Usage Information</div>
+                  <div className="text-muted-foreground text-sm font-light">• Device Information</div>
+                </div>
+              </div>
+
+              {/* How We Use Your Information */}
+              <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow">
+                <h3 className="font-serif text-lg font-semibold text-foreground mb-3">How We Use Your Information</h3>
+                <p className="text-muted-foreground text-sm leading-relaxed font-light mb-4">
+                  We use the information we collect to provide, maintain, and improve our services.
+                </p>
+                <div className="space-y-2">
+                  <div className="text-muted-foreground text-sm font-light">• Process and fulfill orders</div>
+                  <div className="text-muted-foreground text-sm font-light">• Provide customer support</div>
+                  <div className="text-muted-foreground text-sm font-light">• Send marketing communications</div>
+                </div>
+              </div>
+
+              {/* Information Sharing */}
+              <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow">
+                <h3 className="font-serif text-lg font-semibold text-foreground mb-3">Information Sharing</h3>
+                <p className="text-muted-foreground text-sm leading-relaxed font-light mb-4">
+                  We do not sell, trade, or otherwise transfer your personal information to third parties without your consent.
+                </p>
+                <div className="space-y-2">
+                  <div className="text-muted-foreground text-sm font-light">• Service providers</div>
+                  <div className="text-muted-foreground text-sm font-light">• Legal requirements</div>
+                  <div className="text-muted-foreground text-sm font-light">• Business transfers</div>
+                </div>
+              </div>
+
+              {/* Data Security */}
+              <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow">
+                <h3 className="font-serif text-lg font-semibold text-foreground mb-3">Data Security</h3>
+                <p className="text-muted-foreground text-sm leading-relaxed font-light mb-4">
+                  We implement appropriate security measures to protect your personal information against unauthorized access.
+                </p>
+                <div className="space-y-2">
+                  <div className="text-muted-foreground text-sm font-light">• Encryption in transit</div>
+                  <div className="text-muted-foreground text-sm font-light">• Secure data storage</div>
+                  <div className="text-muted-foreground text-sm font-light">• Regular security audits</div>
+                </div>
+              </div>
+
+              {/* Your Rights */}
+              <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow">
+                <h3 className="font-serif text-lg font-semibold text-foreground mb-3">Your Rights</h3>
+                <p className="text-muted-foreground text-sm leading-relaxed font-light mb-4">
+                  You have certain rights regarding your personal information, including the right to access, update, or delete your data.
+                </p>
+                <div className="space-y-2">
+                  <div className="text-muted-foreground text-sm font-light">• Access your data</div>
+                  <div className="text-muted-foreground text-sm font-light">• Update your information</div>
+                  <div className="text-muted-foreground text-sm font-light">• Delete your account</div>
+                </div>
+              </div>
+
+              {/* Contact Us */}
+              <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow">
+                <h3 className="font-serif text-lg font-semibold text-foreground mb-3">Contact Us</h3>
+                <p className="text-muted-foreground text-sm leading-relaxed font-light mb-4">
+                  If you have any questions about this privacy policy, please contact us.
+                </p>
+                <div className="space-y-2">
+                  <div className="text-muted-foreground text-sm font-light">• Email: privacy@zauperfumes.com</div>
+                  <div className="text-muted-foreground text-sm font-light">• Phone: +1 (555) 123-4567</div>
+                  <div className="text-muted-foreground text-sm font-light">• Address: 123 Perfume St, NY</div>
+                </div>
+              </div>
             </div>
-            <div 
-              className="prose prose-lg max-w-none relative z-10
-                prose-headings:font-serif prose-headings:text-foreground prose-headings:font-semibold prose-headings:tracking-tight
-                prose-h1:text-2xl prose-h1:mb-6 prose-h1:mt-8 prose-h1:first:mt-0 prose-h1:leading-tight
-                prose-h2:text-xl prose-h2:mb-4 prose-h2:mt-6 prose-h2:leading-tight prose-h2:font-semibold
-                prose-h3:text-lg prose-h3:mb-3 prose-h3:mt-4 prose-h3:leading-tight prose-h3:font-semibold
-                prose-h4:text-base prose-h4:mb-2 prose-h4:mt-3 prose-h4:leading-tight prose-h4:font-medium
-                prose-p:text-muted-foreground prose-p:leading-relaxed prose-p:text-base prose-p:mb-4 prose-p:font-light
-                prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-a:font-medium prose-a:transition-colors
-                prose-strong:text-foreground prose-strong:font-semibold
-                prose-ul:text-muted-foreground prose-ul:space-y-2 prose-ul:my-4
-                prose-ol:text-muted-foreground prose-ol:space-y-2 prose-ol:my-4
-                prose-li:text-base prose-li:leading-relaxed prose-li:font-light
-                prose-blockquote:border-l-4 prose-blockquote:border-primary prose-blockquote:bg-muted/20 prose-blockquote:rounded-r-lg prose-blockquote:pl-4 prose-blockquote:py-2 prose-blockquote:my-4
-                prose-blockquote:text-muted-foreground prose-blockquote:italic prose-blockquote:text-base prose-blockquote:font-light prose-blockquote:leading-relaxed
-                prose-code:bg-muted prose-code:px-2 prose-code:py-1 prose-code:rounded prose-code:text-sm prose-code:font-mono prose-code:text-foreground
-                prose-pre:bg-muted prose-pre:rounded-lg prose-pre:border prose-pre:border-border prose-pre:p-4 prose-pre:overflow-x-auto
-                prose-table:text-muted-foreground prose-table:border-collapse prose-table:my-6 prose-table:rounded-lg prose-table:overflow-hidden
-                prose-th:bg-muted/50 prose-th:border prose-th:border-border prose-th:px-3 prose-th:py-2 prose-th:text-left prose-th:font-semibold prose-th:text-foreground
-                prose-td:border prose-td:border-border prose-td:px-3 prose-td:py-2 prose-td:text-muted-foreground
-                prose-hr:border-border prose-hr:my-8"
-              dangerouslySetInnerHTML={{ __html: page.content }}
-            />
+
+            {/* Fallback for content that doesn't fit the structured layout */}
+            <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-8 shadow-lg">
+              <div 
+                className="prose prose-sm max-w-none
+                  prose-headings:font-serif prose-headings:text-foreground prose-headings:font-semibold
+                  prose-h2:text-lg prose-h2:mb-4 prose-h2:mt-6 prose-h2:first:mt-0
+                  prose-h3:text-base prose-h3:mb-3 prose-h3:mt-4
+                  prose-p:text-muted-foreground prose-p:leading-relaxed prose-p:text-sm prose-p:mb-3 prose-p:font-light
+                  prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-a:font-medium
+                  prose-strong:text-foreground prose-strong:font-semibold
+                  prose-ul:text-muted-foreground prose-ul:space-y-1 prose-ul:my-3
+                  prose-li:text-sm prose-li:leading-relaxed prose-li:font-light
+                  prose-blockquote:border-l-2 prose-blockquote:border-primary prose-blockquote:bg-muted/10 prose-blockquote:rounded-r prose-blockquote:pl-3 prose-blockquote:py-2 prose-blockquote:my-3
+                  prose-blockquote:text-muted-foreground prose-blockquote:italic prose-blockquote:text-sm prose-blockquote:font-light"
+                dangerouslySetInnerHTML={{ __html: page.content }}
+              />
+            </div>
           </div>
         </div>
       </section>
