@@ -1,23 +1,37 @@
 import type React from "react"
 import type { Metadata } from "next"
-import { Playfair_Display, Inter } from "next/font/google"
 import { Suspense } from "react"
 import { CartProvider } from "@/lib/contexts/cart-context"
 import { ToastProvider } from "@/lib/contexts/toast-context"
 import { StructuredData } from "@/components/structured-data"
 import "./globals.css"
 
-const playfair = Playfair_Display({
-  subsets: ["latin"],
-  variable: "--font-playfair",
-  display: "swap",
-})
+// Font configuration with error handling
+let playfair: any = null
+let inter: any = null
 
-const inter = Inter({
-  subsets: ["latin"],
-  variable: "--font-inter",
-  display: "swap",
-})
+try {
+  const { Playfair_Display, Inter } = require("next/font/google")
+  
+  playfair = Playfair_Display({
+    subsets: ["latin"],
+    variable: "--font-playfair",
+    display: "swap",
+    fallback: ["serif"],
+  })
+
+  inter = Inter({
+    subsets: ["latin"],
+    variable: "--font-inter",
+    display: "swap",
+    fallback: ["system-ui", "arial"],
+  })
+} catch (error) {
+  console.warn("Failed to load Google Fonts, using fallback fonts:", error)
+  // Create fallback font objects
+  playfair = { variable: "--font-playfair" }
+  inter = { variable: "--font-inter" }
+}
 
 export const metadata: Metadata = {
   title: "ZAU Perfumes - Luxury Fragrances Collection",

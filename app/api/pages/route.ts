@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { connectDB } from '@/lib/mongodb'
+import connectDB from '@/lib/mongodb'
 import Page from '@/lib/models/page'
-import { verifyToken } from '@/lib/auth-utils'
+import { verifyToken } from '@/lib/auth'
 
 // GET /api/pages - Get all pages (public)
 export async function GET(request: NextRequest) {
