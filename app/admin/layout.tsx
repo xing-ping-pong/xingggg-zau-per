@@ -15,7 +15,8 @@ import {
   Star,
   MessageCircle,
   MessageSquare,
-  FolderTree
+  FolderTree,
+  File
 } from "lucide-react"
 import { Button } from "@/components/ui/button"
 import { ToastProvider } from "@/components/ui/toast"
@@ -26,6 +27,7 @@ const navigation = [
   { name: "Products", href: "/admin/products", icon: Package },
   { name: "Categories", href: "/admin/categories", icon: FolderTree },
   { name: "Blogs", href: "/admin/blogs", icon: FileText },
+  { name: "Pages", href: "/admin/pages", icon: File },
   { name: "Coupons", href: "/admin/coupons", icon: Tag },
   { name: "Orders", href: "/admin/orders", icon: ShoppingCart },
   { name: "Reviews & Comments", href: "/admin/reviews", icon: Star },

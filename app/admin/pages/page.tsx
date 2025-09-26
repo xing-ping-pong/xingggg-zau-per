@@ -38,6 +38,7 @@ export default function AdminPagesPage() {
     isActive: true
   })
   const [submitting, setSubmitting] = useState(false)
+  const [seeding, setSeeding] = useState(false)
   const { showToast } = useToast()
 
   useEffect(() => {
@@ -167,6 +168,35 @@ export default function AdminPagesPage() {
     resetForm()
   }
 
+  const handleSeedPages = async () => {
+    if (!confirm('This will create all default pages. Continue?')) return
+
+    try {
+      setSeeding(true)
+      const token = localStorage.getItem('token')
+      const response = await fetch('/api/admin/seed-pages', {
+        method: 'POST',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+      
+      const data = await response.json()
+      
+      if (data.success) {
+        showToast(data.message, 'success')
+        fetchPages()
+      } else {
+        showToast(data.message || 'Failed to seed pages', 'error')
+      }
+    } catch (error) {
+      console.error('Error seeding pages:', error)
+      showToast('Failed to seed pages', 'error')
+    } finally {
+      setSeeding(false)
+    }
+  }
+
   if (loading) {
     return (
       <div className="flex items-center justify-center min-h-screen">
@@ -183,7 +213,23 @@ export default function AdminPagesPage() {
       <div className="flex justify-between items-center mb-8">
         <h1 className="text-3xl font-bold">Pages Management</h1>
         
-        <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+        <div className="flex gap-4">
+          <Button
+            variant="outline"
+            onClick={handleSeedPages}
+            disabled={seeding}
+          >
+            {seeding ? (
+              <>
+                <div className="w-4 h-4 border-2 border-primary border-t-transparent rounded-full animate-spin mr-2" />
+                Seeding...
+              </>
+            ) : (
+              'Seed Default Pages'
+            )}
+          </Button>
+          
+          <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
           <DialogTrigger asChild>
             <Button onClick={() => handleDialogClose()}>
               <Plus className="w-4 h-4 mr-2" />
