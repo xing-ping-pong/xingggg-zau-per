@@ -69,37 +69,20 @@ export default function AdminPagesPage() {
   const fetchPages = useCallback(async () => {
     try {
       setLoading(true)
-      // NOTE: In a real app, ensure token retrieval and existence check is robust
       const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
       
-      // Mocking the API call for demonstration purposes in this environment
-      // Replace with actual fetch in a deployed Next.js app
-      /* const response = await fetch('/api/pages', {
+      const response = await fetch('/api/pages', {
         headers: {
           'Authorization': `Bearer ${token}`
         }
       })
       const data = await response.json()
-      */
-      
-      // Mock Data for successful compilation/preview:
-      await new Promise(resolve => setTimeout(resolve, 500)); 
-      const mockData = {
-          success: true,
-          data: {
-              pages: [
-                  { _id: '1', slug: 'about-us', title: 'About Our Company', content: '<p>Our mission is...</p>', metaTitle: 'About Us | My Site', metaDescription: 'Learn about our history and values.', isActive: true, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
-                  { _id: '2', slug: 'privacy-policy', title: 'Privacy Policy', content: '<p>We value your privacy.</p>', metaTitle: 'Privacy Policy', metaDescription: 'Our commitment to data protection.', isActive: true, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
-                  { _id: '3', slug: 'terms-of-service', title: 'Terms of Service', content: '<p>Read the terms here.</p>', metaTitle: 'Terms', metaDescription: 'Legal agreement between us and you.', isActive: false, createdAt: new Date().toISOString(), updatedAt: new Date().toISOString() },
-              ]
-          }
-      };
 
-      if (mockData.success) {
-        setPages(mockData.data.pages)
-        showToast('Pages loaded successfully (Mock data)', 'success')
+      if (data.success) {
+        setPages(data.data.pages)
+        showToast('Pages loaded successfully', 'success')
       } else {
-        showToast('Failed to fetch pages (Mock Error)', 'error')
+        showToast(data.message || 'Failed to fetch pages', 'error')
       }
 
     } catch (error) {
@@ -112,7 +95,7 @@ export default function AdminPagesPage() {
 
   useEffect(() => {
     fetchPages()
-  }, [fetchPages])
+  }, [])
 
   // Resets the form data and clears the editing state
   const resetForm = () => {
