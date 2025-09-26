@@ -77,7 +77,7 @@ export default function AdminPagesPage() {
         }
       })
       const data = await response.json()
-
+      
       if (data.success) {
         setPages(data.data.pages)
         showToast('Pages loaded successfully', 'success')
