@@ -49,28 +49,28 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   }
 }
 
-// Icon mapping for different page types
-const getPageIcon = (slug: string) => {
-  const iconMap: { [key: string]: any } = {
-    'about-us': Users,
-    'our-story': Heart,
-    'sustainability': Leaf,
-    'press': Award,
-    'help-center': Mail,
-    'shipping-info': Truck,
-    'returns': RotateCcw,
-    'privacy-policy': Shield,
-    'terms-conditions': FileText,
-    'cookie-policy': Cookie,
-  }
-  return iconMap[slug] || Sparkles
-}
-
 export default async function DynamicPage({ params }: PageProps) {
   const page = await getPage(params.slug)
   
   if (!page) {
     notFound()
+  }
+
+  // Icon mapping for different page types
+  const getPageIcon = (slug: string) => {
+    const iconMap: { [key: string]: any } = {
+      'about-us': Users,
+      'our-story': Heart,
+      'sustainability': Leaf,
+      'press': Award,
+      'help-center': Mail,
+      'shipping-info': Truck,
+      'returns': RotateCcw,
+      'privacy-policy': Shield,
+      'terms-conditions': FileText,
+      'cookie-policy': Cookie,
+    }
+    return iconMap[slug] || Sparkles
   }
 
   const PageIcon = getPageIcon(params.slug)
@@ -182,23 +182,6 @@ export default async function DynamicPage({ params }: PageProps) {
               })()}
             </div>
 
-            {/* Fallback for any remaining content */}
-            <div className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-8 shadow-lg">
-              <div 
-                className="prose prose-sm max-w-none
-                  prose-headings:font-serif prose-headings:text-foreground prose-headings:font-semibold
-                  prose-h2:text-lg prose-h2:mb-4 prose-h2:mt-6 prose-h2:first:mt-0
-                  prose-h3:text-base prose-h3:mb-3 prose-h3:mt-4
-                  prose-p:text-muted-foreground prose-p:leading-relaxed prose-p:text-sm prose-p:mb-3 prose-p:font-light
-                  prose-a:text-primary prose-a:no-underline hover:prose-a:underline prose-a:font-medium
-                  prose-strong:text-foreground prose-strong:font-semibold
-                  prose-ul:text-muted-foreground prose-ul:space-y-1 prose-ul:my-3
-                  prose-li:text-sm prose-li:leading-relaxed prose-li:font-light
-                  prose-blockquote:border-l-2 prose-blockquote:border-primary prose-blockquote:bg-muted/10 prose-blockquote:rounded-r prose-blockquote:pl-3 prose-blockquote:py-2 prose-blockquote:my-3
-                  prose-blockquote:text-muted-foreground prose-blockquote:italic prose-blockquote:text-sm prose-blockquote:font-light"
-                dangerouslySetInnerHTML={{ __html: page.content }}
-              />
-            </div>
           </div>
         </div>
       </section>
