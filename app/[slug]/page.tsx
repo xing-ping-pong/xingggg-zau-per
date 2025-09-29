@@ -1,11 +1,59 @@
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
+import Link from 'next/link'
 import { Header } from '@/components/header'
 import { Footer } from '@/components/footer'
-import { Sparkles, Heart, Shield, Award, Users, Leaf, Mail, Truck, RotateCcw, FileText, Cookie } from 'lucide-react'
+import { Sparkles, Heart, Shield, Award, Users, Leaf, Mail, Truck, RotateCcw, FileText, Cookie, ExternalLink, ArrowRight } from 'lucide-react'
 
 interface PageProps {
   params: { slug: string }
+}
+
+// FAQ Preview Component
+function FAQPreview({ count = 3 }: { count?: number }) {
+  const sampleFAQs = [
+    {
+      question: "Are your perfumes authentic?",
+      answer: "Absolutely! We are an authorized retailer for all the brands we carry. Every product is 100% authentic and comes directly from the manufacturer or authorized distributors."
+    },
+    {
+      question: "How do I track my order?",
+      answer: "Once your order ships, you'll receive a tracking number via email. You can also track your order by visiting our Track Your Order page."
+    },
+    {
+      question: "How long does shipping take?",
+      answer: "Standard shipping takes 3-5 business days within the US. Express shipping takes 1-2 business days. International shipping varies by location."
+    },
+    {
+      question: "What if I don't like my purchase?",
+      answer: "We offer a 30-day return policy for unopened products. If you're not completely satisfied, you can return your purchase for a full refund or exchange."
+    },
+    {
+      question: "How should I store my fragrances?",
+      answer: "Store your fragrances in a cool, dry place away from direct sunlight. Avoid storing them in the bathroom due to humidity and temperature fluctuations."
+    }
+  ]
+
+  const displayedFAQs = sampleFAQs.slice(0, count)
+
+  return (
+    <div className="space-y-3">
+      {displayedFAQs.map((faq, index) => (
+        <div key={index} className="border-l-2 border-primary/30 pl-4 py-2">
+          <h4 className="font-semibold text-sm text-foreground mb-1">{faq.question}</h4>
+          <p className="text-xs text-muted-foreground leading-relaxed">{faq.answer}</p>
+        </div>
+      ))}
+      <div className="pt-2">
+        <Link 
+          href="/faq" 
+          className="inline-flex items-center text-xs text-primary hover:text-primary/80 transition-colors font-medium"
+        >
+          View All FAQs <ArrowRight className="w-3 h-3 ml-1" />
+        </Link>
+      </div>
+    </div>
+  )
 }
 
 async function getPage(slug: string) {
@@ -119,9 +167,12 @@ export default async function DynamicPage({ params }: PageProps) {
                 const content = page.content
                 const sections = []
                 
-                // Split content by H2 headings
-                const h2Regex = /<h2[^>]*>(.*?)<\/h2>/gi
-                const parts = content.split(h2Regex)
+                // Debug: Log the content to see what we're parsing
+                console.log('Parsing content for page:', page.slug, 'Content:', content.substring(0, 200) + '...')
+                
+                // Split content by H2 and H3 headings
+                const headingRegex = /<h[23][^>]*>(.*?)<\/h[23]>/gi
+                const parts = content.split(headingRegex)
                 
                 for (let i = 1; i < parts.length; i += 2) {
                   const title = parts[i].replace(/<[^>]*>/g, '').trim()
@@ -131,34 +182,67 @@ export default async function DynamicPage({ params }: PageProps) {
                   const pMatch = contentAfterTitle.match(/<p[^>]*>(.*?)<\/p>/i)
                   const description = pMatch ? pMatch[1].replace(/<[^>]*>/g, '').trim() : ''
                   
-                  // Extract list items
-                  const listItems = []
-                  const ulMatch = contentAfterTitle.match(/<ul[^>]*>(.*?)<\/ul>/is)
-                  if (ulMatch) {
-                    const liMatches = ulMatch[1].match(/<li[^>]*>(.*?)<\/li>/gi)
-                    if (liMatches) {
-                      listItems.push(...liMatches.map(li => li.replace(/<[^>]*>/g, '').trim()))
-                    }
-                  }
-                  
-                  sections.push({
-                    title,
-                    description,
-                    listItems
-                  })
+                 // Extract list items
+                 const listItems = []
+                 const ulMatch = contentAfterTitle.match(/<ul[^>]*>(.*?)<\/ul>/is)
+                 if (ulMatch) {
+                   const liMatches = ulMatch[1].match(/<li[^>]*>(.*?)<\/li>/gi)
+                   if (liMatches) {
+                     listItems.push(...liMatches.map(li => li.replace(/<[^>]*>/g, '').trim()))
+                   }
+                 }
+                 
+                 // Extract buttons and links
+                 const buttons = []
+                 const buttonMatches = contentAfterTitle.match(/<button[^>]*>(.*?)<\/button>/gi)
+                 if (buttonMatches) {
+                   buttonMatches.forEach(button => {
+                     const hrefMatch = button.match(/href="([^"]*)"/)
+                     const textMatch = button.match(/>([^<]*)</)
+                     if (hrefMatch && textMatch) {
+                       buttons.push({
+                         text: textMatch[1].trim(),
+                         href: hrefMatch[1]
+                       })
+                     }
+                   })
+                 }
+                 
+                 // Extract special dynamic content
+                 const dynamicContent = []
+                 const faqMatch = contentAfterTitle.match(/<faq-preview[^>]*><\/faq-preview>/i)
+                 if (faqMatch) {
+                   dynamicContent.push({
+                     type: 'faq-preview',
+                     count: 3 // Show 3 FAQ items by default
+                   })
+                 }
+                 
+                 sections.push({
+                   title,
+                   description,
+                   listItems,
+                   buttons,
+                   dynamicContent
+                 })
                 }
                 
-                // If no H2 sections found, create a single card with the content
-                if (sections.length === 0) {
-                  const pMatch = content.match(/<p[^>]*>(.*?)<\/p>/i)
-                  const description = pMatch ? pMatch[1].replace(/<[^>]*>/g, '').trim() : content.replace(/<[^>]*>/g, '').trim()
-                  
-                  sections.push({
-                    title: 'Information',
-                    description: description.substring(0, 200) + (description.length > 200 ? '...' : ''),
-                    listItems: []
-                  })
-                }
+                // Debug: Log how many sections were found
+                console.log('Found sections:', sections.length, 'for page:', page.slug)
+                
+                 // If no H2/H3 sections found, create a single card with the content
+                 if (sections.length === 0) {
+                   const pMatch = content.match(/<p[^>]*>(.*?)<\/p>/i)
+                   const description = pMatch ? pMatch[1].replace(/<[^>]*>/g, '').trim() : content.replace(/<[^>]*>/g, '').trim()
+                   
+                   sections.push({
+                     title: 'Information',
+                     description: description.substring(0, 200) + (description.length > 200 ? '...' : ''),
+                     listItems: [],
+                     buttons: [],
+                     dynamicContent: []
+                   })
+                 }
                 
                 return sections.map((section, index) => (
                   <div key={index} className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow">
@@ -168,17 +252,42 @@ export default async function DynamicPage({ params }: PageProps) {
                         {section.description}
                       </p>
                     )}
-                    {section.listItems.length > 0 && (
-                      <div className="space-y-2">
-                        {section.listItems.map((item, itemIndex) => (
-                          <div key={itemIndex} className="text-muted-foreground text-sm font-light">
-                            • {item}
-                          </div>
-                        ))}
-                      </div>
-                    )}
-                  </div>
-                ))
+                     {section.listItems.length > 0 && (
+                       <div className="space-y-2">
+                         {section.listItems.map((item, itemIndex) => (
+                           <div key={itemIndex} className="text-muted-foreground text-sm font-light">
+                             • {item}
+                           </div>
+                         ))}
+                       </div>
+                     )}
+                     
+                     {/* Render dynamic content */}
+                     {section.dynamicContent.map((content, contentIndex) => (
+                       <div key={contentIndex} className="mt-4">
+                         {content.type === 'faq-preview' && (
+                           <FAQPreview count={content.count} />
+                         )}
+                       </div>
+                     ))}
+                     
+                     {/* Render buttons */}
+                     {section.buttons.length > 0 && (
+                       <div className="flex flex-wrap gap-3 mt-4">
+                         {section.buttons.map((button, buttonIndex) => (
+                           <Link
+                             key={buttonIndex}
+                             href={button.href}
+                             className="inline-flex items-center px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors text-sm font-medium"
+                           >
+                             {button.text}
+                             <ExternalLink className="w-3 h-3 ml-2" />
+                           </Link>
+                         ))}
+                       </div>
+                     )}
+                   </div>
+                 ))
               })()}
             </div>
 

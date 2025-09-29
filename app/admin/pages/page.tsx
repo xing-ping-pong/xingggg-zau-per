@@ -113,31 +113,47 @@ export default function AdminPagesPage() {
 
     try {
       setSubmitting(true)
-      // Mock API call
-      await new Promise(resolve => setTimeout(resolve, 800)); 
-      const success = Math.random() > 0.1; // 90% chance of success
+      const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
       
-      if (success) {
-        const newPage: Page = {
-            _id: editingPage ? editingPage._id : String(Date.now()),
-            ...formData,
-            createdAt: editingPage?.createdAt || new Date().toISOString(),
-            updatedAt: new Date().toISOString(),
-        };
+      if (!token) {
+        showToast('Authentication required', 'error')
+        return
+      }
 
-        setPages(prevPages => {
+      let response
             if (editingPage) {
-                return prevPages.map(p => p.slug === newPage.slug ? newPage : p);
-            }
-            return [...prevPages, newPage];
-        });
+        // Update existing page
+        response = await fetch(`/api/pages/${editingPage.slug}`, {
+          method: 'PUT',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(formData)
+        })
+      } else {
+        // Create new page
+        response = await fetch('/api/pages', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`
+          },
+          body: JSON.stringify(formData)
+        })
+      }
 
-        showToast(editingPage ? 'Page updated successfully (Mock)' : 'Page created successfully (Mock)', 'success')
+      const data = await response.json()
+      
+      if (data.success) {
+        showToast(editingPage ? 'Page updated successfully' : 'Page created successfully', 'success')
         setIsEditDialogOpen(false)
         setEditingPage(null)
         resetForm()
+        // Refresh the pages list
+        fetchPages()
       } else {
-        showToast('Failed to save page (Mock Failure)', 'error')
+        showToast(data.message || 'Failed to save page', 'error')
       }
     } catch (error) {
       console.error('Error saving page:', error)
@@ -183,15 +199,28 @@ export default function AdminPagesPage() {
     setConfirmDeleteSlug(null)
 
     try {
-      // Mock API call
-      await new Promise(resolve => setTimeout(resolve, 500)); 
-      const success = Math.random() > 0.1; 
+      const token = typeof window !== 'undefined' ? localStorage.getItem('token') : null
+      
+      if (!token) {
+        showToast('Authentication required', 'error')
+        return
+      }
 
-      if (success) {
-        setPages(prevPages => prevPages.filter(p => p.slug !== slugToDelete));
-        showToast(`Page '/${slugToDelete}' deleted successfully (Mock)`, 'success')
+      const response = await fetch(`/api/pages/${slugToDelete}`, {
+        method: 'DELETE',
+        headers: {
+          'Authorization': `Bearer ${token}`
+        }
+      })
+
+      const data = await response.json()
+      
+      if (data.success) {
+        showToast(`Page '/${slugToDelete}' deleted successfully`, 'success')
+        // Refresh the pages list
+        fetchPages()
       } else {
-        showToast('Failed to delete page (Mock Failure)', 'error')
+        showToast(data.message || 'Failed to delete page', 'error')
       }
     } catch (error) {
       console.error('Error deleting page:', error)
