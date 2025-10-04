@@ -1,4 +1,5 @@
 import nodemailer, { SentMessageInfo } from 'nodemailer';
+import EMAIL_CONFIG from '../config/email';
 
 interface EmailConfig {
   host: string;
@@ -192,7 +193,7 @@ class EmailService {
       <body>
         <div class="container">
           <div class="header">
-            <img src="${process.env.NEXT_PUBLIC_BASE_URL || (process.env.VERCEL_URL ? 'https://' + process.env.VERCEL_URL : process.env.NEXTAUTH_URL) || 'https://zauperfumes.com'}/logo/ZAU_PERFUMES%20LOGO.png" alt="ZAU Perfumes" style="width: 80px; height: 80px; margin: 0 auto 20px; display: block;" />
+            <img src="${EMAIL_CONFIG.LOGO_URL}" alt="ZAU Perfumes" style="width: 80px; height: 80px; margin: 0 auto 20px; display: block;" />
             <div class="tagline">Luxury Perfumes</div>
           </div>
           

@@ -307,6 +307,11 @@ export default function ProductDetailPage() {
     allImagesLength: allImages.length
   })
   
+  // Debug individual image URLs
+  allImages.forEach((img, index) => {
+    console.log(`🖼️ Image ${index}:`, img)
+  })
+  
   console.log('💰 Price debug:', {
     price: product.price,
     discount: product.discount,

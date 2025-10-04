@@ -171,6 +171,13 @@ export function ProductImageGallery({
                 }}
                 sizes="(max-width: 768px) 100vw, 50vw"
                 priority
+                onError={(e) => {
+                  console.error('🖼️ Image failed to load:', validImages[selectedImage])
+                  console.error('🖼️ Error details:', e)
+                }}
+                onLoad={() => {
+                  console.log('🖼️ Image loaded successfully:', validImages[selectedImage])
+                }}
               />
               
               {/* Discount Badge */}
@@ -281,6 +288,12 @@ export function ProductImageGallery({
                 fill
                 className="object-cover"
                 sizes="(max-width: 640px) 64px, 80px"
+                onError={(e) => {
+                  console.error('🖼️ Thumbnail failed to load:', image)
+                }}
+                onLoad={() => {
+                  console.log('🖼️ Thumbnail loaded successfully:', image)
+                }}
               />
             </button>
           ))}
