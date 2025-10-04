@@ -90,12 +90,13 @@ export const PUT = async (req: NextRequest) => {
       }, { status: 403 });
     }
 
-    const { orderId, status, trackingNumber, notes } = await req.json();
+    const { orderId, status, trackingNumber, notes, deliveryRemarks } = await req.json();
 
     const updateData: any = {};
     if (status) updateData.status = status;
     if (trackingNumber) updateData.trackingNumber = trackingNumber;
     if (notes) updateData.notes = notes;
+    if (deliveryRemarks !== undefined) updateData.deliveryRemarks = deliveryRemarks;
 
     const updatedOrder = await Order.findByIdAndUpdate(
       orderId,

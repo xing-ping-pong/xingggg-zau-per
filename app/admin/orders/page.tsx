@@ -24,6 +24,7 @@ import {
 } from "lucide-react"
 import Link from "next/link"
 import NotificationPanel from "@/components/admin/notification-panel"
+import { toast } from "sonner"
 
 interface Order {
   _id: string
@@ -49,6 +50,7 @@ interface Order {
   }
   trackingNumber?: string
   estimatedDelivery?: string
+  deliveryRemarks?: string
   notifications?: {
     emailSent: boolean
     whatsappSent: boolean
@@ -445,6 +447,53 @@ export default function OrdersPage() {
                   )}
                 </div>
               )}
+
+              {/* Delivery Remarks */}
+              <div>
+                <h3 className="font-semibold mb-2">Delivery Remarks</h3>
+                <div className="space-y-2">
+                  <textarea
+                    className="w-full p-2 border rounded-md resize-none"
+                    rows={3}
+                    placeholder="Add delivery remarks for the courier..."
+                    value={selectedOrder.deliveryRemarks || ''}
+                    onChange={(e) => {
+                      setSelectedOrder(prev => prev ? { ...prev, deliveryRemarks: e.target.value } : null)
+                    }}
+                  />
+                  <Button
+                    size="sm"
+                    onClick={async () => {
+                      if (!selectedOrder) return
+                      setUpdating(true)
+                      try {
+                        const response = await fetch('/api/admin/orders', {
+                          method: 'PUT',
+                          headers: { 'Content-Type': 'application/json' },
+                          body: JSON.stringify({
+                            orderId: selectedOrder._id,
+                            deliveryRemarks: selectedOrder.deliveryRemarks
+                          })
+                        })
+                        const data = await response.json()
+                        if (data.success) {
+                          toast.success('Delivery remarks updated successfully!')
+                          fetchOrders()
+                        } else {
+                          toast.error(data.message || 'Failed to update remarks')
+                        }
+                      } catch (error) {
+                        toast.error('Network error. Please try again.')
+                      } finally {
+                        setUpdating(false)
+                      }
+                    }}
+                    disabled={updating}
+                  >
+                    {updating ? <Loader2 className="w-4 h-4 animate-spin" /> : 'Update Remarks'}
+                  </Button>
+                </div>
+              </div>
 
               {/* Notification Panel */}
               <NotificationPanel 

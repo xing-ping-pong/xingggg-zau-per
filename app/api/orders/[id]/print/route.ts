@@ -24,6 +24,7 @@ export async function GET(
     
     const order = await Order.findById(orderId).lean();
     console.log('Order found:', order ? 'Yes' : 'No');
+    console.log('Delivery remarks:', order?.deliveryRemarks || 'No remarks');
 
     if (!order) {
       console.log('Order not found with ID:', orderId);
@@ -342,7 +343,7 @@ function generatePakistanDeliveryPrint(order: any): string {
         <!-- Footer -->
         <div class="footer">
             <div>Thank you for choosing ZAU Perfumes!</div>
-            <div>Email: hello@zauperfumes.com.pk | Web: zauperfumes.com.pk</div>
+            <div>Email: hello@zauperfumes.com.pk | Web: zauperfumes.com</div>
         </div>
     </div>
 </body>
