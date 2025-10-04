@@ -58,6 +58,8 @@ interface Order {
     trackingWhatsappSent: boolean
     trackingEmailSentAt?: string
     trackingWhatsappSentAt?: string
+    autoConfirmationEmailSent: boolean
+    autoConfirmationEmailSentAt?: string
   }
   createdAt: string
 }

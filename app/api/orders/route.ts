@@ -3,6 +3,7 @@ import connectDB from '@/lib/mongodb'
 import Order from '@/lib/models/Order'
 import Product from '@/lib/models/Product'
 import Coupon from '@/lib/models/Coupon'
+const emailService = require('@/lib/services/email-service')
 
 export async function POST(req: NextRequest) {
   try {
@@ -195,6 +196,45 @@ export async function POST(req: NextRequest) {
       console.log(`Coupon usage updated:`, updateResult ? `New count: ${updateResult.usedCount}` : 'Coupon not found')
     } else {
       console.log('No coupon code provided, skipping usage update')
+    }
+
+    // Send automatic order confirmation email
+    try {
+      const notificationData = {
+        customerName: `${order.guestInfo.firstName} ${order.guestInfo.lastName}`,
+        customerEmail: order.guestInfo.email,
+        customerPhone: order.guestInfo.phone,
+        orderNumber: order.orderNumber,
+        items: orderItems.map(item => ({
+          name: item.productName,
+          quantity: item.quantity,
+          price: item.price
+        })),
+        totalAmount: order.pricing.total,
+        shippingAddress: {
+          street: order.guestInfo.address,
+          city: order.guestInfo.city,
+          state: order.guestInfo.zipCode,
+          zipCode: order.guestInfo.zipCode,
+          country: order.guestInfo.country
+        }
+      }
+
+      const emailSent = await emailService.sendOrderConfirmation(notificationData)
+      
+      if (emailSent) {
+        // Update order with automatic confirmation email status
+        await Order.findByIdAndUpdate(order._id, {
+          'notifications.autoConfirmationEmailSent': true,
+          'notifications.autoConfirmationEmailSentAt': new Date()
+        })
+        console.log('Automatic order confirmation email sent successfully')
+      } else {
+        console.log('Failed to send automatic order confirmation email')
+      }
+    } catch (emailError) {
+      console.error('Error sending automatic order confirmation email:', emailError)
+      // Don't fail the order creation if email fails
     }
 
     return NextResponse.json({

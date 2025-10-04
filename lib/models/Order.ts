@@ -49,6 +49,8 @@ export interface IOrder extends Document {
     trackingWhatsappSent: boolean
     trackingEmailSentAt?: Date
     trackingWhatsappSentAt?: Date
+    autoConfirmationEmailSent: boolean
+    autoConfirmationEmailSentAt?: Date
   }
   createdAt: Date
   updatedAt: Date
@@ -240,6 +242,13 @@ const OrderSchema = new Schema<IOrder>({
       type: Date
     },
     trackingWhatsappSentAt: {
+      type: Date
+    },
+    autoConfirmationEmailSent: {
+      type: Boolean,
+      default: false
+    },
+    autoConfirmationEmailSentAt: {
       type: Date
     }
   }

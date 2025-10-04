@@ -44,6 +44,8 @@ interface NotificationPanelProps {
       trackingWhatsappSent: boolean
       trackingEmailSentAt?: string
       trackingWhatsappSentAt?: string
+      autoConfirmationEmailSent: boolean
+      autoConfirmationEmailSentAt?: string
     }
   }
   onUpdate: () => void
@@ -153,7 +155,9 @@ export default function NotificationPanel({ order, onUpdate, onOrderUpdate }: No
     trackingEmailSent: false,
     trackingWhatsappSent: false,
     trackingEmailSentAt: undefined,
-    trackingWhatsappSentAt: undefined
+    trackingWhatsappSentAt: undefined,
+    autoConfirmationEmailSent: false,
+    autoConfirmationEmailSentAt: undefined
   }
 
   return (
@@ -167,20 +171,50 @@ export default function NotificationPanel({ order, onUpdate, onOrderUpdate }: No
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-4">
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            <div className="space-y-2">
-              <Label className="flex items-center gap-2">
-                <Mail className="h-4 w-4" />
-                Email Confirmation
-              </Label>
-              {getNotificationStatus(notifications.emailSent, notifications.emailSentAt)}
+          <div className="space-y-4">
+            {/* Automatic Confirmation Status */}
+            <div className="p-3 bg-blue-50 rounded-lg border border-blue-200">
+              <h4 className="font-medium text-blue-900 mb-2">Automatic Confirmation (Sent on Order Placement)</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label className="flex items-center gap-2 text-sm">
+                    <Mail className="h-4 w-4" />
+                    Auto Email Confirmation
+                  </Label>
+                  {getNotificationStatus(notifications.autoConfirmationEmailSent, notifications.autoConfirmationEmailSentAt)}
+                </div>
+                <div className="space-y-2">
+                  <Label className="flex items-center gap-2 text-sm text-gray-500">
+                    <MessageCircle className="h-4 w-4" />
+                    Auto WhatsApp (Not Available)
+                  </Label>
+                  <div className="flex items-center gap-2 text-gray-500">
+                    <XCircle className="h-4 w-4" />
+                    <span className="text-sm">Not sent automatically</span>
+                  </div>
+                </div>
+              </div>
             </div>
-            <div className="space-y-2">
-              <Label className="flex items-center gap-2">
-                <MessageCircle className="h-4 w-4" />
-                WhatsApp Confirmation
-              </Label>
-              {getNotificationStatus(notifications.whatsappSent, notifications.whatsappSentAt)}
+
+            {/* Manual Confirmation Status */}
+            <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
+              <h4 className="font-medium text-gray-900 mb-2">Manual Confirmation (Admin Sent)</h4>
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="space-y-2">
+                  <Label className="flex items-center gap-2 text-sm">
+                    <Mail className="h-4 w-4" />
+                    Manual Email Confirmation
+                  </Label>
+                  {getNotificationStatus(notifications.emailSent, notifications.emailSentAt)}
+                </div>
+                <div className="space-y-2">
+                  <Label className="flex items-center gap-2 text-sm">
+                    <MessageCircle className="h-4 w-4" />
+                    Manual WhatsApp Confirmation
+                  </Label>
+                  {getNotificationStatus(notifications.whatsappSent, notifications.whatsappSentAt)}
+                </div>
+              </div>
             </div>
           </div>
           
@@ -190,7 +224,7 @@ export default function NotificationPanel({ order, onUpdate, onOrderUpdate }: No
             className="w-full"
           >
             <Send className="h-4 w-4 mr-2" />
-            Send Order Confirmation
+            Send Manual Order Confirmation
           </Button>
         </CardContent>
       </Card>
