@@ -192,7 +192,7 @@ class EmailService {
       <body>
         <div class="container">
           <div class="header">
-            <img src="${process.env.VERCEL_URL ? 'https://' + process.env.VERCEL_URL : process.env.NEXTAUTH_URL || 'https://your-domain.com'}/logo.png" alt="ZAU Perfumes" style="width: 80px; height: 80px; margin: 0 auto 20px; display: block;" />
+            <img src="${process.env.NEXT_PUBLIC_BASE_URL || (process.env.VERCEL_URL ? 'https://' + process.env.VERCEL_URL : process.env.NEXTAUTH_URL) || 'https://zauperfumes.com'}/logo/ZAU_PERFUMES%20LOGO.png" alt="ZAU Perfumes" style="width: 80px; height: 80px; margin: 0 auto 20px; display: block;" />
             <div class="tagline">Luxury Perfumes</div>
           </div>
           
@@ -269,3 +269,274 @@ This email was sent in response to your inquiry. Please do not reply directly to
 // Export singleton instance
 export const emailService = new EmailService();
 export default emailService;
+
+
+            text-align: center;
+
+            border-bottom: 2px solid #d4af37;
+
+            padding-bottom: 20px;
+
+            margin-bottom: 30px;
+
+          }
+
+          .logo {
+
+            font-size: 28px;
+
+            font-weight: bold;
+
+            color: #d4af37;
+
+            margin-bottom: 10px;
+
+          }
+
+          .tagline {
+
+            color: #666;
+
+            font-style: italic;
+
+          }
+
+          .greeting {
+
+            font-size: 18px;
+
+            margin-bottom: 20px;
+
+          }
+
+          .original-subject {
+
+            background-color: #f8f9fa;
+
+            padding: 15px;
+
+            border-left: 4px solid #d4af37;
+
+            margin: 20px 0;
+
+            border-radius: 0 5px 5px 0;
+
+          }
+
+          .reply-content {
+
+            background-color: #f8f9fa;
+
+            padding: 20px;
+
+            border-radius: 5px;
+
+            margin: 20px 0;
+
+            white-space: pre-wrap;
+
+          }
+
+          .signature {
+
+            margin-top: 30px;
+
+            padding-top: 20px;
+
+            border-top: 1px solid #eee;
+
+          }
+
+          .footer {
+
+            text-align: center;
+
+            margin-top: 30px;
+
+            padding-top: 20px;
+
+            border-top: 1px solid #eee;
+
+            color: #666;
+
+            font-size: 14px;
+
+          }
+
+          .contact-info {
+
+            background-color: #f8f9fa;
+
+            padding: 15px;
+
+            border-radius: 5px;
+
+            margin-top: 20px;
+
+          }
+
+        </style>
+
+      </head>
+
+      <body>
+
+        <div class="container">
+
+          <div class="header">
+
+            <img src="${process.env.VERCEL_URL ? 'https://' + process.env.VERCEL_URL : process.env.NEXTAUTH_URL || 'https://your-domain.com'}/logo.png" alt="ZAU Perfumes" style="width: 80px; height: 80px; margin: 0 auto 20px; display: block;" />
+
+            <div class="tagline">Luxury Perfumes</div>
+
+          </div>
+
+          
+
+          <div class="greeting">
+
+            Dear ${customerName},
+
+          </div>
+
+          
+
+          <p>Thank you for contacting ZAU Perfumes. We have received your message and our team has prepared a response for you.</p>
+
+          
+
+          <div class="original-subject">
+
+            <strong>Your Original Message:</strong><br>
+
+            <em>${originalSubject}</em>
+
+          </div>
+
+          
+
+          <div class="reply-content">
+
+            ${adminReply}
+
+          </div>
+
+          
+
+          <div class="signature">
+
+            <p>Best regards,<br>
+
+            <strong>${adminName}</strong><br>
+
+            ZAU Perfumes Support Team</p>
+
+          </div>
+
+          
+
+          <div class="contact-info">
+
+            <p><strong>Need further assistance?</strong></p>
+
+            <p>📧 Email: hello@zauperfumes.com.pk<br>
+
+            📞 Phone: +92 300 1234567<br>
+
+            🌐 Website: <a href="https://zauperfumes.com.pk">zauperfumes.com.pk</a></p>
+
+          </div>
+
+          
+
+          <div class="footer">
+
+            <p>This email was sent in response to your inquiry. Please do not reply directly to this email.</p>
+
+            <p>&copy; 2024 ZAU Perfumes. All rights reserved.</p>
+
+          </div>
+
+        </div>
+
+      </body>
+
+      </html>
+
+    `;
+
+  }
+
+
+
+  private generateContactReplyText(
+
+    customerName: string,
+
+    originalSubject: string,
+
+    adminReply: string,
+
+    adminName: string
+
+  ): string {
+
+    return `
+
+Dear ${customerName},
+
+
+
+Thank you for contacting ZAU Perfumes. We have received your message and our team has prepared a response for you.
+
+
+
+Your Original Message: ${originalSubject}
+
+
+
+Our Reply:
+
+${adminReply}
+
+
+
+Best regards,
+
+${adminName}
+
+ZAU Perfumes Support Team
+
+
+
+Need further assistance?
+
+Email: hello@zauperfumes.com.pk
+
+Phone: +92 300 1234567
+
+Website: https://zauperfumes.com.pk
+
+
+
+This email was sent in response to your inquiry. Please do not reply directly to this email.
+
+
+
+© 2024 ZAU Perfumes. All rights reserved.
+
+    `.trim();
+
+  }
+
+}
+
+
+
+// Export singleton instance
+
+export const emailService = new EmailService();
+
+export default emailService;
+
+

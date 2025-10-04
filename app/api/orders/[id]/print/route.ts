@@ -62,7 +62,7 @@ function generatePakistanDeliveryPrint(order: any): string {
     });
   };
 
-  const baseUrl = process.env.VERCEL_URL ? 'https://' + process.env.VERCEL_URL : process.env.NEXTAUTH_URL || 'https://your-domain.com';
+  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || (process.env.VERCEL_URL ? 'https://' + process.env.VERCEL_URL : process.env.NEXTAUTH_URL) || 'https://zauperfumes.com';
 
   return `
 <!DOCTYPE html>
@@ -267,7 +267,7 @@ function generatePakistanDeliveryPrint(order: any): string {
     <div class="label-container">
         <!-- Header -->
         <div class="header-section">
-            <img src="${baseUrl}/logo.png" alt="ZAU Perfumes" class="company-logo" />
+            <img src="${baseUrl}/ZAU_PERFUMES%20LOGO.png" alt="ZAU Perfumes" class="company-logo" />
             <div class="company-name">ZAU PERFUMES</div>
             <div class="company-address">123 Luxury Perfume Plaza, Karachi, Sindh 75500</div>
         </div>
