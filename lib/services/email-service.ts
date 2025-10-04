@@ -1,4 +1,5 @@
 const nodemailer = require('nodemailer');
+import EMAIL_CONFIG from '../config/email';
 
 interface EmailConfig {
   host: string;
@@ -57,7 +58,7 @@ class EmailService {
       }
 
       const mailOptions = {
-        from: `"${process.env.EMAIL_FROM_NAME || 'ZAU Perfumes'}" <${process.env.EMAIL_USER}>`,
+        from: `"${EMAIL_CONFIG.FROM_NAME}" <${EMAIL_CONFIG.FROM_EMAIL}>`,
         to: data.customerEmail,
         subject: `🚚 Your Order #${data.orderNumber} Has Been Shipped!`,
         html: this.generateTrackingEmailHTML(data),
@@ -82,22 +83,26 @@ class EmailService {
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Order Shipped - ZAU Perfumes</title>
       <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
         .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+        .logo { max-width: 200px; height: auto; margin-bottom: 20px; }
         .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
         .tracking-box { background: white; border: 2px solid #667eea; border-radius: 10px; padding: 20px; margin: 20px 0; text-align: center; }
         .tracking-number { font-size: 24px; font-weight: bold; color: #667eea; margin: 10px 0; }
-        .order-details { background: white; border-radius: 10px; padding: 20px; margin: 20px 0; }
+        .order-details { background: white; border-radius: 10px; padding: 20px; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
-        .total { font-size: 18px; font-weight: bold; color: #333; margin-top: 10px; }
+        .item:last-child { border-bottom: none; }
+        .total { font-size: 18px; font-weight: bold; color: #333; margin-top: 15px; padding-top: 15px; border-top: 2px solid #667eea; }
         .button { display: inline-block; background: #667eea; color: white; padding: 12px 30px; text-decoration: none; border-radius: 5px; margin: 20px 0; }
         .footer { text-align: center; color: #666; font-size: 12px; margin-top: 30px; }
+        .highlight { color: #667eea; font-weight: bold; }
       </style>
     </head>
     <body>
       <div class="container">
         <div class="header">
+          <img src="${EMAIL_CONFIG.LOGO_URL}" alt="ZAU Perfumes Logo" class="logo" />
           <h1>🎉 Your Order Has Been Shipped!</h1>
           <p>Dear ${data.customerName}, your luxury perfume order is on its way!</p>
         </div>
@@ -112,17 +117,17 @@ class EmailService {
 
           <div class="order-details">
             <h3>📋 Order Details</h3>
-            <p><strong>Order Number:</strong> #${data.orderNumber}</p>
+            <p><strong>Order Number:</strong> <span class="highlight">#${data.orderNumber}</span></p>
             
             <h4>Items Ordered:</h4>
             ${data.items.map(item => `
               <div class="item">
                 <span>${item.name} x${item.quantity}</span>
-                <span>PKR {item.price.toFixed(2)}</span>
+                <span>PKR ${item.price.toFixed(2)}</span>
               </div>
             `).join('')}
             
-            <div class="total">Total: PKR {data.totalAmount.toFixed(2)}</div>
+            <div class="total">Total: PKR ${data.totalAmount.toFixed(2)}</div>
           </div>
 
           <div class="order-details">
@@ -141,7 +146,7 @@ class EmailService {
         </div>
 
         <div class="footer">
-          <p>© 2024 ZAU Perfumes. All rights reserved.</p>
+          <p>© ${EMAIL_CONFIG.COMPANY_YEAR} ${EMAIL_CONFIG.COMPANY_NAME}. All rights reserved.</p>
           <p>This email was sent to ${data.customerEmail}</p>
         </div>
       </div>
@@ -169,7 +174,7 @@ Order Number: #${data.orderNumber}
 Items Ordered:
 ${data.items.map(item => `- ${item.name} x${item.quantity} - PKR ${item.price.toFixed(2)}`).join('\n')}
 
-Total: PKR {data.totalAmount.toFixed(2)}
+Total: PKR ${data.totalAmount.toFixed(2)}
 
 🚚 SHIPPING ADDRESS:
 ${data.shippingAddress.street}
@@ -180,7 +185,7 @@ Thank you for choosing ZAU Perfumes! 🌹
 
 If you have any questions, please contact our customer service.
 
-© 2024 ZAU Perfumes. All rights reserved.
+© ${EMAIL_CONFIG.COMPANY_YEAR} ${EMAIL_CONFIG.COMPANY_NAME}. All rights reserved.
     `;
   }
 
@@ -193,7 +198,7 @@ If you have any questions, please contact our customer service.
       }
 
       const mailOptions = {
-        from: `"${process.env.EMAIL_FROM_NAME || 'ZAU Perfumes'}" <${process.env.EMAIL_USER}>`,
+        from: `"${EMAIL_CONFIG.FROM_NAME}" <${EMAIL_CONFIG.FROM_EMAIL}>`,
         to: data.customerEmail,
         subject: `✅ Order Confirmation #${data.orderNumber}`,
         html: this.generateOrderConfirmationHTML(data),
@@ -218,19 +223,23 @@ If you have any questions, please contact our customer service.
       <meta name="viewport" content="width=device-width, initial-scale=1.0">
       <title>Order Confirmation - ZAU Perfumes</title>
       <style>
-        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; }
+        body { font-family: Arial, sans-serif; line-height: 1.6; color: #333; margin: 0; padding: 0; }
         .container { max-width: 600px; margin: 0 auto; padding: 20px; }
         .header { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white; padding: 30px; text-align: center; border-radius: 10px 10px 0 0; }
+        .logo { max-width: 200px; height: auto; margin-bottom: 20px; }
         .content { background: #f9f9f9; padding: 30px; border-radius: 0 0 10px 10px; }
-        .order-details { background: white; border-radius: 10px; padding: 20px; margin: 20px 0; }
+        .order-details { background: white; border-radius: 10px; padding: 20px; margin: 20px 0; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
         .item { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #eee; }
-        .total { font-size: 18px; font-weight: bold; color: #333; margin-top: 10px; }
+        .item:last-child { border-bottom: none; }
+        .total { font-size: 18px; font-weight: bold; color: #333; margin-top: 15px; padding-top: 15px; border-top: 2px solid #667eea; }
         .footer { text-align: center; color: #666; font-size: 12px; margin-top: 30px; }
+        .highlight { color: #667eea; font-weight: bold; }
       </style>
     </head>
     <body>
       <div class="container">
         <div class="header">
+          <img src="${EMAIL_CONFIG.LOGO_URL}" alt="ZAU Perfumes Logo" class="logo" />
           <h1>✅ Order Confirmed!</h1>
           <p>Thank you for your order, ${data.customerName}!</p>
         </div>
@@ -238,17 +247,17 @@ If you have any questions, please contact our customer service.
         <div class="content">
           <div class="order-details">
             <h3>📋 Order Details</h3>
-            <p><strong>Order Number:</strong> #${data.orderNumber}</p>
+            <p><strong>Order Number:</strong> <span class="highlight">#${data.orderNumber}</span></p>
             
             <h4>Items Ordered:</h4>
             ${data.items.map(item => `
               <div class="item">
                 <span>${item.name} x${item.quantity}</span>
-                <span>PKR {item.price.toFixed(2)}</span>
+                <span>PKR ${item.price.toFixed(2)}</span>
               </div>
             `).join('')}
             
-            <div class="total">Total: PKR {data.totalAmount.toFixed(2)}</div>
+            <div class="total">Total: PKR ${data.totalAmount.toFixed(2)}</div>
           </div>
 
           <div class="order-details">
@@ -267,7 +276,7 @@ If you have any questions, please contact our customer service.
         </div>
 
         <div class="footer">
-          <p>© 2024 ZAU Perfumes. All rights reserved.</p>
+          <p>© ${EMAIL_CONFIG.COMPANY_YEAR} ${EMAIL_CONFIG.COMPANY_NAME}. All rights reserved.</p>
         </div>
       </div>
     </body>
@@ -289,7 +298,7 @@ Order Number: #${data.orderNumber}
 Items Ordered:
 ${data.items.map(item => `- ${item.name} x${item.quantity} - PKR ${item.price.toFixed(2)}`).join('\n')}
 
-Total: PKR {data.totalAmount.toFixed(2)}
+Total: PKR ${data.totalAmount.toFixed(2)}
 
 🚚 SHIPPING ADDRESS:
 ${data.shippingAddress.street}
@@ -300,7 +309,7 @@ We'll send you a tracking number once your order ships! 🚚
 
 Thank you for choosing ZAU Perfumes! 🌹
 
-© 2024 ZAU Perfumes. All rights reserved.
+© ${EMAIL_CONFIG.COMPANY_YEAR} ${EMAIL_CONFIG.COMPANY_NAME}. All rights reserved.
     `;
   }
 }
