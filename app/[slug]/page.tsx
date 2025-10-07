@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { Metadata } from 'next'
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
@@ -183,48 +184,53 @@ export default async function DynamicPage({ params }: PageProps) {
                   const description = pMatch ? pMatch[1].replace(/<[^>]*>/g, '').trim() : ''
                   
                  // Extract list items
-                 const listItems = []
-                 const ulMatch = contentAfterTitle.match(/<ul[^>]*>(.*?)<\/ul>/is)
+                 const listItems: string[] = [];
+                 const ulMatch = contentAfterTitle.match(/<ul[^>]*>(.*?)<\/ul>/i);
                  if (ulMatch) {
-                   const liMatches = ulMatch[1].match(/<li[^>]*>(.*?)<\/li>/gi)
+                   const liMatches = ulMatch[1].match(/<li[^>]*>(.*?)<\/li>/gi);
                    if (liMatches) {
-                     listItems.push(...liMatches.map(li => li.replace(/<[^>]*>/g, '').trim()))
+                     listItems.push(...liMatches.map((li: string) => li.replace(/<[^>]*>/g, '').trim()));
                    }
                  }
-                 
                  // Extract buttons and links
-                 const buttons = []
-                 const buttonMatches = contentAfterTitle.match(/<button[^>]*>(.*?)<\/button>/gi)
+                 const buttons: { text: string; href: string }[] = [];
+                 const buttonMatches = contentAfterTitle.match(/<button[^>]*>(.*?)<\/button>/gi);
                  if (buttonMatches) {
-                   buttonMatches.forEach(button => {
-                     const hrefMatch = button.match(/href="([^"]*)"/)
-                     const textMatch = button.match(/>([^<]*)</)
+                   buttonMatches.forEach((button: string) => {
+                     const hrefMatch = button.match(/href="([^"]*)"/);
+                     const textMatch = button.match(/>([^<]*)</);
                      if (hrefMatch && textMatch) {
                        buttons.push({
                          text: textMatch[1].trim(),
                          href: hrefMatch[1]
-                       })
+                       });
                      }
-                   })
+                   });
                  }
                  
                  // Extract special dynamic content
-                 const dynamicContent = []
-                 const faqMatch = contentAfterTitle.match(/<faq-preview[^>]*><\/faq-preview>/i)
+                 const dynamicContent: any[] = [];
+                 const faqMatch = contentAfterTitle.match(/<faq-preview[^>]*><\/faq-preview>/i);
                  if (faqMatch) {
                    dynamicContent.push({
                      type: 'faq-preview',
                      count: 3 // Show 3 FAQ items by default
-                   })
+                   });
                  }
-                 
-                 sections.push({
+                 const section: {
+                   title: string;
+                   description: string;
+                   listItems: string[];
+                   buttons: { text: string; href: string }[];
+                   dynamicContent: any[];
+                 } = {
                    title,
                    description,
                    listItems,
                    buttons,
                    dynamicContent
-                 })
+                 };
+                 sections.push(section);
                 }
                 
                 // Debug: Log how many sections were found

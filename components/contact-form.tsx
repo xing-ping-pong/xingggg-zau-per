@@ -95,7 +95,7 @@ export function ContactForm() {
               <Mail className="w-5 h-5 text-primary mt-1" />
               <div>
                 <h3 className="font-semibold text-foreground">Email</h3>
-                <p className="text-muted-foreground">hello@zauperfumes.com.pk</p>
+                <p className="text-muted-foreground">zauperfumes@gmail.com</p>
               </div>
             </div>
 
@@ -103,29 +103,7 @@ export function ContactForm() {
               <Phone className="w-5 h-5 text-primary mt-1" />
               <div>
                 <h3 className="font-semibold text-foreground">Phone</h3>
-                <p className="text-muted-foreground">+92 300 1234567</p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <MapPin className="w-5 h-5 text-primary mt-1" />
-              <div>
-                <h3 className="font-semibold text-foreground">Address</h3>
-                <p className="text-muted-foreground">
-                  123 Luxury Perfume Plaza<br />
-                  Karachi, Sindh 75500
-                </p>
-              </div>
-            </div>
-
-            <div className="flex items-start gap-3">
-              <Clock className="w-5 h-5 text-primary mt-1" />
-              <div>
-                <h3 className="font-semibold text-foreground">Business Hours</h3>
-                <p className="text-muted-foreground">
-                  Mon - Fri: 9:00 AM - 6:00 PM<br />
-                  Sat - Sun: 10:00 AM - 4:00 PM
-                </p>
+                <p className="text-muted-foreground">03702987399</p>
               </div>
             </div>
           </div>
