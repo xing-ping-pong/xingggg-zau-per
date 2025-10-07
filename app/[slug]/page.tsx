@@ -185,12 +185,25 @@ export default async function DynamicPage({ params }: PageProps) {
                   
                  // Extract list items
                  const listItems: string[] = [];
-                 const ulMatch = contentAfterTitle.match(/<ul[^>]*>(.*?)<\/ul>/i);
-                 if (ulMatch) {
-                   const liMatches = ulMatch[1].match(/<li[^>]*>(.*?)<\/li>/gi);
-                   if (liMatches) {
-                     listItems.push(...liMatches.map((li: string) => li.replace(/<[^>]*>/g, '').trim()));
-                   }
+                 // Extract <ul> lists
+                 const ulMatches = contentAfterTitle.match(/<ul[^>]*>(.*?)<\/ul>/gi);
+                 if (ulMatches) {
+                   ulMatches.forEach((ul: string) => {
+                     const liMatches = ul.match(/<li[^>]*>(.*?)<\/li>/gi);
+                     if (liMatches) {
+                       listItems.push(...liMatches.map((li: string) => li.replace(/<[^>]*>/g, '').trim()));
+                     }
+                   });
+                 }
+                 // Extract <ol> lists
+                 const olMatches = contentAfterTitle.match(/<ol[^>]*>(.*?)<\/ol>/gi);
+                 if (olMatches) {
+                   olMatches.forEach((ol: string) => {
+                     const liMatches = ol.match(/<li[^>]*>(.*?)<\/li>/gi);
+                     if (liMatches) {
+                       listItems.push(...liMatches.map((li: string) => li.replace(/<[^>]*>/g, '').trim()));
+                     }
+                   });
                  }
                  // Extract buttons and links
                  const buttons: { text: string; href: string }[] = [];
