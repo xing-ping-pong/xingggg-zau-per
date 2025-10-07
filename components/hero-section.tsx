@@ -50,7 +50,7 @@ export function HeroSection() {
           </span>
         </h1>
         <p className="text-lg sm:text-xl md:text-2xl text-white/90 mb-6 sm:mb-8 max-w-2xl mx-auto text-pretty leading-relaxed">
-        Sophisticated simplicity for the independent mind. Discover fragrances that tell your story.
+        Experience the fragrance born from the art of ZAUQ, made to keep your aura elegant and your presence unforgettable
         </p>
         <Button
           size="lg"

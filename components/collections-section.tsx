@@ -107,7 +107,14 @@ export function CollectionsSection() {
                   // Use uploaded image if available, otherwise fallback
                   const getCategoryImage = (category: Category, index: number) => {
                     if (category.imageUrl && category.imageUrl.trim() !== "") {
-                      return category.imageUrl;
+                      // Only allow valid URLs for next/image
+                      if (
+                        category.imageUrl.startsWith("/") ||
+                        category.imageUrl.startsWith("http://") ||
+                        category.imageUrl.startsWith("https://")
+                      ) {
+                        return category.imageUrl;
+                      }
                     }
                     const name = category.name.toLowerCase();
                     if (name.includes('women') || name.includes('female')) {

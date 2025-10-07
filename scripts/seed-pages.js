@@ -93,8 +93,7 @@ const pages = [
       
       <h2>Contact Information</h2>
       <p><strong>Press Contact:</strong> press@zauperfumes.com<br>
-      <strong>Phone:</strong> +92 300 1234567<br>
-      <strong>Address:</strong> 123 Luxury Perfume Plaza, Karachi, Sindh 75500</p>
+  <strong>Phone:</strong> 03702987399<br></p>
     `
   },
   {
@@ -108,8 +107,8 @@ const pages = [
       <h3>How do I choose the right fragrance?</h3>
       <p>Choosing the right fragrance is a personal journey. Consider your lifestyle, the occasions you'll wear it, and your personal preferences. Our detailed product descriptions and fragrance notes can help guide your decision.</p>
       
-      <h3>What if I don't like my purchase?</h3>
-      <p>We offer a 30-day return policy for unopened products. If you're not completely satisfied, you can return your purchase for a full refund or exchange.</p>
+  <h3>What if I don't like my purchase?</h3>
+  <p>We offer a 30-day exchange policy for unopened products. If you're not completely satisfied, you can exchange your purchase for a different product. Terms and conditions apply.</p>
       
       <h3>How long do fragrances last?</h3>
       <p>Fragrance longevity varies depending on the concentration and your skin chemistry. Eau de Parfum typically lasts 6-8 hours, while Eau de Toilette lasts 4-6 hours.</p>
@@ -120,8 +119,8 @@ const pages = [
       <h2>Contact Support</h2>
       <p>Can't find what you're looking for? Our customer support team is here to help:</p>
       <ul>
-        <li><strong>Email:</strong> support@zauperfumes.com</li>
-        <li><strong>Phone:</strong> +92 300 1234567</li>
+  <li><strong>Email:</strong> support@zauperfumes.com</li>
+  <li><strong>Phone:</strong> 03702987399</li>
         <li><strong>Live Chat:</strong> Available Monday-Friday, 9 AM - 6 PM</li>
       </ul>
     `
@@ -134,8 +133,8 @@ const pages = [
     content: `
       <h2>Shipping Options</h2>
       
-      <h3>Standard Shipping</h3>
-      <p>Free standard shipping on all orders over PKR 5,000. Delivery within 3-5 business days for domestic orders.</p>
+  <h3>Standard Shipping</h3>
+  <p>Standard shipping available for all orders. Delivery within 3-5 business days for domestic orders.</p>
       
       <h3>Express Shipping</h3>
       <p>Express shipping available for PKR 500. Delivery within 1-2 business days for domestic orders.</p>
@@ -162,34 +161,28 @@ const pages = [
     metaTitle: 'Returns & Exchanges - ZAU Perfumes Return Policy',
     metaDescription: 'Learn about ZAU Perfumes return and exchange policy, including conditions, timeframes, and how to process returns.',
     content: `
-      <h2>Return Policy</h2>
-      <p>We want you to be completely satisfied with your purchase. If you're not happy with your order, we offer a 30-day return policy for unopened products.</p>
+  <h2>Exchange Policy</h2>
+  <p>We want you to be completely satisfied with your purchase. If you're not happy with your order, we offer a 30-day exchange policy for unopened products. Terms and conditions apply.</p>
       
-      <h2>Return Conditions</h2>
+      <h2>Exchange Conditions</h2>
       <ul>
         <li>Items must be unopened and in original packaging</li>
-        <li>Returns must be initiated within 30 days of delivery</li>
+        <li>Exchanges must be initiated within 30 days of delivery</li>
         <li>Original receipt or order confirmation required</li>
         <li>Items must be in sellable condition</li>
       </ul>
       
-      <h2>How to Return</h2>
+      <h2>How to Exchange</h2>
       <ol>
-        <li>Contact our customer service team to initiate a return</li>
-        <li>We'll provide you with a return authorization number</li>
+        <li>Contact our customer service team to initiate an exchange</li>
+        <li>We'll provide you with an exchange authorization number</li>
         <li>Package your items securely in the original packaging</li>
-        <li>Ship the package to our return address</li>
-        <li>We'll process your refund once we receive the items</li>
+        <li>Ship the package to our exchange address</li>
+        <li>We'll process your exchange once we receive the items</li>
       </ol>
-      
-      <h2>Refund Process</h2>
-      <p>Refunds will be processed within 5-7 business days after we receive your returned items. The refund will be issued to the original payment method.</p>
-      
-      <h2>Exchanges</h2>
-      <p>We're happy to exchange items for a different size or product. Exchange requests are subject to the same conditions as returns.</p>
-      
-      <h2>Return Shipping</h2>
-      <p>Return shipping costs are the responsibility of the customer unless the return is due to our error or a defective product.</p>
+
+      <h2>Exchange Shipping</h2>
+      <p>Exchange shipping costs are the responsibility of the customer unless the exchange is due to our error or a defective product.</p>
     `
   },
   {

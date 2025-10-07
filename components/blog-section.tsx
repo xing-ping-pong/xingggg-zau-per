@@ -28,6 +28,7 @@ export function BlogSection() {
   const [blogPosts, setBlogPosts] = useState<BlogPost[]>([])
   const [loading, setLoading] = useState(true)
   const [error, setError] = useState("")
+  // ...existing code...
 
   // Fetch blog posts from API
   useEffect(() => {
@@ -103,6 +104,11 @@ export function BlogSection() {
         </div>
       </section>
     )
+  }
+
+  // Hide section if no blog posts
+  if (!loading && !error && blogPosts.length === 0) {
+    return null;
   }
 
   return (

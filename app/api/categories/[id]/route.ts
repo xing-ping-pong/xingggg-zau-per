@@ -91,14 +91,15 @@ export async function PUT(
 
     // Handle image upload if image file is present
     if (imageFile && typeof imageFile === 'object' && 'arrayBuffer' in imageFile) {
-      // Upload to Cloudinary or your image service
+      // Upload to Cloudinary
       const buffer = Buffer.from(await imageFile.arrayBuffer());
-      // Example: upload to Cloudinary
-      // import cloudinary from '@/lib/cloudinary';
-      // const uploadRes = await cloudinary.uploader.upload_stream(...)
-      // updateData.imageUrl = uploadRes.secure_url;
-      // For now, just skip actual upload and set a placeholder
-      updateData.imageUrl = 'uploaded-image-url';
+      const { uploadImage } = await import('@/lib/cloudinary');
+      try {
+        const secureUrl = await uploadImage(buffer, 'categories');
+        updateData.imageUrl = secureUrl;
+      } catch (err) {
+        console.error('Image upload failed:', err);
+      }
     }
 
     const updatedCategory = await Category.findByIdAndUpdate(

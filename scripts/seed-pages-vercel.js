@@ -82,8 +82,7 @@ const pages = [
       
       <h2>Contact Information</h2>
       <p><strong>Press Contact:</strong> press@zauperfumes.com<br>
-      <strong>Phone:</strong> +92 300 1234567<br>
-      <strong>Address:</strong> 123 Luxury Perfume Plaza, Karachi, Sindh 75500</p>
+  <strong>Phone:</strong> 03702987399<br></p>
     `
   },
   {
@@ -109,8 +108,8 @@ const pages = [
       <h2>Contact Support</h2>
       <p>Can't find what you're looking for? Our customer support team is here to help:</p>
       <ul>
-        <li><strong>Email:</strong> support@zauperfumes.com</li>
-        <li><strong>Phone:</strong> +92 300 1234567</li>
+  <li><strong>Email:</strong> support@zauperfumes.com</li>
+  <li><strong>Phone:</strong> 03702987399</li>
         <li><strong>Live Chat:</strong> Available Monday-Friday, 9 AM - 6 PM</li>
       </ul>
     `

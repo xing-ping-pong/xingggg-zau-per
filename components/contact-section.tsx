@@ -109,7 +109,7 @@ export function ContactSection() {
                     </div>
                     <div>
                       <h4 className="font-semibold text-foreground">Email</h4>
-                      <p className="text-muted-foreground">hello@zauperfumes.com.pk</p>
+                      <p className="text-muted-foreground">zauperfumes@gmail.com</p>
                     </div>
                   </div>
                 </CardContent>
@@ -123,25 +123,7 @@ export function ContactSection() {
                     </div>
                     <div>
                       <h4 className="font-semibold text-foreground">Phone</h4>
-                      <p className="text-muted-foreground">+92 300 1234567</p>
-                    </div>
-                  </div>
-                </CardContent>
-              </Card>
-
-              <Card className="border-0 bg-card">
-                <CardContent className="p-6">
-                  <div className="flex items-center space-x-4">
-                    <div className="w-12 h-12 luxury-gradient rounded-full flex items-center justify-center">
-                      <MapPin className="w-6 h-6 text-black" />
-                    </div>
-                    <div>
-                      <h4 className="font-semibold text-foreground">Address</h4>
-                      <p className="text-muted-foreground">
-                        123 Fragrance Avenue
-                        <br />
-                        Karachi, Sindh 75500
-                      </p>
+                      <p className="text-muted-foreground">03702987399</p>
                     </div>
                   </div>
                 </CardContent>

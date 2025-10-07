@@ -150,7 +150,7 @@ export function Header() {
                       </Button>
                     </Link>
                     {user.isAdmin && (
-                      <Link href="/admin">
+                      <Link href="/aj-admin">
                         <Button variant="outline" size="sm" className="text-xs">
                           Admin
                         </Button>
@@ -163,19 +163,7 @@ export function Header() {
                   </Button>
                 </>
               ) : (
-                <>
-                  <Link href="/login">
-                    <Button variant="ghost" size="sm" className="text-xs lg:text-sm">
-                      <User className="w-4 h-4" />
-                      <span className="hidden lg:inline ml-1">Login</span>
-                    </Button>
-                  </Link>
-                  <Link href="/register">
-                    <Button variant="outline" size="sm" className="text-xs">
-                      Sign Up
-                    </Button>
-                  </Link>
-                </>
+                null // Login/Signup hidden for users
               )}
               <Link href="/wishlist">
                 <Button variant="ghost" size="sm" className="relative">
@@ -356,7 +344,7 @@ export function Header() {
                 <div className="space-y-3">
                   <div className="text-sm text-gray-300">Welcome, {user.username}</div>
                   {user.isAdmin && (
-                    <Link href="/admin" onClick={() => setIsMobileMenuOpen(false)}>
+                    <Link href="/aj-admin" onClick={() => setIsMobileMenuOpen(false)}>
                       <Button variant="outline" size="sm" className="w-full border-gray-600 text-white hover:bg-gray-800">
                         Admin Panel
                       </Button>
@@ -373,19 +361,7 @@ export function Header() {
                   </Button>
                 </div>
               ) : (
-                <div className="space-y-3">
-                  <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>
-                    <Button variant="ghost" size="sm" className="w-full justify-start text-gray-300 hover:text-white hover:bg-gray-800">
-                      <User className="w-4 h-4 mr-2" />
-                      Log in
-                    </Button>
-                  </Link>
-                  <Link href="/register" onClick={() => setIsMobileMenuOpen(false)}>
-                    <Button variant="outline" size="sm" className="w-full border-gray-600 text-white hover:bg-gray-800">
-                      Sign Up
-                    </Button>
-                  </Link>
-                </div>
+                null // Login/Signup hidden for users in mobile menu
               )}
             </div>
 

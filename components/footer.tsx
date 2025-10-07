@@ -23,28 +23,16 @@ export function Footer() {
             </p>
             <div className="flex space-x-4">
               <a
-                href="#"
+                href="https://www.facebook.com/share/19hnUbYZBY/?mibextid=wwXIfr"
                 className="w-10 h-10 bg-muted rounded-full flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors"
               >
                 <Facebook className="w-5 h-5" />
               </a>
               <a
-                href="#"
+                href="https://www.instagram.com/zau_perfumes?igsh=MXVxZWRnbnluaTRqZg%3D%3D&utm_source=qr"
                 className="w-10 h-10 bg-muted rounded-full flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors"
               >
                 <Instagram className="w-5 h-5" />
-              </a>
-              <a
-                href="#"
-                className="w-10 h-10 bg-muted rounded-full flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors"
-              >
-                <Twitter className="w-5 h-5" />
-              </a>
-              <a
-                href="#"
-                className="w-10 h-10 bg-muted rounded-full flex items-center justify-center hover:bg-primary hover:text-primary-foreground transition-colors"
-              >
-                <Youtube className="w-5 h-5" />
               </a>
             </div>
           </div>
@@ -108,7 +96,7 @@ export function Footer() {
         <div className="border-t border-border pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className="text-muted-foreground text-sm">Copyright © 2025 ZAU Perfumes. All Rights Reserved.</p>
-            <p className="text-muted-foreground text-xs">Contact: {settings.contactEmail} | Support: {settings.supportEmail}</p>
+            {/* Contact and Support emails removed as per requirements */}
             <div className="flex space-x-6 text-sm">
               <Link href="/privacy-policy" className="text-muted-foreground hover:text-foreground transition-colors">
                 Privacy Policy
