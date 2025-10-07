@@ -563,12 +563,8 @@ export default function ProductDetailPage() {
                 <p className="text-xs text-muted-foreground">Authentic Guarantee</p>
               </div>
               <div className="text-center">
-                <Truck className="w-6 h-6 text-primary mx-auto mb-2" />
-                <p className="text-xs text-muted-foreground">Free Shipping</p>
-              </div>
-              <div className="text-center">
                 <RotateCcw className="w-6 h-6 text-primary mx-auto mb-2" />
-                <p className="text-xs text-muted-foreground">30-Day Returns</p>
+                <p className="text-xs text-muted-foreground">30-Day Exchange <span className="text-xs">(Terms & Conditions Applied)</span></p>
               </div>
             </div>
           </div>

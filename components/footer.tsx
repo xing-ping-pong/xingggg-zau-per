@@ -80,7 +80,7 @@ export function Footer() {
               </li>
               <li>
                 <Link href="/returns" className="text-muted-foreground hover:text-foreground transition-colors">
-                  Returns
+                  30-day Exchange <span className="text-xs">(Terms & Conditions Applied)</span>
                 </Link>
               </li>
               <li>
