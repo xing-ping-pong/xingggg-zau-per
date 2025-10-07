@@ -58,11 +58,13 @@ export async function PUT(
       price: body.price,
       category: body.category ? new mongoose.Types.ObjectId(body.category) : null,
       stockQuantity: body.stockQuantity || body.stock || 0, // Use stockQuantity if available, fallback to stock
-      isFeatured: body.featured, // Map 'featured' to 'isFeatured'
-      discount: body.discount, // Now we have discount field
+      isFeatured: body.featured,
+      discount: body.discount,
       discountEndDate: body.discountEndDate ? new Date(body.discountEndDate) : null,
       imageUrl: body.imageUrl,
-      images: body.images || [], // Include the images array
+      images: body.images || [],
+      fragranceNotes: body.fragranceNotes ?? { top: [], middle: [], base: [] },
+      features: body.features ?? [],
     };
     
     console.log('📝 Mapped update data:', JSON.stringify(updateData, null, 2));

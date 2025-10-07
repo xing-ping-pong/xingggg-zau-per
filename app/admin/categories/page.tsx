@@ -33,6 +33,7 @@ interface Category {
   isActive: boolean
   createdAt: string
   updatedAt: string
+  imageUrl?: string
 }
 
 export default function CategoriesPage() {
@@ -44,11 +45,21 @@ export default function CategoriesPage() {
   const [editingCategory, setEditingCategory] = useState<Category | null>(null)
   const { showToast } = useToast()
 
-  const [formData, setFormData] = useState({
+  interface CategoryFormData {
+    name: string;
+    description: string;
+    parentCategory: string;
+    isActive: boolean;
+    image: File | null;
+    imagePreview: string;
+  }
+  const [formData, setFormData] = useState<CategoryFormData>({
     name: "",
     description: "",
     parentCategory: "",
-    isActive: true
+    isActive: true,
+    image: null,
+    imagePreview: ""
   })
 
   // Fetch categories from API
@@ -83,25 +94,24 @@ export default function CategoriesPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setSaving(true)
-    
     try {
       const token = localStorage.getItem("token")
+      const formDataToSend = new FormData()
+      formDataToSend.append("name", formData.name)
+      formDataToSend.append("description", formData.description)
+      formDataToSend.append("parentCategory", formData.parentCategory === "none" ? "" : formData.parentCategory || "")
+      formDataToSend.append("isActive", formData.isActive ? "true" : "false")
+      if (formData.image) {
+        formDataToSend.append("image", formData.image)
+      }
       const response = await fetch('/api/categories', {
         method: 'POST',
         headers: {
-          'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({
-          name: formData.name,
-          description: formData.description,
-          parentCategory: formData.parentCategory === "none" ? null : formData.parentCategory || null,
-          isActive: formData.isActive
-        })
+        body: formDataToSend
       })
-      
       const data = await response.json()
-      
       if (data.success) {
         showToast('Category created successfully!', 'success')
         setIsAddDialogOpen(false)
@@ -121,27 +131,25 @@ export default function CategoriesPage() {
   const handleEditSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     if (!editingCategory) return
-    
     setSaving(true)
-    
     try {
       const token = localStorage.getItem("token")
+      const formDataToSend = new FormData()
+      formDataToSend.append("name", formData.name)
+      formDataToSend.append("description", formData.description)
+      formDataToSend.append("parentCategory", formData.parentCategory === "none" ? "" : formData.parentCategory || "")
+      formDataToSend.append("isActive", formData.isActive ? "true" : "false")
+      if (formData.image) {
+        formDataToSend.append("image", formData.image)
+      }
       const response = await fetch(`/api/categories/${editingCategory._id}`, {
         method: 'PUT',
         headers: {
-          'Content-Type': 'application/json',
           'Authorization': `Bearer ${token}`
         },
-        body: JSON.stringify({
-          name: formData.name,
-          description: formData.description,
-          parentCategory: formData.parentCategory === "none" ? null : formData.parentCategory || null,
-          isActive: formData.isActive
-        })
+        body: formDataToSend
       })
-      
       const data = await response.json()
-      
       if (data.success) {
         showToast('Category updated successfully!', 'success')
         setIsEditDialogOpen(false)
@@ -163,7 +171,9 @@ export default function CategoriesPage() {
       name: "",
       description: "",
       parentCategory: "none",
-      isActive: true
+      isActive: true,
+      image: null,
+      imagePreview: ""
     })
     setEditingCategory(null)
   }
@@ -174,7 +184,9 @@ export default function CategoriesPage() {
       name: category.name,
       description: category.description || "",
       parentCategory: category.parentCategory?._id || "none",
-      isActive: category.isActive
+      isActive: category.isActive,
+      image: null,
+      imagePreview: category.imageUrl || ""
     })
     setIsEditDialogOpen(true)
   }
@@ -261,6 +273,26 @@ export default function CategoriesPage() {
             </DialogHeader>
 
             <form onSubmit={handleSubmit} className="space-y-6">
+              <div className="space-y-2">
+                <Label htmlFor="image" className="text-gray-300">Category Image</Label>
+                <Input
+                  id="image"
+                  type="file"
+                  accept="image/*"
+                  onChange={e => {
+                    const file = e.target.files?.[0] || null
+                    setFormData(prev => ({
+                      ...prev,
+                      image: file,
+                      imagePreview: file ? URL.createObjectURL(file) : ""
+                    }))
+                  }}
+                  className="bg-gray-800 border-gray-700 text-white"
+                />
+                {formData.imagePreview && (
+                  <img src={formData.imagePreview} alt="Preview" className="w-32 h-20 object-cover rounded border mt-2" />
+                )}
+              </div>
               <div className="space-y-2">
                 <Label htmlFor="name" className="text-gray-300">
                   Category Name *
@@ -370,6 +402,26 @@ export default function CategoriesPage() {
           </DialogHeader>
 
           <form onSubmit={handleEditSubmit} className="space-y-6">
+            <div className="space-y-2">
+              <Label htmlFor="edit-image" className="text-gray-300">Category Image</Label>
+              <Input
+                id="edit-image"
+                type="file"
+                accept="image/*"
+                onChange={e => {
+                  const file = e.target.files?.[0] || null
+                  setFormData(prev => ({
+                    ...prev,
+                    image: file,
+                    imagePreview: file ? URL.createObjectURL(file) : prev.imagePreview
+                  }))
+                }}
+                className="bg-gray-800 border-gray-700 text-white"
+              />
+              {formData.imagePreview && (
+                <img src={formData.imagePreview} alt="Preview" className="w-32 h-20 object-cover rounded border mt-2" />
+              )}
+            </div>
             <div className="space-y-2">
               <Label htmlFor="edit-name" className="text-gray-300">
                 Category Name *

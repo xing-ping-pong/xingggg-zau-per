@@ -185,7 +185,16 @@ export default function ProductsPage() {
         discountEndDate: discountEndDate,
         stockQuantity: parseInt(formData.stock) || 0,
         imageUrl: formData.imageUrl || '/placeholder.jpg',
-        images: formData.images || [] // Include the images array
+        images: formData.images || [], // Include the images array
+        fragranceNotes: formData.fragranceNotes,
+        features: formData.features,
+        longevity: formData.longevity,
+        sillage: formData.sillage,
+        occasion: formData.occasion,
+        season: formData.season,
+        sku: formData.sku,
+        weight: formData.weight,
+        dimensions: formData.dimensions
       }
 
       console.log('📝 Submitting product data:', JSON.stringify(productData, null, 2))

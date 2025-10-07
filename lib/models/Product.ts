@@ -26,6 +26,12 @@ export interface IProduct extends Document {
   metaDescription?: string;
   createdAt: Date;
   updatedAt: Date;
+  fragranceNotes?: {
+    top?: string[];
+    middle?: string[];
+    base?: string[];
+  };
+  features?: string[];
 }
 
 const ProductSchema = new Schema<IProduct>({
@@ -113,7 +119,13 @@ const ProductSchema = new Schema<IProduct>({
     type: String,
     trim: true,
     maxlength: [160, 'Meta description cannot exceed 160 characters']
-  }
+  },
+  fragranceNotes: {
+    top: [{ type: String, trim: true }],
+    middle: [{ type: String, trim: true }],
+    base: [{ type: String, trim: true }],
+  },
+  features: [{ type: String, trim: true }]
 }, {
   timestamps: true
 });

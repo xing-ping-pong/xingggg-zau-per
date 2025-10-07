@@ -5,8 +5,10 @@ import { Button } from "@/components/ui/button"
 import { Heart, ShoppingCart, User, Menu, X, LogOut, ChevronDown, Instagram, Facebook, Youtube } from "lucide-react"
 import Link from "next/link"
 import { useCart } from "@/lib/contexts/cart-context"
+import { useSettings } from "@/lib/contexts/settings-context"
 
 export function Header() {
+  const settings = useSettings()
   const [isScrolled, setIsScrolled] = useState(false)
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
   const [isContactDropdownOpen, setIsContactDropdownOpen] = useState(false)
@@ -78,7 +80,7 @@ export function Header() {
             <Link href="/" className="flex items-center">
               <img 
                 src="/logo.png" 
-                alt="ZAU Perfumes" 
+                alt={settings.siteName || "ZAU Perfumes"} 
                 className="w-16 h-16 sm:w-20 sm:h-20 object-contain"
               />
             </Link>
@@ -193,6 +195,7 @@ export function Header() {
                       {cartCount}
                     </span>
                   )}
+                  <span className="ml-1 text-xs text-muted-foreground">{settings.currency}</span>
                 </Button>
               </Link>
             </div>

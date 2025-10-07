@@ -1,7 +1,10 @@
+"use client";
 import { Facebook, Instagram, Twitter, Youtube } from "lucide-react"
 import Link from "next/link"
+import { useSettings } from "@/lib/contexts/settings-context"
 
 export function Footer() {
+  const settings = useSettings()
   return (
     <footer className="bg-background border-t border-border py-16 px-4">
       <div className="container mx-auto">
@@ -11,13 +14,12 @@ export function Footer() {
             <div className="flex items-center mb-4">
               <img 
                 src="/logo.png" 
-                alt="ZAU Perfumes" 
+                alt={settings.siteName || "ZAU Perfumes"} 
                 className="w-16 h-16 object-contain"
               />
             </div>
             <p className="text-muted-foreground leading-relaxed mb-6 max-w-md">
-              Sophisticated simplicity for the independent mind. We craft luxury fragrances that tell your unique story,
-              using only the finest ingredients from around the world.
+              {settings.siteDescription}
             </p>
             <div className="flex space-x-4">
               <a
@@ -106,6 +108,7 @@ export function Footer() {
         <div className="border-t border-border pt-8">
           <div className="flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0">
             <p className="text-muted-foreground text-sm">Copyright © 2025 ZAU Perfumes. All Rights Reserved.</p>
+            <p className="text-muted-foreground text-xs">Contact: {settings.contactEmail} | Support: {settings.supportEmail}</p>
             <div className="flex space-x-6 text-sm">
               <Link href="/privacy-policy" className="text-muted-foreground hover:text-foreground transition-colors">
                 Privacy Policy

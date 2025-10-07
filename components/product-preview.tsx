@@ -23,6 +23,7 @@ interface Product {
     name: string;
   };
   createdAt: string;
+  timer?: string;
 }
 
 interface ReviewStats {
@@ -104,19 +105,30 @@ export function ProductPreview({ product, showQuickActions = true }: ProductPrev
           />
         {/* Top Left - New Badge (only if product is new) */}
         {isNew && (
-          <div className="absolute top-3 left-3 z-10">
-            <div className="bg-gradient-to-r from-green-500 to-green-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+          <div className="absolute top-3 left-3 z-10 flex flex-col gap-2">
+            <div className="bg-gradient-to-r from-green-500 to-green-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg mb-1">
               New
             </div>
+            {/* Example timer badge, add more badges here as needed */}
+            {/* <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">5 hours left</div> */}
           </div>
         )}
-        
         {/* Top Right - Discount Badge */}
-        {Number(product.discount) > 0 && (
-          <div className="absolute top-3 right-3 z-10 bg-gradient-to-r from-red-500 to-red-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg border border-white/20">
-            -{product.discount}%
-          </div>
-        )}
+        {/* Top Right - Badges Container for spacing */}
+        <div className="absolute top-3 right-3 z-10 flex flex-col items-end gap-2">
+          {/* Discount Badge */}
+          {Number(product.discount) > 0 && (
+            <div className="bg-gradient-to-r from-red-500 to-red-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg border border-white/20">
+              -{product.discount}%
+            </div>
+          )}
+          {/* Example timer badge, add more badges here as needed */}
+          {product.timer && (
+            <div className="bg-gradient-to-r from-orange-500 to-orange-600 text-white px-3 py-1 rounded-full text-xs font-bold shadow-lg">
+              {product.timer}
+            </div>
+          )}
+        </div>
         {showQuickActions && (
           <div className="absolute top-12 right-3 space-y-2 opacity-0 group-hover:opacity-100 transition-opacity">
             <button

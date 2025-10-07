@@ -59,6 +59,12 @@ interface Product {
   metaDescription?: string;
   createdAt: string;
   updatedAt: string;
+  fragranceNotes?: {
+    top: string[];
+    middle: string[];
+    base: string[];
+  };
+  features?: string[];
 }
 
 export default function ProductDetailPage() {
@@ -94,15 +100,14 @@ export default function ProductDetailPage() {
   const [reviewError, setReviewError] = useState("")
   const [activeTab, setActiveTab] = useState<'reviews' | 'questions'>('reviews')
 
-  // Mock fragrance notes - in real app this would come from product data
-  const fragranceNotes = {
+  // Use product info if available, fallback to dummy data
+  const fragranceNotes = product?.fragranceNotes || {
     top: ["Bergamot", "Pink Pepper", "Mandarin"],
     middle: ["Midnight Jasmine", "Black Rose", "Violet"],
     base: ["Warm Amber", "Sandalwood", "Vanilla", "Musk"],
   }
 
-  // Mock features - in real app this would come from product data
-  const features = [
+  const features: string[] = product?.features?.length ? product.features : [
     "Long-lasting 8-12 hour wear",
     "Premium French ingredients",
     "Handcrafted crystal bottle",
@@ -295,7 +300,7 @@ export default function ProductDetailPage() {
 
   // Show main image first, then additional images (excluding the main image to avoid duplication)
   const additionalImages = (product.images || []).filter(img => img !== product.imageUrl)
-  const allImages = [product.imageUrl, ...additionalImages].filter(Boolean)
+  const allImages = [product?.imageUrl || "/luxury-perfume-bottle-in-ethereal-lighting-with-go.jpg", ...((product?.images || []).filter(img => img !== product?.imageUrl))].filter(Boolean)
   const timeLeft = getTimeLeft()
 
   // Debug logging
@@ -353,7 +358,7 @@ export default function ProductDetailPage() {
           {/* Product Images */}
           <div className="space-y-4">
             <ProductImageGallery
-              images={allImages}
+              images={allImages.length ? allImages : ["/luxury-perfume-bottle-in-ethereal-lighting-with-go.jpg"]}
               productName={product?.name || "Product"}
               discount={product?.discount || 0}
               className="w-full"
@@ -408,7 +413,7 @@ export default function ProductDetailPage() {
 
             {/* Description */}
             <div>
-              <p className="text-muted-foreground leading-relaxed">{product?.description || "Loading product description..."}</p>
+              <p className="text-muted-foreground leading-relaxed">{product?.description || "A luxury fragrance crafted for sophistication and individuality. Experience the essence of ZAU Perfumes."}</p>
             </div>
 
             {/* Stock Information */}
@@ -542,7 +547,7 @@ export default function ProductDetailPage() {
             <div className="space-y-3">
               <h3 className="font-semibold text-foreground">Key Features</h3>
               <ul className="space-y-2">
-                {features.map((feature, index) => (
+                {features.map((feature: string, index: number) => (
                   <li key={index} className="flex items-center gap-2 text-sm text-muted-foreground">
                     <div className="w-1.5 h-1.5 bg-primary rounded-full" />
                     {feature}
@@ -581,7 +586,7 @@ export default function ProductDetailPage() {
                 <div>
                   <h3 className="font-semibold text-primary mb-3">Top Notes</h3>
                   <ul className="space-y-1">
-                    {fragranceNotes.top.map((note, index) => (
+                    {fragranceNotes.top.map((note: string, index: number) => (
                       <li key={index} className="text-sm text-muted-foreground">
                         {note}
                       </li>
@@ -591,7 +596,7 @@ export default function ProductDetailPage() {
                 <div>
                   <h3 className="font-semibold text-primary mb-3">Middle Notes</h3>
                   <ul className="space-y-1">
-                    {fragranceNotes.middle.map((note, index) => (
+                    {fragranceNotes.middle.map((note: string, index: number) => (
                       <li key={index} className="text-sm text-muted-foreground">
                         {note}
                       </li>
@@ -601,7 +606,7 @@ export default function ProductDetailPage() {
                 <div>
                   <h3 className="font-semibold text-primary mb-3">Base Notes</h3>
                   <ul className="space-y-1">
-                    {fragranceNotes.base.map((note, index) => (
+                    {fragranceNotes.base.map((note: string, index: number) => (
                       <li key={index} className="text-sm text-muted-foreground">
                         {note}
                       </li>

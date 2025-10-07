@@ -28,25 +28,51 @@ const settingsSchema = z.object({
   backupFrequency: z.enum(['daily', 'weekly', 'monthly']),
   maxFileSize: z.string().regex(/^\d+$/),
   allowedFileTypes: z.string(),
+  heroImageUrl: z.string().url().optional().or(z.literal('')),
 });
+// POST /api/admin/settings/hero-image - Upload hero image to Cloudinary
+import { uploadImage } from '@/lib/cloudinary';
+
+export async function POST(req: NextRequest) {
+  try {
+    await connectDB();
+    const user = await authenticateUser(req);
+    if (!user || !user.isAdmin) {
+      return NextResponse.json({ success: false, message: 'Unauthorized' }, { status: 401 });
+    }
+
+    // Expect multipart/form-data with image file
+    const formData = await req.formData();
+    const file = formData.get('image');
+    if (!file || !(file instanceof File)) {
+      return NextResponse.json({ success: false, message: 'No image file provided' }, { status: 400 });
+    }
+
+    // Upload to Cloudinary
+    const imageUrl = await uploadImage(file, 'hero-images');
+
+    // Save URL to settings
+    const updatedSettings = await Settings.findOneAndUpdate(
+      {},
+      { heroImageUrl: imageUrl },
+      { new: true, upsert: true }
+    );
+
+    return NextResponse.json({ success: true, imageUrl, data: updatedSettings });
+  } catch (error) {
+    console.error('Error uploading hero image:', error);
+    return NextResponse.json({ success: false, message: 'Failed to upload hero image' }, { status: 500 });
+  }
+}
 
 // GET /api/admin/settings - Get current settings
 export async function GET(req: NextRequest) {
   try {
     await connectDB();
-    
-    // Authenticate admin user
-    const user = await authenticateUser(req);
-    if (!user || !user.isAdmin) {
-      return NextResponse.json(
-        { success: false, message: 'Unauthorized' },
-        { status: 401 }
-      );
-    }
 
     // Fetch settings from database or create default if none exist
     let settings = await Settings.findOne();
-    
+
     if (!settings) {
       // Create default settings if none exist
       settings = new Settings({

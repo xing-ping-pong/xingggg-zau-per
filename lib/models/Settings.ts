@@ -27,6 +27,7 @@ export interface ISettings extends Document {
   allowedFileTypes: string;
   createdAt: Date;
   updatedAt: Date;
+  heroImageUrl?: string;
 }
 
 const SettingsSchema = new Schema<ISettings>({
@@ -161,6 +162,12 @@ const SettingsSchema = new Schema<ISettings>({
     required: [true, 'Allowed file types are required'],
     trim: true,
     default: 'jpg,png,webp,pdf'
+  }
+  ,
+  heroImageUrl: {
+    type: String,
+    trim: true,
+    default: ''
   }
 }, {
   timestamps: true

@@ -13,6 +13,7 @@ interface Category {
   slug: string;
   isActive: boolean;
   productCount?: number;
+  imageUrl?: string;
 }
 
 export function CollectionsSection() {
@@ -103,44 +104,45 @@ export function CollectionsSection() {
             {categories.length > 0 ? (
               categories.map((category, index) => {
                 // Dynamic image selection based on category
-                const getCategoryImage = (categoryName: string, index: number) => {
-                  const name = categoryName.toLowerCase()
-                  
-                  // Category-specific images
-                  if (name.includes('women') || name.includes('female')) {
-                    return "/elegant-woman-with-luxury-perfume-bottle-in-sophis.jpg"
-                  } else if (name.includes('men') || name.includes('male')) {
-                    return "/sophisticated-man-with-luxury-cologne-bottle-in-mo.jpg"
-                  } else if (name.includes('dior')) {
-                    return "/dior-sauvage-perfume.jpg"
-                  } else if (name.includes('chanel')) {
-                    return "/chanel-perfume-bottle.jpg"
-                  } else if (name.includes('designer') || name.includes('luxury')) {
-                    return "/luxury-perfume-bottle-in-ethereal-lighting-with-go.jpg"
-                  } else if (name.includes('fresh') || name.includes('citrus')) {
-                    return "/fresh-citrus-perfume-bottle.jpg"
-                  } else if (name.includes('oriental') || name.includes('spicy')) {
-                    return "/oriental-spicy-perfume-bottle.jpg"
-                  } else if (name.includes('floral') || name.includes('rose')) {
-                    return "/floral-rose-perfume-bottle.jpg"
-                  } else {
-                    // Fallback to a rotating set of images based on index
-                    const fallbackImages = [
-                      "/luxury-perfume-bottle-in-ethereal-lighting-with-go.jpg",
-                      "/chanel-perfume-bottle.jpg",
-                      "/elegant-woman-with-luxury-perfume-bottle-in-sophis.jpg",
-                      "/sophisticated-man-with-luxury-cologne-bottle-in-mo.jpg"
-                    ]
-                    return fallbackImages[index % fallbackImages.length]
+                  // Use uploaded image if available, otherwise fallback
+                  const getCategoryImage = (category: Category, index: number) => {
+                    if (category.imageUrl && category.imageUrl.trim() !== "") {
+                      return category.imageUrl;
+                    }
+                    const name = category.name.toLowerCase();
+                    if (name.includes('women') || name.includes('female')) {
+                      return "/elegant-woman-with-luxury-perfume-bottle-in-sophis.jpg";
+                    } else if (name.includes('men') || name.includes('male')) {
+                      return "/sophisticated-man-with-luxury-cologne-bottle-in-mo.jpg";
+                    } else if (name.includes('dior')) {
+                      return "/dior-sauvage-perfume.jpg";
+                    } else if (name.includes('chanel')) {
+                      return "/chanel-perfume-bottle.jpg";
+                    } else if (name.includes('designer') || name.includes('luxury')) {
+                      return "/luxury-perfume-bottle-in-ethereal-lighting-with-go.jpg";
+                    } else if (name.includes('fresh') || name.includes('citrus')) {
+                      return "/fresh-citrus-perfume-bottle.jpg";
+                    } else if (name.includes('oriental') || name.includes('spicy')) {
+                      return "/oriental-spicy-perfume-bottle.jpg";
+                    } else if (name.includes('floral') || name.includes('rose')) {
+                      return "/floral-rose-perfume-bottle.jpg";
+                    } else {
+                      const fallbackImages = [
+                        "/luxury-perfume-bottle-in-ethereal-lighting-with-go.jpg",
+                        "/chanel-perfume-bottle.jpg",
+                        "/elegant-woman-with-luxury-perfume-bottle-in-sophis.jpg",
+                        "/sophisticated-man-with-luxury-cologne-bottle-in-mo.jpg"
+                      ];
+                      return fallbackImages[index % fallbackImages.length];
+                    }
                   }
-                }
 
                 return (
                   <div key={category._id} className="group relative overflow-hidden rounded-2xl hover-lift cursor-pointer"
                        onClick={() => router.push(`/products?category=${category.slug}`)}>
                     <div className="aspect-[4/5] sm:aspect-[4/5] relative">
                       <Image
-                        src={getCategoryImage(category.name, index)}
+                        src={getCategoryImage(category, index)}
                         alt={`${category.name} Collection - Luxury fragrance collection`}
                         fill
                         className="object-cover transition-transform duration-700 group-hover:scale-110"
@@ -148,12 +150,15 @@ export function CollectionsSection() {
                       />
                       <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
                       
-                      {/* Product Count Badge */}
-                      {category.productCount && category.productCount > 0 && (
-                        <div className="absolute top-4 right-4 bg-white/90 text-black px-3 py-1 rounded-full text-sm font-semibold">
-                          {category.productCount} {category.productCount === 1 ? 'item' : 'items'}
-                        </div>
-                      )}
+                      {/* Badges Container for spacing */}
+                      <div className="absolute top-4 right-4 flex flex-col items-end gap-2">
+                        {category.productCount && category.productCount > 0 && (
+                          <div className="bg-white/90 text-black px-3 py-1 rounded-full text-sm font-semibold shadow">
+                            {category.productCount} {category.productCount === 1 ? 'item' : 'items'}
+                          </div>
+                        )}
+                        {/* Future badges can be added here */}
+                      </div>
                     </div>
                     <div className="absolute bottom-0 left-0 right-0 p-4 sm:p-6 lg:p-8">
                       <h3 className="font-serif text-2xl sm:text-3xl font-bold text-white mb-2">{category.name}</h3>

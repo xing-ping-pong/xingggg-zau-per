@@ -34,11 +34,45 @@ export default function AdminSettings() {
     socialLogin: true,
     twoFactorAuth: false,
     apiKey: "sk_live_51234567890abcdef",
-    webhookUrl: "https://zauperfumes.com.pk/api/webhooks",
+    webhookUrl: "https://zauperfumes.com/api/webhooks",
     backupFrequency: "daily",
     maxFileSize: "10",
     allowedFileTypes: "jpg,png,webp,pdf",
+    heroImageUrl: ""
   })
+  const [heroImagePreview, setHeroImagePreview] = useState<string>("")
+  const [uploadingHeroImage, setUploadingHeroImage] = useState(false)
+  // Handle hero image upload
+  const handleHeroImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0]
+    if (!file) return
+    setUploadingHeroImage(true)
+    setMessage("")
+    try {
+      const token = localStorage.getItem("token")
+      const formData = new FormData()
+      formData.append("image", file)
+      const res = await fetch("/api/admin/settings", {
+        method: "POST",
+        headers: {
+          'Authorization': `Bearer ${token}`
+        },
+        body: formData
+      })
+      const data = await res.json()
+      if (data.success && data.imageUrl) {
+        setSettings((prev) => ({ ...prev, heroImageUrl: data.imageUrl }))
+        setHeroImagePreview(data.imageUrl)
+        setMessage("Hero image updated!")
+      } else {
+        setMessage(data.message || "Failed to upload hero image")
+      }
+    } catch {
+      setMessage("Network error. Please try again.")
+    } finally {
+      setUploadingHeroImage(false)
+    }
+  }
   const [loading, setLoading] = useState(false)
   const [saving, setSaving] = useState(false)
   const [message, setMessage] = useState("")
@@ -50,14 +84,8 @@ export default function AdminSettings() {
   const fetchSettings = async () => {
     try {
       setLoading(true)
-      const token = localStorage.getItem("token");
-      const response = await fetch('/api/admin/settings', {
-        headers: {
-          'Authorization': `Bearer ${token}`
-        }
-      })
+      const response = await fetch('/api/admin/settings')
       const data = await response.json()
-      
       if (data.success) {
         setSettings(data.data)
       }
@@ -104,6 +132,37 @@ export default function AdminSettings() {
 
   return (
     <div className="space-y-8">
+      {/* Hero Image Upload Section */}
+      <Card className="bg-gray-900 border-gray-800">
+        <CardHeader>
+          <CardTitle className="text-amber-400 flex items-center">Homepage Hero Image</CardTitle>
+          <CardDescription className="text-gray-400">Change the main homepage hero image</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          <div className="flex flex-col md:flex-row items-center gap-6">
+            <div>
+              <Label className="text-gray-300 mb-2 block">Current Image</Label>
+              <img
+                src={heroImagePreview || settings.heroImageUrl || "/luxury-perfume-bottle-in-ethereal-lighting-with-go.jpg"}
+                alt="Hero Preview"
+                className="w-[320px] h-[180px] object-cover rounded-lg border border-gray-700"
+              />
+            </div>
+            <div className="flex flex-col gap-2">
+              <Label htmlFor="heroImageUpload" className="text-gray-300">Upload New Image</Label>
+              <Input
+                id="heroImageUpload"
+                type="file"
+                accept="image/*"
+                onChange={handleHeroImageUpload}
+                disabled={uploadingHeroImage}
+                className="bg-gray-800 border-gray-700 text-white"
+              />
+              {uploadingHeroImage && <span className="text-amber-400">Uploading...</span>}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
       <div className="flex items-center justify-between">
         <div>
           <h1 className="text-4xl font-playfair font-bold text-amber-400 mb-2">Settings</h1>

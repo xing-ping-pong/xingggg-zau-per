@@ -9,6 +9,7 @@ export interface ICategory extends Document {
   isActive: boolean;
   createdAt: Date;
   updatedAt: Date;
+  imageUrl?: string;
 }
 
 const CategorySchema = new Schema<ICategory>({
@@ -38,6 +39,11 @@ const CategorySchema = new Schema<ICategory>({
   isActive: {
     type: Boolean,
     default: true
+  },
+  imageUrl: {
+    type: String,
+    trim: true,
+    default: ''
   }
 }, {
   timestamps: true

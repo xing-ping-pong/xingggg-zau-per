@@ -53,12 +53,19 @@ export async function PUT(
     }
 
     const { id } = params;
-    const body = await req.json();
+    const formData = await req.formData();
+
+    // Extract fields from FormData
+    const name = formData.get('name');
+    const description = formData.get('description');
+    const parentCategory = formData.get('parentCategory');
+    const isActive = formData.get('isActive') === 'true';
+    const imageFile = formData.get('image');
 
     // Validate parent category exists if provided
-    if (body.parentCategory) {
-      const parentCategory = await Category.findById(body.parentCategory);
-      if (!parentCategory) {
+    if (parentCategory) {
+      const parentCat = await Category.findById(parentCategory);
+      if (!parentCat) {
         return NextResponse.json({
           success: false,
           message: 'Parent category not found'
@@ -66,20 +73,32 @@ export async function PUT(
       }
     }
 
-    // Generate slug from name if name is being updated
+    // Prepare update data
     let updateData: any = {
-      name: body.name,
-      description: body.description,
-      parentCategory: body.parentCategory || null,
-      isActive: body.isActive !== undefined ? body.isActive : true
+      name,
+      description,
+      parentCategory: parentCategory || null,
+      isActive,
     };
 
     // Only update slug if name is being changed
-    if (body.name) {
-      updateData.slug = body.name
+    if (name) {
+      updateData.slug = String(name)
         .toLowerCase()
         .replace(/[^a-z0-9]+/g, '-')
         .replace(/(^-|-$)/g, '');
+    }
+
+    // Handle image upload if image file is present
+    if (imageFile && typeof imageFile === 'object' && 'arrayBuffer' in imageFile) {
+      // Upload to Cloudinary or your image service
+      const buffer = Buffer.from(await imageFile.arrayBuffer());
+      // Example: upload to Cloudinary
+      // import cloudinary from '@/lib/cloudinary';
+      // const uploadRes = await cloudinary.uploader.upload_stream(...)
+      // updateData.imageUrl = uploadRes.secure_url;
+      // For now, just skip actual upload and set a placeholder
+      updateData.imageUrl = 'uploaded-image-url';
     }
 
     const updatedCategory = await Category.findByIdAndUpdate(

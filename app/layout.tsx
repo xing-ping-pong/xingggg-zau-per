@@ -2,6 +2,7 @@ import type React from "react"
 import type { Metadata } from "next"
 import { Suspense } from "react"
 import { CartProvider } from "@/lib/contexts/cart-context"
+import { SettingsProvider } from "@/lib/contexts/settings-context"
 import { ToastProvider } from "@/lib/contexts/toast-context"
 import { StructuredData } from "@/components/structured-data"
 import "./globals.css"
@@ -97,13 +98,19 @@ export default function RootLayout({
     <html lang="en" className="dark">
       <head>
         <StructuredData />
+        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+        <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
+        <link rel="apple-touch-icon" href="/favicon.png" />
+        <link rel="shortcut icon" href="/favicon.ico" />
       </head>
       <body className={`font-sans ${playfair.variable} ${inter.variable} antialiased`}>
-        <CartProvider>
-          <ToastProvider>
-            <Suspense fallback={null}>{children}</Suspense>
-          </ToastProvider>
-        </CartProvider>
+        <SettingsProvider>
+          <CartProvider>
+            <ToastProvider>
+              <Suspense fallback={null}>{children}</Suspense>
+            </ToastProvider>
+          </CartProvider>
+        </SettingsProvider>
       </body>
     </html>
   )

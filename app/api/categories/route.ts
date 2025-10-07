@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from 'next/server';
 import connectDB from '@/lib/mongodb';
 import { Category } from '@/lib/models';
 import { authenticateUser } from '@/lib/auth';
+import { uploadImage } from '@/lib/cloudinary';
 
 export async function GET(req: NextRequest) {
   try {
@@ -47,33 +48,51 @@ export async function POST(req: NextRequest) {
       }, { status: 401 });
     }
 
-    const body = await req.json();
+    let name = "", description = "", parentCategory = null, isActive = true, imageUrl = "";
+    let slug = "";
+    let file: File | null = null;
+    if (req.headers.get('content-type')?.includes('multipart/form-data')) {
+      const formData = await req.formData();
+      name = formData.get('name') as string;
+      description = formData.get('description') as string;
+      parentCategory = formData.get('parentCategory') || null;
+      isActive = formData.get('isActive') === 'false' ? false : true;
+      file = formData.get('image') as File;
+    } else {
+      const body = await req.json();
+      name = body.name;
+      description = body.description;
+      parentCategory = body.parentCategory || null;
+      isActive = body.isActive !== undefined ? body.isActive : true;
+      imageUrl = body.imageUrl || "";
+    }
 
-    // Generate slug from name
-    const slug = body.name
+    slug = name
       .toLowerCase()
       .replace(/[^a-z0-9]+/g, '-')
       .replace(/(^-|-$)/g, '');
 
     // Validate parent category exists if provided
-    if (body.parentCategory) {
-      const parentCategory = await Category.findById(body.parentCategory);
-      if (!parentCategory) {
-        return NextResponse.json({
-          success: false,
-          message: 'Parent category not found'
-        }, { status: 400 });
+    if (parentCategory) {
+      const parentCat = await Category.findById(parentCategory);
+      if (!parentCat) {
+        return NextResponse.json({ success: false, message: 'Parent category not found' }, { status: 400 });
       }
     }
 
+    // Upload image if provided
+    if (file && file instanceof File) {
+      imageUrl = await uploadImage(file, 'category-images');
+    }
+
     const category = new Category({
-      name: body.name,
-      description: body.description,
-      parentCategory: body.parentCategory || null,
-      isActive: body.isActive !== undefined ? body.isActive : true,
-      slug: slug
+      name,
+      description,
+      parentCategory,
+      isActive,
+      slug,
+      imageUrl
     });
-    
     await category.save();
 
     return NextResponse.json({
