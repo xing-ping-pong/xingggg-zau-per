@@ -367,15 +367,6 @@ function CartPageContent() {
               <h1 className="text-3xl font-bold mb-2">Shopping Cart</h1>
               <p className="text-muted-foreground">{cartItems.reduce((sum, item) => sum + item.quantity, 0)} item(s) in your cart</p>
             </div>
-            {cartItems.length > 0 && (
-              <Button 
-                variant="outline" 
-                onClick={handleClearCart}
-                className="text-red-600 border-red-600 hover:bg-red-50"
-              >
-                Clear Cart (Fix DB Issues)
-              </Button>
-            )}
           </div>
         </div>
 
