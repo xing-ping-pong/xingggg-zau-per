@@ -367,15 +367,7 @@ function CartPageContent() {
               <h1 className="text-3xl font-bold mb-2">Shopping Cart</h1>
               <p className="text-muted-foreground">{cartItems.reduce((sum, item) => sum + item.quantity, 0)} item(s) in your cart</p>
             </div>
-            {cartItems.length > 0 && (
-              <Button 
-                variant="outline" 
-                onClick={handleClearCart}
-                className="text-red-600 border-red-600 hover:bg-red-50"
-              >
-                Clear Cart (Fix DB Issues)
-              </Button>
-            )}
+            {/* Removed Clear Cart (Fix DB Issues) button for production */}
           </div>
         </div>
 
@@ -513,11 +505,9 @@ function CartPageContent() {
                 </div>
                 <div className="flex justify-between">
                   <span>Shipping</span>
-                  <span>{shipping === 0 ? 'Free' : `PKR ${shipping.toFixed(2)}`}</span>
+                  <span>Depends On Location</span>
                 </div>
-                <div className="flex justify-between">
-            <span>Tax removed for production</span>
-                </div>
+        {/* Removed Tax removed for production text for production */}
                 {couponApplied && (
                   <div className="flex justify-between text-green-600">
                     <span>Coupon Discount ({couponDiscount}%)</span>

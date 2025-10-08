@@ -191,6 +191,27 @@ export default function AdminDashboard() {
 
   return (
     <div className="space-y-8">
+      {/*
+      <div className="mb-4">
+        <button
+          className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 font-bold shadow"
+          onClick={async () => {
+            if (confirm('Are you sure you want to delete ALL orders? This cannot be undone.')) {
+              const res = await fetch('/api/admin/clear-orders', { method: 'POST' })
+              const data = await res.json()
+              if (data.success) {
+                alert('All orders cleared!')
+                window.location.reload()
+              } else {
+                alert('Failed to clear orders: ' + data.message)
+              }
+            }
+          }}
+        >
+          Clear All Orders (Set Revenue to Zero)
+        </button>
+      </div>
+      */}
       <div>
         <h1 className="text-4xl font-playfair font-bold text-amber-400 mb-2">Admin Dashboard</h1>
         <p className="text-gray-400">Welcome to ZAU Admin Panel - Real-time data</p>
