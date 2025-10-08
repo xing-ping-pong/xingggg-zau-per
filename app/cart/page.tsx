@@ -233,6 +233,7 @@ function CartPageContent() {
         pricing: {
           subtotal,
           shipping,
+          tax: 0, // Ensure tax field is present for backend validation
           couponDiscount: couponApplied ? couponSavings : 0,
           couponCode: couponApplied ? couponCode : undefined,
           total
@@ -507,9 +508,7 @@ function CartPageContent() {
                   <span>Shipping</span>
                   <span>Depends on location</span>
                 </div>
-                <div className="flex justify-between">
-            {/* Removed Tax removed for production for production */}
-                </div>
+                {/* No tax shown to end user */}
                 {couponApplied && (
                   <div className="flex justify-between text-green-600">
                     <span>Coupon Discount ({couponDiscount}%)</span>
