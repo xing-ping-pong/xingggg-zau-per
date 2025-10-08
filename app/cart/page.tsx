@@ -35,18 +35,21 @@ function CartPageContent() {
   const handleCheckout = async () => {
     setSaving(true);
     try {
-      // Prepare order payload
+      // Prepare order payload matching backend contract
       const orderPayload = {
-        products: products.map(p => ({
+        guestInfo,
+        items: products.map(p => ({
           productId: p._id,
           quantity: p.cartQuantity
         })),
-        guestInfo,
-        total,
-        couponCode: couponApplied ? couponCode : undefined,
-        couponDiscount: couponApplied ? couponDiscount : undefined,
-        shipping,
-        // No tax for end user
+        pricing: {
+          subtotal,
+          shipping,
+          tax: 0, // No tax for end user
+          total,
+          couponCode: couponApplied ? couponCode : undefined,
+          couponDiscount: couponApplied ? couponDiscount : undefined
+        }
       };
       const response = await fetch('/api/orders', {
         method: 'POST',
