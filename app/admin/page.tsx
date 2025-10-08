@@ -191,7 +191,7 @@ export default function AdminDashboard() {
 
   return (
     <div className="space-y-8">
-      {/*
+      {
       <div className="mb-4">
         <button
           className="px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700 font-bold shadow"
@@ -211,7 +211,7 @@ export default function AdminDashboard() {
           Clear All Orders (Set Revenue to Zero)
         </button>
       </div>
-      */}
+      }
       <div>
         <h1 className="text-4xl font-playfair font-bold text-amber-400 mb-2">Admin Dashboard</h1>
         <p className="text-gray-400">Welcome to ZAU Admin Panel - Real-time data</p>
