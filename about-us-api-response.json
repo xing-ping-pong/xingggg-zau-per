@@ -1,0 +1,28 @@
+﻿
+
+StatusCode        : 200
+StatusDescription : OK
+Content           : {"success":true,"data":{"page":{"_id":"68d70608f2a1f0a3206733a8
+                    ","slug":"about-us","title":"About Us","content":"<h2>Our 
+                    Mission</h2>\n<p>At ZAU Perfumes, we believe that fragrance is 
+                    more than just a...
+RawContent        : HTTP/1.1 200 OK
+                    X-Content-Type-Options: nosniff
+                    X-Frame-Options: DENY
+                    X-XSS-Protection: 1; mode=block
+                    vary: rsc, next-router-state-tree, next-router-prefetch, 
+                    next-router-segment-prefetch
+                    pragma:...
+Forms             : {}
+Headers           : {[X-Content-Type-Options, nosniff], [X-Frame-Options, DENY], 
+                    [X-XSS-Protection, 1; mode=block], [vary, rsc, 
+                    next-router-state-tree, next-router-prefetch, 
+                    next-router-segment-prefetch]...}
+Images            : {}
+InputFields       : {}
+Links             : {}
+ParsedHtml        : System.__ComObject
+RawContentLength  : 1343
+
+
+

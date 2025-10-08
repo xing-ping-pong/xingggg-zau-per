@@ -27,7 +27,7 @@ function FAQPreview({ count = 3 }: { count?: number }) {
     },
     {
       question: "What if I don't like my purchase?",
-      answer: "We offer a 30-day return policy for unopened products. If you're not completely satisfied, you can return your purchase for a full refund or exchange."
+      answer: "We offer a 7-day exchange policy for unopened products. If you're not completely satisfied, you can exchange your purchase for a different product. Terms and conditions apply."
     },
     {
       question: "How should I store my fragrances?",
@@ -65,7 +65,7 @@ async function getPage(slug: string) {
     
     await connectDB()
     
-    const page = await Page.findOne({ slug, isActive: true })
+  const page = await Page.findOne({ slug, isActive: true })
     
     if (!page) {
       console.error(`Page not found: ${slug}`)
@@ -80,27 +80,33 @@ async function getPage(slug: string) {
 }
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
-  const page = await getPage(params.slug)
-  
-  if (!page) {
+  // Next.js 15+ requires params to be awaited before using its properties
+  const awaitedParams = await params;
+  const metaPage = await getPage(awaitedParams.slug);
+  if (!metaPage) {
     return {
       title: 'Page Not Found',
       description: 'The requested page could not be found.'
     }
   }
-
   return {
-    title: page.metaTitle || page.title,
-    description: page.metaDescription || `Learn more about ${page.title}`,
+    title: metaPage.metaTitle || metaPage.title,
+    description: metaPage.metaDescription || `Learn more about ${metaPage.title}`,
     alternates: {
-      canonical: `${process.env.NEXT_PUBLIC_BASE_URL || 'https://zauperfumes.com'}/${params.slug}`
+  canonical: `https://zauperfumes.com/${awaitedParams.slug}`
     }
   }
 }
 
 export default async function DynamicPage({ params }: PageProps) {
-  const page = await getPage(params.slug)
-  
+  // Next.js 15+ requires params to be awaited before using its properties
+  const awaitedParams = await params;
+  const page = await getPage(awaitedParams.slug);
+  // ...existing code...
+  // Debug: Log the full page content for troubleshooting
+  if (page) {
+    console.log('[DEBUG] Page content:', page.content);
+  }
   if (!page) {
     notFound()
   }
@@ -122,7 +128,7 @@ export default async function DynamicPage({ params }: PageProps) {
     return iconMap[slug] || Sparkles
   }
 
-  const PageIcon = getPageIcon(params.slug)
+  const PageIcon = getPageIcon(awaitedParams.slug)
 
   return (
     <main className="min-h-screen bg-gradient-to-b from-background via-muted/10 to-background">
@@ -150,7 +156,7 @@ export default async function DynamicPage({ params }: PageProps) {
             {/* Meta Description */}
             {page.metaDescription && (
               <p className="text-xl text-muted-foreground max-w-3xl mx-auto leading-relaxed">
-                {page.metaDescription}
+                {page.metaDescription.replace(/30[- ]?day(s)?/gi, '7-day').replace(/zauperfumes@gmail.com|support@zauperfumes.com.pk/gi, 'zauperfumes@gmail.com').replace(/zauperfumes.com(?!\/)/gi, 'zauperfumes.com')}
               </p>
             )}
           </div>
@@ -164,105 +170,119 @@ export default async function DynamicPage({ params }: PageProps) {
             {/* Parse and structure the content into cards */}
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {(() => {
-                // Simple HTML parsing to extract sections
-                const content = page.content
-                const sections = []
-                
+                // Improved HTML parsing to always show the initial <h1> and intro <p>
+                const content = page.content;
+                const sections = [];
                 // Debug: Log the content to see what we're parsing
-                console.log('Parsing content for page:', page.slug, 'Content:', content.substring(0, 200) + '...')
-                
-                // Split content by H2 and H3 headings
-                const headingRegex = /<h[23][^>]*>(.*?)<\/h[23]>/gi
-                const parts = content.split(headingRegex)
-                
-                for (let i = 1; i < parts.length; i += 2) {
-                  const title = parts[i].replace(/<[^>]*>/g, '').trim()
-                  const contentAfterTitle = parts[i + 1] || ''
-                  
-                  // Extract first paragraph
-                  const pMatch = contentAfterTitle.match(/<p[^>]*>(.*?)<\/p>/i)
-                  const description = pMatch ? pMatch[1].replace(/<[^>]*>/g, '').trim() : ''
-                  
-                 // Extract list items
-                 const listItems: string[] = [];
-                 // Extract <ul> lists
-                 const ulMatches = contentAfterTitle.match(/<ul[^>]*>(.*?)<\/ul>/gi);
-                 if (ulMatches) {
-                   ulMatches.forEach((ul: string) => {
-                     const liMatches = ul.match(/<li[^>]*>(.*?)<\/li>/gi);
-                     if (liMatches) {
-                       listItems.push(...liMatches.map((li: string) => li.replace(/<[^>]*>/g, '').trim()));
-                     }
-                   });
-                 }
-                 // Extract <ol> lists
-                 const olMatches = contentAfterTitle.match(/<ol[^>]*>(.*?)<\/ol>/gi);
-                 if (olMatches) {
-                   olMatches.forEach((ol: string) => {
-                     const liMatches = ol.match(/<li[^>]*>(.*?)<\/li>/gi);
-                     if (liMatches) {
-                       listItems.push(...liMatches.map((li: string) => li.replace(/<[^>]*>/g, '').trim()));
-                     }
-                   });
-                 }
-                 // Extract buttons and links
-                 const buttons: { text: string; href: string }[] = [];
-                 const buttonMatches = contentAfterTitle.match(/<button[^>]*>(.*?)<\/button>/gi);
-                 if (buttonMatches) {
-                   buttonMatches.forEach((button: string) => {
-                     const hrefMatch = button.match(/href="([^"]*)"/);
-                     const textMatch = button.match(/>([^<]*)</);
-                     if (hrefMatch && textMatch) {
-                       buttons.push({
-                         text: textMatch[1].trim(),
-                         href: hrefMatch[1]
-                       });
-                     }
-                   });
-                 }
-                 
-                 // Extract special dynamic content
-                 const dynamicContent: any[] = [];
-                 const faqMatch = contentAfterTitle.match(/<faq-preview[^>]*><\/faq-preview>/i);
-                 if (faqMatch) {
-                   dynamicContent.push({
-                     type: 'faq-preview',
-                     count: 3 // Show 3 FAQ items by default
-                   });
-                 }
-                 const section: {
-                   title: string;
-                   description: string;
-                   listItems: string[];
-                   buttons: { text: string; href: string }[];
-                   dynamicContent: any[];
-                 } = {
-                   title,
-                   description,
-                   listItems,
-                   buttons,
-                   dynamicContent
-                 };
-                 sections.push(section);
+                console.log('Parsing content for page:', page.slug, 'Content:', content.substring(0, 200) + '...');
+
+                // Find the initial <h1> and its following <p>
+                const h1Match = content.match(/<h1[^>]*>(.*?)<\/h1>/i);
+                let introTitle = h1Match ? h1Match[1].replace(/<[^>]*>/g, '').trim() : '';
+                // Find the first <p> after <h1>
+                let introDescription = '';
+                if (h1Match) {
+                  // Get content after <h1>
+                  const afterH1 = content.slice(content.indexOf(h1Match[0]) + h1Match[0].length);
+                  const pMatch = afterH1.match(/<p[^>]*>(.*?)<\/p>/i);
+                  introDescription = pMatch ? pMatch[1].replace(/<[^>]*>/g, '').trim() : '';
                 }
-                
+                // If we have an intro, add it as the first section
+                if (introTitle || introDescription) {
+                  sections.push({
+                    title: introTitle || 'Information',
+                    description: introDescription.replace(/30[- ]?day(s)?/gi, '7-day').replace(/zauperfumes@gmail.com|support@zauperfumes.com.pk/gi, 'zauperfumes@gmail.com').replace(/zauperfumes.com(?!\/)/gi, 'zauperfumes.com'),
+                    listItems: [],
+                    buttons: [],
+                    dynamicContent: []
+                  });
+                }
+
+                // Split content by H2 and H3 headings
+                const headingRegex = /<h[23][^>]*>(.*?)<\/h[23]>/gi;
+                const parts = content.split(headingRegex);
+                for (let i = 1; i < parts.length; i += 2) {
+                  const title = parts[i].replace(/<[^>]*>/g, '').trim();
+                  const contentAfterTitle = parts[i + 1] || '';
+                  // Extract first paragraph
+                  const pMatch = contentAfterTitle.match(/<p[^>]*>(.*?)<\/p>/i);
+                  let description = pMatch ? pMatch[1].replace(/<[^>]*>/g, '').trim() : '';
+                  description = description.replace(/30[- ]?day(s)?/gi, '7-day').replace(/zauperfumes@gmail.com|support@zauperfumes.com.pk/gi, 'zauperfumes@gmail.com').replace(/zauperfumes.com(?!\/)/gi, 'zauperfumes.com').replace(/delivery charges[^.]*\./gi, 'Delivery charges depend on your location.').replace(/tax[^.]*\./gi, '').replace(/tax/gi, '');
+                  // Extract all list items (ul and ol)
+                  const listItems: string[] = [];
+                  // Extract <ul> lists
+                  const ulMatches = contentAfterTitle.match(/<ul[^>]*>(.*?)<\/ul>/gi);
+                  if (ulMatches) {
+                    ulMatches.forEach((ul: string) => {
+                      const liMatches = ul.match(/<li[^>]*>(.*?)<\/li>/gi);
+                      if (liMatches) {
+                        listItems.push(...liMatches.map((li: string) => li.replace(/<[^>]*>/g, '').trim()));
+                      }
+                    });
+                  }
+                  // Extract <ol> lists
+                  const olMatches = contentAfterTitle.match(/<ol[^>]*>(.*?)<\/ol>/gi);
+                  if (olMatches) {
+                    olMatches.forEach((ol: string) => {
+                      const liMatches = ol.match(/<li[^>]*>(.*?)<\/li>/gi);
+                      if (liMatches) {
+                        listItems.push(...liMatches.map((li: string) => li.replace(/<[^>]*>/g, '').trim()));
+                      }
+                    });
+                  }
+                  // Extract buttons and links
+                  const buttons: { text: string; href: string }[] = [];
+                  const buttonMatches = contentAfterTitle.match(/<button[^>]*>(.*?)<\/button>/gi);
+                  if (buttonMatches) {
+                    buttonMatches.forEach((button: string) => {
+                      const hrefMatch = button.match(/href="([^\"]*)"/);
+                      const textMatch = button.match(/>([^<]*)</);
+                      if (hrefMatch && textMatch) {
+                        buttons.push({
+                          text: textMatch[1].trim(),
+                          href: hrefMatch[1]
+                        });
+                      }
+                    });
+                  }
+                  // Extract special dynamic content
+                  const dynamicContent: any[] = [];
+                  const faqMatch = contentAfterTitle.match(/<faq-preview[^>]*><\/faq-preview>/i);
+                  if (faqMatch) {
+                    dynamicContent.push({
+                      type: 'faq-preview',
+                      count: 3 // Show 3 FAQ items by default
+                    });
+                  }
+                  const section: {
+                    title: string;
+                    description: string;
+                    listItems: string[];
+                    buttons: { text: string; href: string }[];
+                    dynamicContent: any[];
+                  } = {
+                    title,
+                    description,
+                    listItems,
+                    buttons,
+                    dynamicContent
+                  };
+                  sections.push(section);
+                }
                 // Debug: Log how many sections were found
-                console.log('Found sections:', sections.length, 'for page:', page.slug)
-                
-                 // If no H2/H3 sections found, create a single card with the content
-                 if (sections.length === 0) {
-                   const pMatch = content.match(/<p[^>]*>(.*?)<\/p>/i)
-                   const description = pMatch ? pMatch[1].replace(/<[^>]*>/g, '').trim() : content.replace(/<[^>]*>/g, '').trim()
-                   
-                   sections.push({
-                     title: 'Information',
-                     description: description.substring(0, 200) + (description.length > 200 ? '...' : ''),
-                     listItems: [],
-                     buttons: [],
-                     dynamicContent: []
-                   })
-                 }
-                
+                console.log('Found sections:', sections.length, 'for page:', page.slug);
+                // If no sections found, fallback to a single card
+                if (sections.length === 0) {
+                  const pMatch = content.match(/<p[^>]*>(.*?)<\/p>/i);
+                  const description = pMatch ? pMatch[1].replace(/<[^>]*>/g, '').trim() : content.replace(/<[^>]*>/g, '').trim();
+                  sections.push({
+                    title: 'Information',
+                    description: description.substring(0, 200) + (description.length > 200 ? '...' : ''),
+                    listItems: [],
+                    buttons: [],
+                    dynamicContent: []
+                  });
+                }
                 return sections.map((section, index) => (
                   <div key={index} className="bg-card/50 backdrop-blur-sm border border-border/50 rounded-xl p-6 shadow-lg hover:shadow-xl transition-shadow">
                     <h3 className="font-serif text-lg font-semibold text-foreground mb-3">{section.title}</h3>
@@ -271,42 +291,40 @@ export default async function DynamicPage({ params }: PageProps) {
                         {section.description}
                       </p>
                     )}
-                     {section.listItems.length > 0 && (
-                       <div className="space-y-2">
-                         {section.listItems.map((item, itemIndex) => (
-                           <div key={itemIndex} className="text-muted-foreground text-sm font-light">
-                             • {item}
-                           </div>
-                         ))}
-                       </div>
-                     )}
-                     
-                     {/* Render dynamic content */}
-                     {section.dynamicContent.map((content, contentIndex) => (
-                       <div key={contentIndex} className="mt-4">
-                         {content.type === 'faq-preview' && (
-                           <FAQPreview count={content.count} />
-                         )}
-                       </div>
-                     ))}
-                     
-                     {/* Render buttons */}
-                     {section.buttons.length > 0 && (
-                       <div className="flex flex-wrap gap-3 mt-4">
-                         {section.buttons.map((button, buttonIndex) => (
-                           <Link
-                             key={buttonIndex}
-                             href={button.href}
-                             className="inline-flex items-center px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors text-sm font-medium"
-                           >
-                             {button.text}
-                             <ExternalLink className="w-3 h-3 ml-2" />
-                           </Link>
-                         ))}
-                       </div>
-                     )}
-                   </div>
-                 ))
+                    {section.listItems.length > 0 && (
+                      <div className="space-y-2">
+                        {section.listItems.map((item, itemIndex) => (
+                          <div key={itemIndex} className="text-muted-foreground text-sm font-light">
+                            • {item.replace(/30[- ]?day(s)?/gi, '7-day').replace(/zauperfumes@gmail.com|support@zauperfumes.com.pk/gi, 'zauperfumes@gmail.com').replace(/zauperfumes.com(?!\/)/gi, 'zauperfumes.com').replace(/delivery charges[^.]*\./gi, 'Delivery charges depend on your location.').replace(/tax[^.]*\./gi, '').replace(/tax/gi, '')}
+                          </div>
+                        ))}
+                      </div>
+                    )}
+                    {/* Render dynamic content */}
+                    {section.dynamicContent.map((content, contentIndex) => (
+                      <div key={contentIndex} className="mt-4">
+                        {content.type === 'faq-preview' && (
+                          <FAQPreview count={content.count} />
+                        )}
+                      </div>
+                    ))}
+                    {/* Render buttons */}
+                    {section.buttons.length > 0 && (
+                      <div className="flex flex-wrap gap-3 mt-4">
+                        {section.buttons.map((button, buttonIndex) => (
+                          <Link
+                            key={buttonIndex}
+                            href={button.href}
+                            className="inline-flex items-center px-4 py-2 bg-primary text-primary-foreground rounded-md hover:bg-primary/90 transition-colors text-sm font-medium"
+                          >
+                            {button.text}
+                            <ExternalLink className="w-3 h-3 ml-2" />
+                          </Link>
+                        ))}
+                      </div>
+                    )}
+                  </div>
+                ));
               })()}
             </div>
 
@@ -331,21 +349,21 @@ export default async function DynamicPage({ params }: PageProps) {
 }
 
 // Generate static params for known pages
-export async function generateStaticParams() {
-  const knownPages = [
-    'about-us',
-    'our-story', 
-    'sustainability',
-    'press',
-    'help-center',
-    'shipping-info',
-    'returns',
-    'privacy-policy',
-    'terms-conditions',
-    'cookie-policy'
-  ]
-
-  return knownPages.map((slug) => ({
-    slug,
-  }))
-}
+// export async function generateStaticParams() {
+//   const knownPages = [
+//     'about-us',
+//     'our-story', 
+//     'sustainability',
+//     'press',
+//     'help-center',
+//     'shipping-info',
+//     'returns',
+//     'privacy-policy',
+//     'terms-conditions',
+//     'cookie-policy'
+//   ]
+//
+//   return knownPages.map((slug) => ({
+//     slug,
+//   }))
+// }

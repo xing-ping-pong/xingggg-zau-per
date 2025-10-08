@@ -26,6 +26,7 @@ interface Product {
     _id: string;
     name: string;
   };
+  cartQuantity: number;
 }
 
 function CartPageContent() {
@@ -182,7 +183,8 @@ function CartPageContent() {
       address: '',
       city: '',
       zipCode: '',
-      country: ''
+      country: '',
+      deliveryRemarks: ''
     })
     setCouponCode('')
     setCouponApplied(false)
@@ -259,7 +261,6 @@ function CartPageContent() {
       if (data.success) {
         // Clear cart immediately after successful order
         clearCart()
-        
         // Show success modal
         setOrderDetails({
           orderNumber: data.data.orderNumber,
@@ -267,7 +268,12 @@ function CartPageContent() {
           estimatedDelivery: data.data.estimatedDelivery,
           total: data.data.total
         })
-        
+        console.log('[DEBUG] Showing OrderSuccessModal:', {
+          orderNumber: data.data.orderNumber,
+          orderId: data.data.orderId,
+          estimatedDelivery: data.data.estimatedDelivery,
+          total: data.data.total
+        })
         setShowSuccessModal(true)
       } else {
         alert(data.message || 'Failed to place order')
@@ -727,7 +733,10 @@ function CartPageContent() {
       {/* Success Modal */}
       <OrderSuccessModal
         isOpen={showSuccessModal}
-        onClose={handleModalClose}
+        onClose={() => {
+          console.log('[DEBUG] Closing OrderSuccessModal');
+          handleModalClose();
+        }}
         orderNumber={orderDetails.orderNumber}
         orderId={orderDetails.orderId}
         estimatedDelivery={orderDetails.estimatedDelivery}

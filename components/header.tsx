@@ -80,7 +80,7 @@ export function Header() {
             <Link href="/" className="flex items-center">
               <img 
                 src="/logo.png" 
-                alt={settings.siteName || "ZAU Perfumes"} 
+                alt="ZAU Perfumes" 
                 className="w-16 h-16 sm:w-20 sm:h-20 object-contain"
               />
             </Link>

@@ -8,31 +8,17 @@ import { StructuredData } from "@/components/structured-data"
 import "./globals.css"
 
 // Font configuration with error handling
-let playfair: any = null
-let inter: any = null
-
-try {
-  const { Playfair_Display, Inter } = require("next/font/google")
-  
-  playfair = Playfair_Display({
-    subsets: ["latin"],
-    variable: "--font-playfair",
-    display: "swap",
-    fallback: ["serif"],
-  })
-
-  inter = Inter({
-    subsets: ["latin"],
-    variable: "--font-inter",
-    display: "swap",
-    fallback: ["system-ui", "arial"],
-  })
-} catch (error) {
-  console.warn("Failed to load Google Fonts, using fallback fonts:", error)
-  // Create fallback font objects
-  playfair = { variable: "--font-playfair" }
-  inter = { variable: "--font-inter" }
-}
+import { Playfair_Display, Inter } from "next/font/google";
+const playfair = Playfair_Display({
+  subsets: ["latin"],
+  variable: "--font-playfair",
+  display: "swap"
+});
+const inter = Inter({
+  subsets: ["latin"],
+  variable: "--font-inter",
+  display: "swap"
+});
 
 export const metadata: Metadata = {
   title: "ZAU Perfumes - Luxury Fragrances Collection",
@@ -103,7 +89,7 @@ export default function RootLayout({
         <link rel="apple-touch-icon" href="/favicon.png" />
         <link rel="shortcut icon" href="/favicon.ico" />
       </head>
-      <body className={`font-sans ${playfair.variable} ${inter.variable} antialiased`}>
+  <body className={`font-sans ${playfair.variable} ${inter.variable} antialiased`}>
         <SettingsProvider>
           <CartProvider>
             <ToastProvider>
