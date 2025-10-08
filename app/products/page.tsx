@@ -76,14 +76,17 @@ export default function ProductsPage() {
   const fetchProducts = async () => {
     try {
       setLoading(true)
-      
+
       const params = new URLSearchParams()
       if (selectedCategory && selectedCategory !== 'all') {
-        // Find category by slug and use its ID
-        const category = categories.find(cat => cat.slug === selectedCategory)
-        if (category) {
-          params.append('category', category._id)
+        // Accept both slug and ID
+        let categoryId = selectedCategory
+        // If selectedCategory is a slug, find its ID
+        const foundBySlug = categories.find(cat => cat.slug === selectedCategory)
+        if (foundBySlug) {
+          categoryId = foundBySlug._id
         }
+        params.append('category', categoryId)
       }
       if (sortBy !== 'newest') {
         switch (sortBy) {
@@ -121,7 +124,7 @@ export default function ProductsPage() {
 
       const response = await fetch(`/api/products?${params.toString()}`)
       const data = await response.json()
-      
+
       if (data.success) {
         setProducts(data.data.products)
       }
