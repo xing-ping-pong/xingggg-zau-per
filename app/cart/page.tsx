@@ -305,7 +305,7 @@ function CartPageContent() {
                   <div className="space-y-2">
                     <div className="flex justify-between">
                       <span>Subtotal</span>
-                      <span>PKR {subtotal.toFixed(2)}</span>
+                      <span>PKR {(typeof subtotal === 'number' && !isNaN(subtotal) ? subtotal : 0).toFixed(2)}</span>
                     </div>
                     <div className="flex justify-between">
                       <span>Shipping</span>
@@ -315,13 +315,13 @@ function CartPageContent() {
                     {couponApplied && (
                       <div className="flex justify-between text-green-600">
                         <span>Coupon Discount ({couponDiscount}%)</span>
-                        <span>-PKR {couponSavings.toFixed(2)}</span>
+                        <span>-PKR {(typeof couponSavings === 'number' && !isNaN(couponSavings) ? couponSavings : 0).toFixed(2)}</span>
                       </div>
                     )}
                     <Separator />
                     <div className="flex justify-between text-lg font-semibold">
                       <span>Total</span>
-                      <span>PKR {total.toFixed(2)}</span>
+                      <span>PKR {(typeof total === 'number' && !isNaN(total) ? total : 0).toFixed(2)}</span>
                     </div>
                   </div>
                 </Card>
