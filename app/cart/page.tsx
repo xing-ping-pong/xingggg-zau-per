@@ -31,6 +31,39 @@ interface Product {
 }
 
 function CartPageContent() {
+  const { addToast } = useToast();
+  const { cartItems, removeFromCart, updateCartQuantity, clearCart, isInCart, getCartQuantity } = useCart();
+  const [products, setProducts] = useState<Product[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [guestInfo, setGuestInfo] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    phone: '',
+    address: '',
+    city: '',
+    zipCode: '',
+    country: '',
+    deliveryRemarks: ''
+  });
+  const [couponCode, setCouponCode] = useState('');
+  const [couponDiscount, setCouponDiscount] = useState(0);
+  const [couponApplied, setCouponApplied] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+  const [orderDetails, setOrderDetails] = useState({
+    orderNumber: '',
+    orderId: '',
+    estimatedDelivery: '',
+    total: 0
+  });
+
+  // Debug: log when modal should open
+  useEffect(() => {
+    if (showSuccessModal) {
+      console.log('CartPage: showSuccessModal is TRUE, modal should be visible');
+    }
+  }, [showSuccessModal]);
   // Handle order placement
   const handleCheckout = async () => {
     setSaving(true);
@@ -64,7 +97,10 @@ function CartPageContent() {
           estimatedDelivery: data.estimatedDelivery,
           total: data.total
         });
-        setShowSuccessModal(true);
+        setShowSuccessModal(false); // Reset first to ensure re-render
+        setTimeout(() => {
+          setShowSuccessModal(true);
+        }, 100); // Small delay to guarantee modal pops up
         clearCart();
         addToast({ type: 'success', title: 'Order placed successfully!', duration: 4000, simple: true });
       } else {
@@ -76,33 +112,7 @@ function CartPageContent() {
       setSaving(false);
     }
   };
-  const { addToast } = useToast()
-  const { cartItems, removeFromCart, updateCartQuantity, clearCart, isInCart, getCartQuantity } = useCart()
-  
-  const [products, setProducts] = useState<Product[]>([])
-  const [loading, setLoading] = useState(true)
-  const [guestInfo, setGuestInfo] = useState({
-    firstName: '',
-    lastName: '',
-    email: '',
-    phone: '',
-    address: '',
-    city: '',
-    zipCode: '',
-    country: '',
-    deliveryRemarks: ''
-  })
-  const [couponCode, setCouponCode] = useState('')
-  const [couponDiscount, setCouponDiscount] = useState(0)
-  const [couponApplied, setCouponApplied] = useState(false)
-  const [saving, setSaving] = useState(false)
-  const [showSuccessModal, setShowSuccessModal] = useState(false)
-  const [orderDetails, setOrderDetails] = useState({
-    orderNumber: '',
-    orderId: '',
-    estimatedDelivery: '',
-    total: 0
-  })
+  // ...existing code...
 
 
 
@@ -255,8 +265,8 @@ function CartPageContent() {
                       <h2 className="text-xl font-bold mb-2">{product.name}</h2>
                       <p className="text-muted-foreground mb-2">{product.description}</p>
                       <div className="flex items-center space-x-2 mb-2">
-                        <span className="text-lg font-semibold text-primary">PKR {product.price.toFixed(2)}</span>
-                        {product.discount > 0 && (
+                        <span className="text-lg font-semibold text-primary">PKR {(typeof product.price === 'number' && !isNaN(product.price) ? product.price : 0).toFixed(2)}</span>
+                        {typeof product.discount === 'number' && product.discount > 0 && (
                           <span className="text-sm bg-gradient-to-r from-red-500 to-red-600 text-white px-3 py-1 rounded-lg font-bold shadow-md">
                             -{product.discount}% OFF
                           </span>
