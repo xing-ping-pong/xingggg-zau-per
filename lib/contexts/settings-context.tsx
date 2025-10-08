@@ -7,7 +7,7 @@ export interface Settings {
   contactEmail: string;
   supportEmail: string;
   currency: string;
-  taxRate: string;
+  // taxRate removed
   shippingFee: string;
   freeShippingThreshold: string;
   maintenanceMode: boolean;
@@ -34,7 +34,7 @@ const defaultSettings: Settings = {
   contactEmail: "contact@zauperfumes.com.pk",
   supportEmail: "support@zauperfumes.com.pk",
   currency: "PKR",
-  taxRate: "17.0",
+  // taxRate removed
   shippingFee: "500.00",
   freeShippingThreshold: "5000.00",
   maintenanceMode: false,

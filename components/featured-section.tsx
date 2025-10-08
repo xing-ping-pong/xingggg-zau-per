@@ -58,7 +58,7 @@ export function FeaturedSection() {
       case "Featured":
         return product.isFeatured
       case "New Arrivals":
-        // Products created in the last 30 days
+  // Products created in the last 7 days
         const thirtyDaysAgo = new Date()
         thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30)
         return new Date(product.createdAt) > thirtyDaysAgo

@@ -564,7 +564,7 @@ export default function ProductDetailPage() {
               </div>
               <div className="text-center">
                 <RotateCcw className="w-6 h-6 text-primary mx-auto mb-2" />
-                <p className="text-xs text-muted-foreground">30-Day Exchange <span className="text-xs">(Terms & Conditions Applied)</span></p>
+                <p className="text-xs text-muted-foreground">7-Day Exchange <span className="text-xs">(Terms & Conditions Applied)</span></p>
               </div>
             </div>
           </div>

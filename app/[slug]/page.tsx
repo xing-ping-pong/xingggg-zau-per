@@ -103,10 +103,7 @@ export default async function DynamicPage({ params }: PageProps) {
   const awaitedParams = await params;
   const page = await getPage(awaitedParams.slug);
   // ...existing code...
-  // Debug: Log the full page content for troubleshooting
-  if (page) {
-    console.log('[DEBUG] Page content:', page.content);
-  }
+  // ...existing code...
   if (!page) {
     notFound()
   }
@@ -173,8 +170,7 @@ export default async function DynamicPage({ params }: PageProps) {
                 // Improved HTML parsing to always show the initial <h1> and intro <p>
                 const content = page.content;
                 const sections = [];
-                // Debug: Log the content to see what we're parsing
-                console.log('Parsing content for page:', page.slug, 'Content:', content.substring(0, 200) + '...');
+                // ...existing code...
 
                 // Find the initial <h1> and its following <p>
                 const h1Match = content.match(/<h1[^>]*>(.*?)<\/h1>/i);
@@ -269,8 +265,7 @@ export default async function DynamicPage({ params }: PageProps) {
                   };
                   sections.push(section);
                 }
-                // Debug: Log how many sections were found
-                console.log('Found sections:', sections.length, 'for page:', page.slug);
+                // ...existing code...
                 // If no sections found, fallback to a single card
                 if (sections.length === 0) {
                   const pMatch = content.match(/<p[^>]*>(.*?)<\/p>/i);

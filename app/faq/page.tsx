@@ -18,7 +18,7 @@ const faqs: FAQ[] = [
   {
     id: "1",
     question: "What is your return policy?",
-    answer: "We offer a 30-day return policy for all unused, unopened products in their original packaging. Items must be returned within 30 days of delivery. Custom or personalized items are not eligible for returns.",
+  answer: "We offer a 7-day exchange policy for all unused, unopened products in their original packaging. Items must be exchanged within 7 days of delivery. Custom or personalized items are not eligible for exchange.",
     category: "Returns & Exchanges"
   },
   {
@@ -66,7 +66,7 @@ const faqs: FAQ[] = [
   {
     id: "9",
     question: "What if I'm not satisfied with my purchase?",
-    answer: "If you're not completely satisfied with your purchase, you can return it within 30 days for a full refund or exchange. We want you to love your fragrance, so we make returns easy and hassle-free.",
+  answer: "If you're not completely satisfied with your purchase, you can exchange it within 7 days. We want you to love your fragrance, so we make exchanges easy and hassle-free.",
     category: "Returns & Exchanges"
   },
   {

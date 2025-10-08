@@ -47,7 +47,7 @@ interface Order {
   pricing: {
     subtotal: number
     shipping: number
-    tax: number
+  // tax removed
     couponDiscount?: number
     couponCode?: string
     total: number
@@ -297,8 +297,7 @@ export default function OrderConfirmationPage() {
                       </span>
                     </div>
                     <div className="flex justify-between">
-                      <span>Tax</span>
-                      <span>PKR {order.pricing.tax.toFixed(2)}</span>
+                      {/* Tax removed for production */}
                     </div>
                     {order.pricing.couponDiscount && order.pricing.couponDiscount > 0 && (
                       <div className="flex justify-between text-green-600">

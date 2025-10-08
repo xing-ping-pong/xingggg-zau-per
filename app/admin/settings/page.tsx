@@ -20,7 +20,7 @@ export default function AdminSettings() {
     contactEmail: "contact@zauperfumes.com.pk",
     supportEmail: "support@zauperfumes.com.pk",
     currency: "PKR",
-    taxRate: "17.0",
+  // taxRate removed
     shippingFee: "500.00",
     freeShippingThreshold: "5000.00",
     maintenanceMode: false,
@@ -329,15 +329,7 @@ export default function AdminSettings() {
                   />
                 </div>
                 <div className="space-y-2">
-                  <Label htmlFor="taxRate" className="text-gray-300">
-                    Tax Rate (%)
-                  </Label>
-                  <Input
-                    id="taxRate"
-                    value={settings.taxRate}
-                    onChange={(e) => handleInputChange("taxRate", e.target.value)}
-                    className="bg-gray-800 border-gray-700 text-white"
-                  />
+                  {/* Tax Rate input removed for production */}
                 </div>
                 <div className="space-y-2">
                   <Label htmlFor="shippingFee" className="text-gray-300">

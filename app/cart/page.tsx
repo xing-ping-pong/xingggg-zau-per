@@ -63,7 +63,7 @@ function CartPageContent() {
   // Fetch product details for cart items
   useEffect(() => {
     const fetchCartProducts = async () => {
-      console.log('Cart items:', cartItems)
+  // ...removed for production...
       
       if (cartItems.length === 0) {
         setProducts([]) // Clear products when cart is empty
@@ -73,14 +73,14 @@ function CartPageContent() {
 
       try {
         setLoading(true)
-        console.log('Fetching products for cart items:', cartItems.map(item => item.productId))
+  // ...removed for production...
         
         const productPromises = cartItems.map(async (cartItem) => {
           try {
-            console.log(`Fetching product ${cartItem.productId}`)
+            // ...removed for production...
             const response = await fetch(`/api/products/${cartItem.productId}`)
             const data = await response.json()
-            console.log(`Product ${cartItem.productId} response:`, data)
+            // ...removed for production...
             
             if (data.success) {
               return { ...data.data, cartQuantity: cartItem.quantity }
@@ -96,7 +96,7 @@ function CartPageContent() {
 
         const products = await Promise.all(productPromises)
         const validProducts = products.filter(Boolean)
-        console.log('Valid products found:', validProducts.length, 'out of', cartItems.length)
+  // ...removed for production...
         setProducts(validProducts)
       } catch (error) {
         console.error('Error fetching cart products:', error)
@@ -118,9 +118,8 @@ function CartPageContent() {
   }, 0)
 
   const shipping = subtotal > 100 ? 0 : 15
-  const tax = subtotal * 0.08
   const couponSavings = couponApplied ? (subtotal * couponDiscount / 100) : 0
-  const total = subtotal + shipping + tax - couponSavings
+  const total = subtotal + shipping - couponSavings
 
   const handleRemoveFromCart = (productId: string) => {
     removeFromCart(productId)
@@ -234,7 +233,6 @@ function CartPageContent() {
         pricing: {
           subtotal,
           shipping,
-          tax,
           couponDiscount: couponApplied ? couponSavings : 0,
           couponCode: couponApplied ? couponCode : undefined,
           total
@@ -249,14 +247,14 @@ function CartPageContent() {
         body: JSON.stringify(orderData),
       })
 
-      console.log('Order API Response Status:', response.status)
+  // ...removed for production...
       
       if (!response.ok) {
         throw new Error(`HTTP error! status: ${response.status}`)
       }
       
       const data = await response.json()
-      console.log('Order API Response Data:', data)
+  // ...removed for production...
 
       if (data.success) {
         // Clear cart immediately after successful order
@@ -268,12 +266,7 @@ function CartPageContent() {
           estimatedDelivery: data.data.estimatedDelivery,
           total: data.data.total
         })
-        console.log('[DEBUG] Showing OrderSuccessModal:', {
-          orderNumber: data.data.orderNumber,
-          orderId: data.data.orderId,
-          estimatedDelivery: data.data.estimatedDelivery,
-          total: data.data.total
-        })
+        // ...removed for production...
         setShowSuccessModal(true)
       } else {
         alert(data.message || 'Failed to place order')
@@ -492,9 +485,9 @@ function CartPageContent() {
                         variant="ghost"
                         size="sm"
                           onClick={async () => {
-                            console.log('Removing product:', product._id, 'quantity:', product.cartQuantity);
+                            // ...removed for production...
                             await removeFromCart(product._id, product.cartQuantity);
-                            console.log('Remove completed');
+                            // ...removed for production...
                           }}
                         className="text-red-500 hover:text-red-700"
                       >
@@ -523,8 +516,7 @@ function CartPageContent() {
                   <span>{shipping === 0 ? 'Free' : `PKR ${shipping.toFixed(2)}`}</span>
                 </div>
                 <div className="flex justify-between">
-                  <span>Tax</span>
-                  <span>PKR {tax.toFixed(2)}</span>
+            <span>Tax removed for production</span>
                 </div>
                 {couponApplied && (
                   <div className="flex justify-between text-green-600">
@@ -734,7 +726,7 @@ function CartPageContent() {
       <OrderSuccessModal
         isOpen={showSuccessModal}
         onClose={() => {
-          console.log('[DEBUG] Closing OrderSuccessModal');
+          // ...removed for production...
           handleModalClose();
         }}
         orderNumber={orderDetails.orderNumber}

@@ -28,7 +28,21 @@ export async function GET(req: NextRequest) {
     // Note: We don't filter by isActive since products don't have this field
 
     if (category) {
-      query.category = category;
+      let categoryObj = null;
+      // Try to find category by ID first
+      if (mongoose.Types.ObjectId.isValid(category)) {
+        categoryObj = await Category.findById(category);
+      }
+      // If not found by ID, try by slug
+      if (!categoryObj) {
+        categoryObj = await Category.findOne({ slug: category });
+      }
+      if (categoryObj) {
+        query.category = categoryObj._id;
+      } else {
+        // If category not found, return no products
+        query.category = null;
+      }
     }
 
     if (search) {
