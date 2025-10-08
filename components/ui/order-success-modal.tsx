@@ -44,6 +44,11 @@ export function OrderSuccessModal({
     })
   }
 
+  useEffect(() => {
+    if (isOpen) {
+      console.log('OrderSuccessModal is now open!')
+    }
+  }, [isOpen])
   if (!isOpen) {
     return null
   }
