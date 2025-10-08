@@ -515,9 +515,6 @@ function CartPageContent() {
                   <span>Shipping</span>
                   <span>{shipping === 0 ? 'Free' : `PKR ${shipping.toFixed(2)}`}</span>
                 </div>
-                <div className="flex justify-between">
-            <span>Tax removed for production</span>
-                </div>
                 {couponApplied && (
                   <div className="flex justify-between text-green-600">
                     <span>Coupon Discount ({couponDiscount}%)</span>
