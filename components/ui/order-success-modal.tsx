@@ -106,7 +106,7 @@ export function OrderSuccessModal({
 
             <div className="flex items-center justify-between">
               <span className="text-gray-400">Total Amount</span>
-              <span className="text-xl font-bold text-white">PKR {total.toFixed(2)}</span>
+              <span className="text-xl font-bold text-white">PKR {(typeof total === 'number' && !isNaN(total) ? total : 0).toFixed(2)}</span>
             </div>
 
             <Separator className="bg-purple-500/20" />

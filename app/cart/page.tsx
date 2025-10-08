@@ -92,10 +92,10 @@ function CartPageContent() {
       const data = await response.json();
       if (response.ok && data.success) {
         setOrderDetails({
-          orderNumber: data.orderNumber,
-          orderId: data.orderId,
-          estimatedDelivery: data.estimatedDelivery,
-          total: data.total
+          orderNumber: data.data?.orderNumber || '',
+          orderId: data.data?.orderId || '',
+          estimatedDelivery: data.data?.estimatedDelivery || '',
+          total: typeof data.data?.total === 'number' && !isNaN(data.data?.total) ? data.data.total : 0
         });
         setShowSuccessModal(false); // Reset first to ensure re-render
         setTimeout(() => {
@@ -159,16 +159,18 @@ function CartPageContent() {
 
   // Calculate totals
   const subtotal = products.reduce((sum, product) => {
-    if (!product) return sum;
+    if (!product || typeof product.price !== 'number' || isNaN(product.price) || typeof product.cartQuantity !== 'number' || isNaN(product.cartQuantity)) return sum;
     const discountedPrice = product.discount > 0 
       ? product.price - (product.price * product.discount / 100)
       : product.price
     return sum + (discountedPrice * product.cartQuantity)
-  }, 0)
-
-  const shipping = subtotal > 100 ? 0 : 15
-  const couponSavings = couponApplied ? (subtotal * couponDiscount / 100) : 0
-  const total = subtotal + shipping - couponSavings
+  }, 0);
+  const safeSubtotal = typeof subtotal === 'number' && !isNaN(subtotal) ? subtotal : 0;
+  const shipping = safeSubtotal > 100 ? 0 : 15;
+  const couponSavings = couponApplied ? (safeSubtotal * couponDiscount / 100) : 0;
+  const safeCouponSavings = typeof couponSavings === 'number' && !isNaN(couponSavings) ? couponSavings : 0;
+  const total = safeSubtotal + shipping - safeCouponSavings;
+  const safeTotal = typeof total === 'number' && !isNaN(total) ? total : 0;
 
   const handleRemoveFromCart = (productId: string) => {
     removeFromCart(productId)

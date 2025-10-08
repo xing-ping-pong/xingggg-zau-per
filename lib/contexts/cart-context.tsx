@@ -48,7 +48,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     setWishlistItems(prev => {
       const cleaned = prev
         .filter(Boolean) // Remove null/undefined
-        .map(item => typeof item === 'string' ? item : item?._id || item?.id) // Extract ID if it's an object
+        .map((item: any) => typeof item === 'string' ? item : item?._id || item?.id) // Extract ID if it's an object
         .filter(Boolean) // Remove any remaining null/undefined values
       
       // If we cleaned up the data, save it back to localStorage
@@ -94,7 +94,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         // Ensure wishlist only contains product IDs (strings), not full objects
         const validWishlist = wishlistData
           .filter(Boolean) // Remove null/undefined
-          .map(item => typeof item === 'string' ? item : item?._id || item?.id) // Extract ID if it's an object
+          .map((item: any) => typeof item === 'string' ? item : item?._id || item?.id) // Extract ID if it's an object
           .filter(Boolean) // Remove any remaining null/undefined values
         setWishlistItems(validWishlist)
       } catch (error) {
@@ -274,34 +274,39 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       
       // Make API call for both registered and guest users
         const response = await fetch('/api/cart', {
-        method: 'PUT',
+          method: 'PUT',
           headers: {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-          userId: isGuest ? 'guest' : userId,
-          productId,
-          quantity: newQuantity,
-          isGuest
+            userId: isGuest ? 'guest' : userId,
+            productId,
+            quantity: newQuantity,
+            isGuest
           }),
         })
 
         if (!response.ok) {
+          // Log error response
+          const errorText = await response.text();
+          console.error('API error removing from cart:', errorText);
           // Revert local state if API call fails
-        setCartItems(prev => {
-          const existingItem = prev.find(item => item.productId === productId)
-          if (existingItem) {
-            return prev.map(item => 
-              item.productId === productId 
-                ? { ...item, quantity: item.quantity + quantity }
-                : item
-            )
-          } else {
-            return [...prev, { productId, quantity }]
-          }
-        })
-          throw new Error('Failed to remove from cart')
-      }
+          setCartItems(prev => {
+            const existingItem = prev.find(item => item.productId === productId)
+            if (existingItem) {
+              return prev.map(item => 
+                item.productId === productId 
+                  ? { ...item, quantity: item.quantity + quantity }
+                  : item
+              )
+            } else {
+              return [...prev, { productId, quantity }]
+            }
+          });
+          // Show user-friendly message
+          alert('Failed to remove item from cart. Please try again.');
+          return;
+        }
     } catch (error) {
       console.error('Error removing from cart:', error)
     }
