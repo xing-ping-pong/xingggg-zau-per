@@ -115,11 +115,11 @@ export default function RootLayout({
         <meta name="twitter:image" content="/logo.png" />
         <meta name="robots" content="index, follow" />
         <StructuredData />
-        <link rel="icon" type="image/x-icon" href="/favicon.ico" />
-        <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
-        <link rel="apple-touch-icon" href="/favicon.png" />
-        <link rel="manifest" href="/site.webmanifest" />
-        <link rel="shortcut icon" href="/favicon.ico" />
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
+  <link rel="apple-touch-icon" href="/favicon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <link rel="shortcut icon" href="/favicon.ico" />
       </head>
   <body className={`font-sans ${playfair.variable} ${inter.variable} antialiased`}>
     {/* Google Tag Manager (noscript) */}
