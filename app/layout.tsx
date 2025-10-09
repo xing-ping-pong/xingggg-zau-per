@@ -83,13 +83,49 @@ export default function RootLayout({
   return (
     <html lang="en" className="dark">
       <head>
+        {/* Google Tag Manager */}
+        <script dangerouslySetInnerHTML={{__html: `
+          (function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+          new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+          j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+          'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+          })(window,document,'script','dataLayer','GTM-PGLSF4QK');
+        `}} />
+        <meta name="google-site-verification" content="nXivXieiXtJxZBXjbUhwTFNJyKzG0FHRCKL_lX2jsJk" />
+        {/* Google Analytics gtag.js */}
+        <script async src="https://www.googletagmanager.com/gtag/js?id=G-Z15S3WB42T"></script>
+        <script dangerouslySetInnerHTML={{__html: `
+          window.dataLayer = window.dataLayer || [];
+          function gtag(){dataLayer.push(arguments);}
+          gtag('js', new Date());
+          gtag('config', 'G-Z15S3WB42T');
+        `}} />
+        {/* Additional Meta Tags for SEO and Social Sharing */}
+        <meta name="author" content="ZAU Perfumes" />
+        <meta name="theme-color" content="#6D28D9" />
+        <meta name="description" content="Discover ZAU Perfumes' exclusive collection of luxury fragrances and premium colognes." />
+        <meta property="og:type" content="website" />
+        <meta property="og:title" content="ZAU Perfumes - Luxury Fragrances Collection" />
+        <meta property="og:description" content="Sophisticated simplicity for the independent mind." />
+        <meta property="og:image" content="/logo.png" />
+        <meta property="og:url" content="https://zauperfumes.com" />
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:title" content="ZAU Perfumes - Luxury Fragrances Collection" />
+        <meta name="twitter:description" content="Discover ZAU Perfumes' exclusive collection of luxury fragrances and premium colognes." />
+        <meta name="twitter:image" content="/logo.png" />
+        <meta name="robots" content="index, follow" />
         <StructuredData />
         <link rel="icon" type="image/x-icon" href="/favicon.ico" />
         <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
         <link rel="apple-touch-icon" href="/favicon.png" />
+        <link rel="manifest" href="/site.webmanifest" />
         <link rel="shortcut icon" href="/favicon.ico" />
       </head>
   <body className={`font-sans ${playfair.variable} ${inter.variable} antialiased`}>
+    {/* Google Tag Manager (noscript) */}
+    <noscript>
+      <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-PGLSF4QK" height="0" width="0" style={{display:'none',visibility:'hidden'}}></iframe>
+    </noscript>
         <SettingsProvider>
           <CartProvider>
             <ToastProvider>
