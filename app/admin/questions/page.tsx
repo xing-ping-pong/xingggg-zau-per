@@ -36,10 +36,13 @@ interface Question {
   answeredAt?: string;
   status: 'pending' | 'answered' | 'rejected';
   isPublic: boolean;
-  product: {
+  // product may be null if the product was deleted
+  // keep the type optional to reflect real-data cases
+  // alternatively the API could always populate a minimal product object
+  product?: {
     _id: string;
     name: string;
-  };
+  } | null;
   createdAt: string;
 }
 
@@ -287,12 +290,14 @@ export default function AdminQuestionsPage() {
                         {getStatusBadge(question.status)}
                       </div>
                       <p className="text-foreground mb-2">{question.question}</p>
-                      <div className="flex items-center gap-4 text-sm text-muted-foreground">
+                        <div className="flex items-center gap-4 text-sm text-muted-foreground">
                         <div className="flex items-center gap-1">
                           <Calendar className="w-3 h-3" />
                           <span>{formatDate(question.createdAt)}</span>
                         </div>
-                        <span>Product: {question.product.name}</span>
+                        <span>
+                          Product: {question.product?.name ?? <em className="text-xs text-muted-foreground">(product removed)</em>}
+                        </span>
                       </div>
                     </div>
                     <div className="flex items-center gap-2">

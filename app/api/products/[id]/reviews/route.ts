@@ -23,8 +23,9 @@ export async function GET(
   
   try {
     await connectDB();
-    
-    const { id } = params;
+    // Params may be a thenable in some Next.js runtimes; await if needed
+    const resolvedParams = (params && typeof (params as any).then === 'function') ? await (params as any) : params;
+    const { id } = resolvedParams;
     const { searchParams } = new URL(req.url);
     const page = parseInt(searchParams.get('page') || '1');
     const limit = parseInt(searchParams.get('limit') || '10');

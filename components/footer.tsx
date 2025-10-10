@@ -1,7 +1,9 @@
 "use client";
 import { Facebook, Instagram, Twitter, Youtube } from "lucide-react"
 import Link from "next/link"
+import Image from 'next/image'
 import { useSettings } from "@/lib/contexts/settings-context"
+import { optimizedSrc } from '@/lib/utils/image'
 
 export function Footer() {
   const settings = useSettings()
@@ -12,10 +14,12 @@ export function Footer() {
           {/* Brand */}
           <div className="lg:col-span-2">
             <div className="flex items-center mb-4">
-              <img 
-                src="/logo.png" 
-                alt={settings.siteName || "ZAU Perfumes"} 
-                className="w-16 h-16 object-contain"
+              <Image
+                src={optimizedSrc('/logo.png', 160)}
+                alt={settings.siteName || "ZAU Perfumes"}
+                width={64}
+                height={64}
+                className="object-contain"
               />
             </div>
             <p className="text-muted-foreground leading-relaxed mb-6 max-w-md">

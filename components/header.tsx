@@ -4,6 +4,8 @@ import { useState, useEffect } from "react"
 import { Button } from "@/components/ui/button"
 import { Heart, ShoppingCart, User, Menu, X, LogOut, ChevronDown, Instagram, Facebook, Youtube } from "lucide-react"
 import Link from "next/link"
+import Image from 'next/image'
+import { optimizedSrc } from '@/lib/utils/image'
 import { useCart } from "@/lib/contexts/cart-context"
 import { useSettings } from "@/lib/contexts/settings-context"
 
@@ -78,10 +80,12 @@ export function Header() {
           <div className="flex items-center justify-between">
             {/* Logo */}
             <Link href="/" className="flex items-center">
-              <img 
-                src="/logo.png" 
-                alt="ZAU Perfumes" 
-                className="w-16 h-16 sm:w-20 sm:h-20 object-contain"
+              <Image
+                src={optimizedSrc('/logo.png', 200)}
+                alt="ZAU Perfumes"
+                width={80}
+                height={80}
+                className="object-contain"
               />
             </Link>
 
@@ -214,10 +218,12 @@ export function Header() {
           <div className="absolute left-0 top-0 h-full w-80 max-w-[80vw] bg-black transform transition-transform duration-300 ease-in-out">
             {/* Header */}
             <div className="flex items-center justify-between p-6 border-b border-gray-700">
-              <img 
-                src="/logo.png" 
-                alt="ZAU Perfumes" 
-                className="w-12 h-12 object-contain"
+              <Image
+                src={optimizedSrc('/logo.png', 80)}
+                alt="ZAU Perfumes"
+                width={48}
+                height={48}
+                className="object-contain"
               />
               <Button
                 variant="ghost"

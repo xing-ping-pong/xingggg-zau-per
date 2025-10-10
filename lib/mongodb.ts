@@ -1,4 +1,8 @@
 import mongoose from 'mongoose';
+// Ensure models are registered on the mongoose instance. Importing the
+// central models index guarantees model registration order and prevents
+// MissingSchemaError when doing .populate('items.product') in routes.
+import './models';
 
 const MONGODB_URI = process.env.MONGODB_URI!;
 

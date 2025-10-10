@@ -12,8 +12,9 @@ export async function GET(
   
   try {
     await connectDB();
-    
-    const product = await Product.findById(params.id).populate('category', 'name');
+    // Params may be a thenable; await if necessary to satisfy newer Next.js runtimes
+    const resolvedParams = (params && typeof (params as any).then === 'function') ? await (params as any) : params;
+    const product = await Product.findById(resolvedParams.id).populate('category', 'name');
     
     if (!product) {
       return NextResponse.json({

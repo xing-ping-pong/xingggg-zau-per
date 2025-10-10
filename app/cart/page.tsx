@@ -10,6 +10,8 @@ import { Trash2, ShoppingBag, Truck, Tag, User, Mail, Phone, MapPin, ChevronRigh
 import { useCart } from "@/lib/contexts/cart-context"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
+import Image from 'next/image'
+import { optimizedSrc } from '@/lib/utils/image'
 import dynamic from "next/dynamic"
 const OrderSuccessModal = dynamic(() => import("@/components/ui/order-success-modal").then(mod => mod.OrderSuccessModal), { ssr: false })
 import { useToast, ToastProvider } from "@/components/ui/toast"
@@ -262,7 +264,9 @@ function CartPageContent() {
               <div className="space-y-6">
                 {products.map((product) => (
                   <Card key={product._id} className="p-6 flex flex-col md:flex-row items-center md:items-start gap-6">
-                    <img src={product.imageUrl} alt={product.name} className="w-32 h-32 object-cover rounded-lg border" />
+                    <div className="w-32 h-32 relative rounded-lg overflow-hidden border">
+                      <Image src={optimizedSrc(product.imageUrl || '/logo.png', 400)} alt={product.name} fill className="object-cover" sizes="(max-width: 640px) 128px, 128px" />
+                    </div>
                     <div className="flex-1 w-full">
                       <h2 className="text-xl font-bold mb-2">{product.name}</h2>
                       <p className="text-muted-foreground mb-2">{product.description}</p>

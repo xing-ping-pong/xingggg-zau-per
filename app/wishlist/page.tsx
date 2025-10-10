@@ -8,6 +8,8 @@ import { Heart, ShoppingCart, Star, Loader2, ChevronRight } from "lucide-react"
 import { useCart } from "@/lib/contexts/cart-context"
 import { Header } from "@/components/header"
 import { Footer } from "@/components/footer"
+import Image from 'next/image'
+import { optimizedSrc } from '@/lib/utils/image'
 
 interface Product {
   _id: string;
@@ -48,7 +50,7 @@ export default function WishlistPage() {
         setLoading(true)
         
         // Check if wishlistItems contains full objects or just IDs
-        const firstItem = wishlistItems[0]
+  const firstItem: any = wishlistItems[0]
         if (typeof firstItem === 'string') {
           // Items are IDs, fetch product details
           const productPromises = wishlistItems.map(async (productId) => {
@@ -88,12 +90,12 @@ export default function WishlistPage() {
           console.log('Raw wishlistItems (objects):', wishlistItems);
           const productIds = wishlistItems
             .filter(Boolean) // Remove null/undefined items
-            .map(item => {
-              console.log('Mapping item:', item);
-              const id = typeof item === 'string' ? item : item?._id || item?.id;
-              console.log('Extracted ID:', id);
-              return id;
-            })
+            .map((item: any) => {
+                console.log('Mapping item:', item);
+                const id = typeof item === 'string' ? item : item?._id || item?.id;
+                console.log('Extracted ID:', id);
+                return id;
+              })
             .filter(Boolean); // Remove any remaining null/undefined values
           console.log('Processing wishlist IDs:', productIds);
           
@@ -163,7 +165,7 @@ export default function WishlistPage() {
         // Clean the data
         const cleaned = wishlistData
           .filter(Boolean)
-          .map(item => typeof item === 'string' ? item : item?._id || item?.id)
+          .map((item: any) => typeof item === 'string' ? item : item?._id || item?.id)
           .filter(Boolean);
         
         console.log('Cleaned data:', cleaned);
@@ -385,11 +387,7 @@ export default function WishlistPage() {
               <Card key={product._id || `product-${Math.random()}`} className="group hover-lift border-0 bg-background overflow-hidden">
                 <Link href={`/products/${product._id}`} className="block">
                   <div className="relative aspect-[3/4] overflow-hidden">
-                    <img
-                      src={product.imageUrl || "/placeholder.svg"}
-                      alt={product.name}
-                      className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
-                    />
+                    <Image src={optimizedSrc(product.imageUrl || "/placeholder.svg", 800)} alt={product.name} fill className="object-cover transition-transform duration-700 group-hover:scale-110" sizes="(max-width: 640px) 100vw, 33vw" />
                   {isNew && (
                     <div className="absolute top-3 left-3 bg-primary text-primary-foreground px-2 py-1 rounded-full text-xs font-semibold">
                       New

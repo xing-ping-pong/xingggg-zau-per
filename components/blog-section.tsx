@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button"
 import { Calendar, ArrowRight, Loader2 } from "lucide-react"
 import Link from "next/link"
 import Image from "next/image"
+import { optimizedSrc } from '@/lib/utils/image'
 
 interface BlogPost {
   _id: string;
@@ -127,7 +128,7 @@ export function BlogSection() {
               <Card key={post._id} className="group hover-lift border-0 bg-background overflow-hidden">
                 <div className="relative aspect-[4/3] overflow-hidden">
                   <Image
-                    src={post.featuredImage || "/placeholder.svg"}
+                    src={optimizedSrc(post.featuredImage || "/placeholder.svg", 1200)}
                     alt={`${post.title} - Blog post featured image`}
                     fill
                     className="object-cover transition-transform duration-700 group-hover:scale-110"

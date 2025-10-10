@@ -1,5 +1,6 @@
 import nodemailer, { SentMessageInfo } from 'nodemailer';
 import EMAIL_CONFIG from '../config/email';
+import { optimizedSrc } from '@/lib/utils/image'
 
 interface EmailConfig {
   host: string;
@@ -112,7 +113,10 @@ class EmailService {
     adminReply: string,
     adminName: string
   ): string {
-    return `
+  const logoPath = optimizedSrc('/logo.png', 200) || '/logo.png'
+  const logoUrl = `${EMAIL_CONFIG.BASE_URL}${logoPath}`
+
+  return `
       <!DOCTYPE html>
       <html>
       <head>
@@ -193,7 +197,7 @@ class EmailService {
       <body>
         <div class="container">
           <div class="header">
-            <img src="${EMAIL_CONFIG.LOGO_URL}" alt="ZAU Perfumes" style="width: 80px; height: 80px; margin: 0 auto 20px; display: block;" />
+            <img src="${logoUrl}" alt="ZAU Perfumes" style="width: 80px; height: 80px; margin: 0 auto 20px; display: block;" />
             <div class="tagline">Luxury Perfumes</div>
           </div>
           

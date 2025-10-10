@@ -1,5 +1,6 @@
 "use client"
 
+import Image from 'next/image'
 import { Button } from "@/components/ui/button"
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar"
 import {
@@ -30,10 +31,12 @@ export function AdminHeader({ onMenuClick }: AdminHeaderProps) {
             <Menu className="h-5 w-5" />
           </Button>
           <div className="flex items-center space-x-2">
-            <img 
-              src="/logo.png" 
-              alt="ZAU Perfumes" 
-              className="w-10 h-10 object-contain"
+            <Image
+              src="/logo.png"
+              alt="ZAU Perfumes"
+              width={40}
+              height={40}
+              className="object-contain"
             />
             <h2 className="text-lg font-semibold text-white hidden sm:block">Admin Panel</h2>
             <h2 className="text-base font-semibold text-white sm:hidden">Admin</h2>
@@ -48,8 +51,10 @@ export function AdminHeader({ onMenuClick }: AdminHeaderProps) {
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-                <Avatar className="h-8 w-8">
-                  <AvatarImage src="/admin-avatar.png" alt="Admin" />
+                <Avatar className="h-8 w-8 relative">
+                  <div className="w-full h-full relative rounded-full overflow-hidden">
+                    <Image src="/admin-avatar.png" alt="Admin" fill className="object-cover" sizes="32px" />
+                  </div>
                   <AvatarFallback className="bg-amber-400 text-black">A</AvatarFallback>
                 </Avatar>
               </Button>

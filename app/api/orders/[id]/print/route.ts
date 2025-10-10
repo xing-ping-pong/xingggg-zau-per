@@ -22,21 +22,22 @@ export async function GET(
     const orderId = params.id;
     console.log('Looking for order with ID:', orderId);
     
-    const order = await Order.findById(orderId).lean();
-    console.log('Order found:', order ? 'Yes' : 'No');
-    console.log('Delivery remarks:', order?.deliveryRemarks || 'No remarks');
+        const order = await Order.findById(orderId).lean();
+        const orderObj: any = Array.isArray(order) ? order[0] : order;
+        console.log('Order found:', orderObj ? 'Yes' : 'No');
+        console.log('Delivery remarks:', orderObj?.deliveryRemarks || 'No remarks');
 
-    if (!order) {
-      console.log('Order not found with ID:', orderId);
-      return NextResponse.json(
-        { success: false, message: 'Order not found' },
-        { status: 404 }
-      );
-    }
+        if (!orderObj) {
+            console.log('Order not found with ID:', orderId);
+            return NextResponse.json(
+                { success: false, message: 'Order not found' },
+                { status: 404 }
+            );
+        }
 
-    // Generate print-friendly HTML for Pakistan delivery
-    console.log('Generating print HTML for order:', order.orderNumber);
-    const printHtml = generatePakistanDeliveryPrint(order);
+        // Generate print-friendly HTML for Pakistan delivery
+        console.log('Generating print HTML for order:', orderObj.orderNumber);
+        const printHtml = generatePakistanDeliveryPrint(orderObj);
     console.log('Print HTML generated successfully');
 
     return new NextResponse(printHtml, {
@@ -63,7 +64,15 @@ function generatePakistanDeliveryPrint(order: any): string {
     });
   };
 
-  const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || (process.env.VERCEL_URL ? 'https://' + process.env.VERCEL_URL : process.env.NEXTAUTH_URL) || 'https://zauperfumes.com';
+        const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || (process.env.VERCEL_URL ? 'https://' + process.env.VERCEL_URL : process.env.NEXTAUTH_URL) || 'https://zauperfumes.com';
+        const optimizedLogoPath = (() => {
+            try {
+                const { optimizedSrc } = require('@/lib/utils/image')
+                return optimizedSrc('/logo.png', 200) || '/logo.png'
+            } catch (err) {
+                return '/logo.png'
+            }
+        })()
 
   return `
 <!DOCTYPE html>
@@ -268,7 +277,7 @@ function generatePakistanDeliveryPrint(order: any): string {
     <div class="label-container">
         <!-- Header -->
         <div class="header-section">
-            <img src="${baseUrl}/ZAU_PERFUMES%20LOGO.png" alt="ZAU Perfumes" class="company-logo" />
+            <img src="${baseUrl}${optimizedLogoPath}" alt="ZAU Perfumes" class="company-logo" />
             <div class="company-name">ZAU PERFUMES</div>
             <div class="company-address">123 Luxury Perfume Plaza, Karachi, Sindh 75500</div>
         </div>

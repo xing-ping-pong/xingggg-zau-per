@@ -14,6 +14,7 @@ import {
   Maximize2
 } from 'lucide-react'
 import Image from 'next/image'
+import { optimizedSrc } from '@/lib/utils/image'
 
 interface ProductImageGalleryProps {
   images: string[]
@@ -161,7 +162,7 @@ export function ProductImageGallery({
               onClick={() => openModal(selectedImage)}
             >
               <Image
-                src={validImages[selectedImage]}
+                src={optimizedSrc(validImages[selectedImage] || '/placeholder.svg', 1600)}
                 alt={`${productName} - Image ${selectedImage + 1}`}
                 fill
                 className="object-cover transition-transform duration-300"
@@ -283,7 +284,7 @@ export function ProductImageGallery({
               }`}
             >
               <Image
-                src={image}
+                src={optimizedSrc(image || '/placeholder.svg', 400)}
                 alt={`${productName} thumbnail ${index + 1}`}
                 fill
                 className="object-cover"
@@ -325,8 +326,8 @@ export function ProductImageGallery({
                 ref={modalImageRef}
                 className="w-full h-full flex items-center justify-center p-2 sm:p-4"
               >
-                <Image
-                  src={validImages[modalImageIndex]}
+                    <Image
+                      src={optimizedSrc(validImages[modalImageIndex] || '/placeholder.svg', 800)}
                   alt={`${productName} - Full view ${modalImageIndex + 1}`}
                   width={800}
                   height={800}
@@ -372,7 +373,7 @@ export function ProductImageGallery({
                     }`}
                   >
                     <Image
-                      src={image}
+                      src={optimizedSrc(image || '/placeholder.svg', 160)}
                       alt={`${productName} modal thumbnail ${index + 1}`}
                       fill
                       className="object-cover"

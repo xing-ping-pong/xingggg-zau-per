@@ -6,6 +6,7 @@ import { SettingsProvider } from "@/lib/contexts/settings-context"
 import { ToastProvider } from "@/lib/contexts/toast-context"
 import { StructuredData } from "@/components/structured-data"
 import "./globals.css"
+import { resolveOptimizedVariant } from '@/lib/utils/image'
 
 // Font configuration with error handling
 import { Playfair_Display, Inter } from "next/font/google";
@@ -51,7 +52,9 @@ export const metadata: Metadata = {
     siteName: 'ZAU Perfumes',
     images: [
       {
-        url: '/logo.png',
+        url: process.env.NEXT_PUBLIC_BASE_URL
+          ? `${process.env.NEXT_PUBLIC_BASE_URL}${resolveOptimizedVariant('/logo.png', 1200)}`
+          : '/logo.png',
         width: 1200,
         height: 630,
         alt: 'ZAU Perfumes - Luxury Fragrances',
@@ -74,6 +77,9 @@ export const metadata: Metadata = {
   },
   manifest: "/site.webmanifest",
 }
+
+// Ensure absolute URLs are used in metadata and for social previews
+export const metadataBase = new URL('https://zauperfumes.com');
 
 export default function RootLayout({
   children,
@@ -107,14 +113,32 @@ export default function RootLayout({
         <meta property="og:type" content="website" />
         <meta property="og:title" content="ZAU Perfumes - Luxury Fragrances Collection" />
         <meta property="og:description" content="Sophisticated simplicity for the independent mind." />
-        <meta property="og:image" content="/logo.png" />
+  {/* Prefer optimized logo if available on server */}
+  <meta property="og:image" content={process.env.NEXT_PUBLIC_BASE_URL ? `${process.env.NEXT_PUBLIC_BASE_URL}${resolveOptimizedVariant('/logo.png', 1200)}` : '/logo.png'} />
         <meta property="og:url" content="https://zauperfumes.com" />
         <meta name="twitter:card" content="summary_large_image" />
         <meta name="twitter:title" content="ZAU Perfumes - Luxury Fragrances Collection" />
         <meta name="twitter:description" content="Discover ZAU Perfumes' exclusive collection of luxury fragrances and premium colognes." />
-        <meta name="twitter:image" content="/logo.png" />
+  <meta name="twitter:image" content={process.env.NEXT_PUBLIC_BASE_URL ? `${process.env.NEXT_PUBLIC_BASE_URL}${resolveOptimizedVariant('/logo.png', 1200)}` : '/logo.png'} />
         <meta name="robots" content="index, follow" />
         <StructuredData />
+        {/* Organization JSON-LD to help Google surface site logo in search */}
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          "@context": "https://schema.org",
+          "@type": "Organization",
+          "name": "ZAU Perfumes",
+          "url": "https://zauperfumes.com",
+          "logo": {
+            "@type": "ImageObject",
+            "url": process.env.NEXT_PUBLIC_BASE_URL ? `${process.env.NEXT_PUBLIC_BASE_URL}${resolveOptimizedVariant('/logo.png', 512)}` : 'https://zauperfumes.com/logo.png',
+            "width": 512,
+            "height": 512
+          },
+          "sameAs": [
+            "https://www.facebook.com/share/19hnUbYZBY/?mibextid=wwXIfr",
+            "https://www.instagram.com/zau_perfumes?igsh=MXVxZWRnbnluaTRqZg%3D%3D&utm_source=qr"
+          ]
+        }) }} />
   <link rel="icon" type="image/x-icon" href="/favicon.ico" />
   <link rel="icon" type="image/png" sizes="32x32" href="/favicon.png" />
   <link rel="apple-touch-icon" href="/favicon.png" />

@@ -1,5 +1,6 @@
-const nodemailer = require('nodemailer');
+import nodemailer from 'nodemailer';
 import EMAIL_CONFIG from '../config/email';
+import { optimizedSrc } from '@/lib/utils/image'
 
 interface EmailConfig {
   host: string;
@@ -34,7 +35,7 @@ interface TrackingEmailData {
 }
 
 class EmailService {
-  private transporter: nodemailer.Transporter;
+  private transporter: any;
 
   constructor() {
     // Configure email service (using Gmail as example)
@@ -75,6 +76,8 @@ class EmailService {
   }
 
   private generateTrackingEmailHTML(data: TrackingEmailData): string {
+  const logoPath = optimizedSrc('/logo.png', 200) || '/logo.png'
+  const logoUrl = `${EMAIL_CONFIG.BASE_URL}${logoPath}`
     return `
     <!DOCTYPE html>
     <html>
@@ -102,7 +105,7 @@ class EmailService {
     <body>
       <div class="container">
         <div class="header">
-          <img src="${EMAIL_CONFIG.LOGO_URL}" alt="ZAU Perfumes Logo" class="logo" />
+          <img src="${logoUrl}" alt="ZAU Perfumes Logo" class="logo" />
           <h1>🎉 Your Order Has Been Shipped!</h1>
           <p>Dear ${data.customerName}, your luxury perfume order is on its way!</p>
         </div>

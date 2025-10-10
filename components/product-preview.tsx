@@ -6,6 +6,8 @@ import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
 import { Dialog, DialogContent, DialogTrigger, DialogTitle } from "@/components/ui/dialog"
 import { Heart, ShoppingCart, Star, Eye, Loader2 } from "lucide-react"
+import Image from 'next/image'
+import { optimizedSrc } from '@/lib/utils/image'
 import { useCart } from "@/lib/contexts/cart-context"
 import { ShareButton } from "@/components/ui/share-button"
 
@@ -98,10 +100,12 @@ export function ProductPreview({ product, showQuickActions = true }: ProductPrev
     <Card className="group hover-lift border-0 bg-background overflow-hidden">
       <Link href={`/products/${product._id}`} className="block">
         <div className="relative aspect-[3/4] overflow-hidden">
-          <img
-            src={product.imageUrl || "/placeholder.svg"}
+          <Image
+            src={optimizedSrc(product.imageUrl || "/placeholder.svg", 800)}
             alt={product.name}
-            className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
+            fill
+            className="object-cover transition-transform duration-700 group-hover:scale-110"
+            sizes="(max-width: 640px) 100vw, 33vw"
           />
         {/* Top Left - New Badge (only if product is new) */}
         {isNew && (
@@ -159,11 +163,13 @@ export function ProductPreview({ product, showQuickActions = true }: ProductPrev
               <DialogContent className="max-w-4xl max-h-[90vh] overflow-y-auto">
                 <DialogTitle className="sr-only">Product Details</DialogTitle>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                  <div className="aspect-square">
-                    <img
-                      src={product.imageUrl || "/placeholder.svg"}
+                  <div className="aspect-square relative">
+                    <Image
+                      src={optimizedSrc(product.imageUrl || "/placeholder.svg", 1200)}
                       alt={product.name}
-                      className="w-full h-full object-cover rounded-lg"
+                      fill
+                      className="object-cover rounded-lg"
+                      sizes="(max-width: 768px) 100vw, 50vw"
                     />
                   </div>
                   <div className="space-y-4">

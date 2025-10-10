@@ -19,6 +19,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog"
 import { Plus, Edit, Trash2, FolderTree, Loader2 } from "lucide-react"
+import Image from 'next/image'
 import { useToast } from "@/lib/contexts/toast-context"
 
 interface Category {
@@ -290,7 +291,9 @@ export default function CategoriesPage() {
                   className="bg-gray-800 border-gray-700 text-white"
                 />
                 {formData.imagePreview && (
-                  <img src={formData.imagePreview} alt="Preview" className="w-32 h-20 object-cover rounded border mt-2" />
+                  <div className="w-32 h-20 relative rounded border mt-2 overflow-hidden">
+                    <Image src={formData.imagePreview} alt="Preview" fill className="object-cover" sizes="128px" />
+                  </div>
                 )}
               </div>
               <div className="space-y-2">
@@ -419,7 +422,9 @@ export default function CategoriesPage() {
                 className="bg-gray-800 border-gray-700 text-white"
               />
               {formData.imagePreview && (
-                <img src={formData.imagePreview} alt="Preview" className="w-32 h-20 object-cover rounded border mt-2" />
+                <div className="w-32 h-20 relative rounded border mt-2 overflow-hidden">
+                  <Image src={formData.imagePreview} alt="Preview" fill className="object-cover" sizes="128px" />
+                </div>
               )}
             </div>
             <div className="space-y-2">

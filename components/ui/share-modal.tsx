@@ -19,6 +19,8 @@ import {
   Sparkles
 } from 'lucide-react'
 import { toast } from 'sonner'
+import Image from 'next/image'
+import { optimizedSrc } from '@/lib/utils/image'
 
 interface ShareModalProps {
   isOpen: boolean
@@ -198,12 +200,8 @@ export function ShareModal({
             <CardContent className="p-4">
               <div className="flex items-center gap-3">
                 {productImage && (
-                  <div className="w-16 h-16 rounded-lg overflow-hidden bg-slate-700">
-                    <img 
-                      src={productImage} 
-                      alt={productName}
-                      className="w-full h-full object-cover"
-                    />
+                  <div className="w-16 h-16 rounded-lg overflow-hidden bg-slate-700 relative">
+                    <Image src={optimizedSrc(productImage || '/logo.png', 160)} alt={productName} fill className="object-cover" sizes="64px" />
                   </div>
                 )}
                 <div className="flex-1">

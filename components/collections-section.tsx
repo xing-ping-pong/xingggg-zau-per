@@ -5,6 +5,7 @@ import { Button } from "@/components/ui/button"
 import { Loader2, ArrowRight } from "lucide-react"
 import { useRouter } from "next/navigation"
 import Image from "next/image"
+import { optimizedSrc } from '@/lib/utils/image'
 
 interface Category {
   _id: string;
@@ -149,7 +150,7 @@ export function CollectionsSection() {
                        onClick={() => router.push(`/products?category=${category.slug}`)}>
                     <div className="aspect-[4/5] sm:aspect-[4/5] relative">
                       <Image
-                        src={getCategoryImage(category, index)}
+                        src={optimizedSrc(getCategoryImage(category, index), 1024)}
                         alt={`${category.name} Collection - Luxury fragrance collection`}
                         fill
                         className="object-cover transition-transform duration-700 group-hover:scale-110"

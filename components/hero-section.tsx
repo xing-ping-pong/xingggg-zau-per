@@ -25,7 +25,7 @@ export function HeroSection() {
     );
   }
 
-  const heroImageUrl = settings.heroImageUrl || "/luxury-perfume-bottle-in-ethereal-lighting-with-go.jpg";
+  const heroImageUrl = settings.heroImageUrl || "/optimized/luxury-perfume-bottle-in-ethereal-lighting-with-go-1600.webp";
   return (
     <section id="hero" className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image */}

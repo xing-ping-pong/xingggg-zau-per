@@ -5,6 +5,8 @@ import { Button } from './button'
 import { Card, CardContent } from './card'
 import { Upload, X, Image as ImageIcon, Loader2 } from 'lucide-react'
 import { toast } from 'sonner'
+import Image from 'next/image'
+import { optimizedSrc } from '@/lib/utils/image'
 import { fetchWithAuth } from '@/lib/auth-utils'
 
 interface ImageUploadProps {
@@ -162,12 +164,8 @@ export function ImageUpload({
           <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
             {images.map((url, index) => (
               <div key={index} className="relative group">
-                <div className="aspect-square rounded-lg overflow-hidden border border-border">
-                  <img
-                    src={url}
-                    alt={`Product image ${index + 1}`}
-                    className="w-full h-full object-cover"
-                  />
+                <div className="aspect-square rounded-lg overflow-hidden border border-border relative">
+                  <Image src={optimizedSrc(url || '/placeholder.svg', 800)} alt={`Product image ${index + 1}`} fill className="object-cover" />
                 </div>
                 
                 {/* Remove Button */}
